@@ -79,7 +79,7 @@ public class Main {
 
     }
 
-    public static void ItemF(Document d, String url) {
+    public static void ItemF(Document d) {
 
         System.out.println("\nF - Respuesta de petición por cada Formulario POST, con un header y un parametro: \n");
         Elements formsPOSThelper = d.getElementsByTag("form");
@@ -89,12 +89,13 @@ public class Main {
             System.out.println("Form #" + i);
             if ((e.attributes().get("method")).contains("post")) {
                 try {
-                    Document postDoc = Jsoup.connect(url)
+                    String abs = e.absUrl("action");
+                    Document postDoc = Jsoup.connect(abs)
                             .data("asignatura", "practica1")
                             .header("matricula", "20110714")
                             .userAgent("Chrome")
                             .post();
-                    System.out.println(postDoc);
+                    System.out.println(postDoc.body());
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -124,7 +125,7 @@ public class Main {
             ItemC(d);
             ItemD(d);
             ItemE(d);
-            ItemF(d, in);
+            ItemF(d);
         } else {
             System.out.println("La URL digitada no fue encontrada.");
         }
