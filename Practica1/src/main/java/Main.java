@@ -118,10 +118,10 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
 
-        String in = "http://www.pucmm.edu.do";
-        System.out.print("Escriba la URL que desea acceder: ");
-        System.out.print(in);
+        System.out.print("Escriba la URL que desea acceder (Recuerde agregar http:// al inicio): ");
+        String in = sc.next();
         System.out.println("\n");
         System.out.println("Información Relevante \n");
 
