@@ -3,6 +3,22 @@ import java.io.Serializable;
 
 public class Usuario implements Serializable{
 
+
+    private String username;
+    private String nombre;
+    private String password;
+    private boolean administrator;
+    private boolean autor;
+
+
+    public Usuario(String username, String nombre, String password, boolean administrator, boolean autor) {
+        this.username = username;
+        this.nombre = nombre;
+        this.password = password;
+        this.administrator = administrator;
+        this.autor = autor;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -43,11 +59,7 @@ public class Usuario implements Serializable{
         this.autor = autor;
     }
 
-    private String username;
-    private String nombre;
-    private String password;
-    private boolean administrator;
-    private boolean autor;
+
 
 
 }
