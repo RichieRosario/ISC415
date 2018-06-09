@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS comentarios (
   id          BIGINT PRIMARY KEY,
   comentario VARCHAR2(255),
   autor_id    BIGINT REFERENCES usurios(id) ON UPDATE CASCADE,
-  ARTICULO_ID BIGINT REFERENCES articulos(id) ON UPDATE CASCADE
+  articulo_id BIGINT REFERENCES articulos(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS articulos_comentarios (

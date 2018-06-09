@@ -6,7 +6,7 @@ import org.sql2o.Sql2o;
 
 import java.util.List;
 
-public class Sql2oArticuloDao {
+public class Sql2oArticuloDao implements ArticuloDao {
 
     private final Sql2o sql2o;
     public Sql2oArticuloDao(Sql2o sql2o) {this.sql2o = sql2o;}
@@ -49,7 +49,7 @@ public class Sql2oArticuloDao {
     public void update(Articulo articulo) {
 
         String sql = "UPDATE articulos set titulo = :titulo, cuerpo= :cuerpo, autor_id= :autor_id, " +
-                "fecja = :fecha WHERE id = :id";
+                "fecha = :fecha WHERE id = :id";
 
         Connection con = sql2o.open();
 
@@ -61,7 +61,7 @@ public class Sql2oArticuloDao {
     @Override
     public void deleteById(Long id) {
 
-        String sql = "DELETE from usuarios WHERE id=:id";
+        String sql = "DELETE from articulos WHERE id=:id";
 
         Connection con = sql2o.open();
         con.createQuery(sql)

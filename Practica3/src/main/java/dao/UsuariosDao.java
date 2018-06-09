@@ -5,6 +5,7 @@ import encapsulacion.Usuario;
 import java.util.List;
 
 public interface UsuariosDao {
+
     void add(Usuario usuario);
 
     Usuario findOne(Long id);
