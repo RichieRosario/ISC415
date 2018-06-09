@@ -1,9 +1,12 @@
+package encapsulacion;
 
 import java.io.Serializable;
 
 public class Usuario implements Serializable{
 
 
+
+    private Long id;
     private String username;
     private String nombre;
     private String password;
@@ -11,13 +14,23 @@ public class Usuario implements Serializable{
     private boolean autor;
 
 
-    public Usuario(String username, String nombre, String password, boolean administrator, boolean autor) {
+    public Usuario(Long id, String username, String nombre, String password, boolean administrator, boolean autor) {
+        this.id = id;
         this.username = username;
         this.nombre = nombre;
         this.password = password;
         this.administrator = administrator;
         this.autor = autor;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 
     public String getUsername() {
         return username;

@@ -1,12 +1,13 @@
+package encapsulacion;
 
 import java.io.Serializable;
 
 public class Etiqueta implements Serializable{
 
-    private long id;
+    private Long id;
     private String etiqueta;
 
-    public Etiqueta(long id, String etiqueta) {
+    public Etiqueta(Long id, String etiqueta) {
         this.id = id;
         this.etiqueta = etiqueta;
     }
@@ -15,7 +16,7 @@ public class Etiqueta implements Serializable{
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

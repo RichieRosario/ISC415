@@ -1,15 +1,16 @@
+package encapsulacion;
 
 import java.io.Serializable;
 
 public class Comentario implements Serializable{
 
 
-    private long id;
+    private Long id;
     private String comentario;
     private Usuario autor;
     private Articulo articulo;
 
-    public Comentario(long id, String comentario, Usuario autor, Articulo articulo) {
+    public Comentario(Long id, String comentario, Usuario autor, Articulo articulo) {
         this.id = id;
         this.comentario = comentario;
         this.autor = autor;
@@ -20,7 +21,7 @@ public class Comentario implements Serializable{
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

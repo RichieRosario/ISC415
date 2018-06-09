@@ -1,20 +1,23 @@
+package encapsulacion;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
+public class Articulo implements Serializable {
 
-public class Articulo implements Serializable{
-
-    private long id;
+    private Long id;
     private String titulo;
     private String cuerpo;
     private Usuario autor;
     private Date fecha;
-    private List<Comentario> comentarios;
-    private List<Etiqueta> etiquetas;
+    private List<Comentario> comentarios = new ArrayList<>();
+    private List<Etiqueta> etiquetas = new ArrayList<>();
+    private Long idusuario;
 
 
-    public Articulo(long id, String titulo, String cuerpo,
+    public Articulo(Long id, String titulo, String cuerpo,
                     Usuario autor, Date fecha, List<Comentario> comentarios,
                     List<Etiqueta> etiquetas) {
         this.id = id;
@@ -26,11 +29,11 @@ public class Articulo implements Serializable{
         this.etiquetas = etiquetas;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
