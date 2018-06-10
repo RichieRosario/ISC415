@@ -22,47 +22,47 @@ public class Sql2oComentarioDao implements ComentarioDao {
         Connection con = sql2o.open();
 
         Long id =(Long) con.createQuery(sql, true)
-                .bind(articulo)
+                .bind(comentario)
                 .executeUpdate()
                 .getKey();
 
     }
 
     @Override
-    public Articulo findOne(Long id) {
+    public Comentario findOne(Long id) {
         Connection  con = sql2o.open();
 
-        return con.createQuery("SELECT * FROM articulos WHERE id = :id")
+        return con.createQuery("SELECT * FROM comentarios WHERE id = :id")
                 .addParameter("id", id)
-                .executeAndFetchFirst(Articulo.class);
+                .executeAndFetchFirst(Comentario.class);
     }
 
     @Override
-    public List<Articulo> getAll() {
+    public List<Comentario> getAll() {
 
         Connection con = sql2o.open();
-        return con.createQuery("SELECT * FROM articulos")
-                .executeAndFetch(Articulo.class);
+        return con.createQuery("SELECT * FROM comentarios")
+                .executeAndFetch(Comentario.class);
 
     }
 
     @Override
-    public void update(Articulo articulo) {
+    public void update(Comentario comentario) {
 
-        String sql = "UPDATE articulos set titulo = :titulo, cuerpo= :cuerpo, autor_id= :autor_id, " +
-                "fecja = :fecha WHERE id = :id";
+        String sql = "UPDATE comentarios set comentario = :comentario, autor_di= :autor_id, articulo_id= :articulo_id, " +
+                " WHERE id = :id";
 
         Connection con = sql2o.open();
 
         con.createQuery(sql)
-                .bind(articulo)
+                .bind(comentario)
                 .executeUpdate();
     }
 
     @Override
     public void deleteById(Long id) {
 
-        String sql = "DELETE from articulos WHERE id=:id";
+        String sql = "DELETE from comentarios WHERE id=:id";
 
         Connection con = sql2o.open();
         con.createQuery(sql)
