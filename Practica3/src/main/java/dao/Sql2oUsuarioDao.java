@@ -67,5 +67,15 @@ public class Sql2oUsuarioDao implements UsuariosDao{
                 .executeUpdate();
     }
 
+    @Override
+    public Usuario searchByUsername(String username){
+
+        Connection  con = sql2o.open();
+
+        return con.createQuery("SELECT * FROM usuarios WHERE username = :username")
+                .addParameter("username", username)
+                .executeAndFetchFirst(Usuario.class);
+    }
+
 
 }

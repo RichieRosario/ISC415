@@ -19,5 +19,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.5'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
     compile 'com.sparkjava:spark-template-freemarker:2.7.1'
+    compile "org.slf4j:slf4j-simple:1.7.21"
 
 }
