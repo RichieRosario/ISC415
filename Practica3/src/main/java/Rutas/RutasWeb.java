@@ -1,5 +1,6 @@
 package Rutas;
 
+
 import com.google.gson.Gson;
 import dao.Sql2oArticuloDao;
 import dao.Sql2oComentarioDao;
@@ -15,6 +16,7 @@ import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
