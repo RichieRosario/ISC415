@@ -1,6 +1,7 @@
 package dao;
 
 import encapsulacion.Articulo;
+import encapsulacion.Comentario;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
@@ -10,6 +11,7 @@ public class Sql2oArticuloDao implements ArticuloDao {
 
     private final Sql2o sql2o;
     public Sql2oArticuloDao(Sql2o sql2o) {this.sql2o = sql2o;}
+
 
     @Override
     public void add(Articulo articulo){
@@ -67,5 +69,16 @@ public class Sql2oArticuloDao implements ArticuloDao {
         con.createQuery(sql)
                 .addParameter("id", id)
                 .executeUpdate();
+    }
+
+    @Override
+    public List<Comentario> obtenerComentarios(Long id){
+
+        Connection con = sql2o.open();
+        return con.createQuery("SELECT * from comentarios INNER JOIN  articulos_comentarios  ON articulos_comentarios.id = :id" +
+                "INNER JOIN comentarios ON comentarios.id = articulos_comentarios.comentario_id")
+                .addParameter("id", id)
+                .executeAndFetch(Comentario.class);
+
     }
 }
