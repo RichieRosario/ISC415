@@ -38,24 +38,24 @@ public class ConnectionService {
                 "  id       BIGINT PRIMARY KEY,\n" +
                 "  titulo VARCHAR2(255),\n" +
                 "  cuerpo   VARCHAR2(255),\n" +
-                "  autor_id BIGINT REFERENCES usuarios(id) ON UPDATE CASCADE,\n" +
+                "  autorID BIGINT REFERENCES usuarios(id) ON UPDATE CASCADE,\n" +
                 "  fecha    DATE\n" +
                 ");\n" +
                 "\n" +
                 "CREATE TABLE IF NOT EXISTS comentarios (\n" +
                 "  id          BIGINT PRIMARY KEY,\n" +
                 "  comentario VARCHAR2(255),\n" +
-                "  autor_id    BIGINT REFERENCES usuarios(id) ON UPDATE CASCADE,\n" +
-                "  ARTICULO_ID BIGINT REFERENCES articulos(id) ON UPDATE CASCADE\n" +
+                "  autorId    BIGINT REFERENCES usuarios(id) ON UPDATE CASCADE,\n" +
+                "  articuloId BIGINT REFERENCES articulos(id) ON UPDATE CASCADE\n" +
                 ");\n" +
                 "\n" +
                 "CREATE TABLE IF NOT EXISTS articulos_comentarios (\n" +
-                "  articulo_id  BIGINT REFERENCES articulos(id) ON UPDATE CASCADE,\n" +
+                "  articuloId  BIGINT REFERENCES articulos(id) ON UPDATE CASCADE,\n" +
                 "  comentario_id BIGINT REFERENCES comentarios (id) ON UPDATE CASCADE\n" +
                 ");\n" +
                 "\n" +
                 "CREATE TABLE IF NOT EXISTS articulos_etiquetas (\n" +
-                "  articulo_id BIGINT REFERENCES articulos(id) ON UPDATE CASCADE,\n" +
+                "  articuloId BIGINT REFERENCES articulos(id) ON UPDATE CASCADE,\n" +
                 "  etiqueta_id BIGINT REFERENCES etiquetas(id) ON UPDATE CASCADE\n" +
                 ");";
         Connection con = DBService.getInstancia().getConexion();

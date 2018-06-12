@@ -17,4 +17,7 @@ public interface UsuariosDao {
     void deleteById(Long id);
 
     Usuario searchByUsername(String username);
+
+    Usuario searchById(Long id);
+
 }

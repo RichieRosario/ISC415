@@ -16,8 +16,8 @@ public class Sql2oComentarioDao implements ComentarioDao {
     public void add(Comentario comentario){
 
 
-        String sql = "INSERT INTO comentarios (comentario, autor_id, articulo_id) VALUES (:comentario, " +
-                ":autor_id, :articulo_id)";
+        String sql = "INSERT INTO comentarios (comentario, autorId, articuloId) VALUES (:comentario, " +
+                ":autorId, :articuloId)";
 
         Connection con = sql2o.open();
 
@@ -49,7 +49,7 @@ public class Sql2oComentarioDao implements ComentarioDao {
     @Override
     public void update(Comentario comentario) {
 
-        String sql = "UPDATE comentarios set comentario = :comentario, autor_di= :autor_id, articulo_id= :articulo_id, " +
+        String sql = "UPDATE comentarios set comentario = :comentario, autor_di= :autorId, articuloId= :articuloId, " +
                 " WHERE id = :id";
 
         Connection con = sql2o.open();

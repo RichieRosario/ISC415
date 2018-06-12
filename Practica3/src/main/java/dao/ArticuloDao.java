@@ -2,6 +2,7 @@ package dao;
 
 import encapsulacion.Articulo;
 import encapsulacion.Comentario;
+import encapsulacion.Usuario;
 
 import java.util.List;
 
@@ -18,4 +19,7 @@ public interface ArticuloDao {
     void deleteById(Long id);
 
     List<Comentario> obtenerComentarios(Long id);
+
+    Usuario searchById(Long id);
+
 }

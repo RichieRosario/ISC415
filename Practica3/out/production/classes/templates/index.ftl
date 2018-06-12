@@ -93,20 +93,21 @@
           <h2>Últimas Entradas</h2>
         </header>
         <div class="row">
-            <#if ${articulos.isEmpty() == false}>
                 <#list articulos as articulo>
           <div class="post col-md-4">
-            <div class="post-thumbnail"><a href="post.html"><img src="img/blog-1.jpg" alt="..." class="img-fluid"></a></div>
+            <div class="post-thumbnail"><a href="/articulos"><img src="img/blog-1.jpg" alt="..." class="img-fluid"></a></div>
             <div class="post-details">
               <div class="post-meta d-flex justify-content-between">
                 <div class="date">${articulo.getFecha()}</div>
-                <div class="author">${articulo.getAutor()}</div>
-              </div><a href="post.html">
+                <div class="author">${articulo.getNombreAutor()}</div>
+              </div><a href="/articulos">
                 <h3 class="h4">${articulo.getTitulo()}</h3></a>
               <p class="text-muted">${articulo.getCuerpo()}</p>
             </div>
+                    <#else>
+                    <p>No hay entradas</p>
               </#list>
-              </#if>
+
           </div>
 
     </section>

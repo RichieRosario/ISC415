@@ -77,5 +77,15 @@ public class Sql2oUsuarioDao implements UsuariosDao{
                 .executeAndFetchFirst(Usuario.class);
     }
 
+    @Override
+    public Usuario searchById(Long id){
+
+        Connection  con = sql2o.open();
+
+        return con.createQuery("SELECT * FROM usuarios WHERE id=:id")
+                .addParameter("id", id)
+                .executeAndFetchFirst(Usuario.class);
+    }
+
 
 }

@@ -18,6 +18,7 @@ import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
 
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class RutasWeb {
         Connection conn;
         Gson gson = new Gson();
 
-        Sql2o sql2o = new Sql2o( "jdbc:h2:~/Practica3", "sa", "");
+        Sql2o sql2o = new Sql2o( "jdbc:h2:~/blog", "", "");
 
         usuarioDao = new Sql2oUsuarioDao(sql2o);
         articuloDao = new Sql2oArticuloDao(sql2o);
@@ -49,18 +50,22 @@ public class RutasWeb {
 
         conn = sql2o.open();
 
-        Usuario usuarioPorDefecto = new Usuario(1L, "admin", null, "admin", true, true);
-        usuarioDao.add(usuarioPorDefecto);
+//       Usuario usuarioPorDefecto = new Usuario(1L, "admin", null, "admin", true, true);
+//        usuarioDao.add(usuarioPorDefecto);
+//
+//        Articulo articuloPrueba = new Articulo(1L, "Lebron James", "Simplemente el mejor del mundo, sin discusion.", usuarioPorDefecto.getId(),  new Date(new java.util.Date().getTime()), null, null);
+//                articuloDao.add(articuloPrueba);
 
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
 
-            List<Articulo> listaArticulos = articuloDao.getAll();
+            List<Articulo> articulos = articuloDao.getAll();
 
-            attributes.put("articulos", listaArticulos);
 
-            return new ModelAndView(attributes, "inicio.ftl");
+            attributes.put("articulos", articulos);
+
+            return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
 
 
@@ -68,7 +73,7 @@ public class RutasWeb {
 
 
 
-        get("articulos", (request, response) -> {
+        get("articulo", (request, response) -> {
 
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap queryParamsMap = request.queryMap();
@@ -81,8 +86,39 @@ public class RutasWeb {
             attributes.put("articulos", articulo);
             attributes.put("comentarios", listaComentarios);
 
-            return new ModelAndView(attributes, "articulo.ftl");
+            return new ModelAndView(attributes, "post.ftl");
         }, freeMarkerEngine);
+
+
+        get("/articulo/nuevo", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+
+            return new ModelAndView(attributes, "formulario.ftl");
+        }, freeMarkerEngine);
+
+        post("/articulo/nuevo", (request, response) -> {
+
+            Long idarticulo = Long.parseLong(request.params("id"));
+            String titulo = request.queryParams("titulo");
+            String cuerpo = request.queryParams("cuerpo");
+            String etiquetas = request.queryParams("etiquetas");
+
+            List<Etiqueta> etiq = new ArrayList<Etiqueta>();
+
+            for (String eti : etiquetas.split(",")) {
+                etiq.add(new Etiqueta(0L, eti));
+            }
+
+            Articulo articulo = new Articulo(idarticulo, titulo, cuerpo, null, null, null, etiq);
+            articuloDao.add(articulo);
+
+
+            response.redirect("/");
+
+            return null;
+        });
+
+
 
 
         get("/articulos/editar/:id", (request, response) -> {
@@ -95,7 +131,7 @@ public class RutasWeb {
 
             attributes.put("articulos", articulo);
 
-            return new ModelAndView(attributes, "editarArticulo.ftl");
+            return new ModelAndView(attributes, "modificar.ftl");
         }, freeMarkerEngine);
 
         post("/articulos/editar/:id", (request, response) -> {
@@ -157,16 +193,16 @@ public class RutasWeb {
             QueryParamsMap map = request.queryMap();
 
             Usuario usuario = new Usuario();
-
             usuario.setUsername(map.get("username").value());
             usuario.setNombre(map.get("nombre").value());
             usuario.setPassword(map.get("password").value());
             usuario.setAdministrator(Boolean.parseBoolean(map.get("administrator").value()));
             usuario.setAutor(Boolean.parseBoolean(map.get("autor").value()));
 
-           if(usuarioDao.searchByUsername(usuario.getUsername())==null){
+            Sql2oUsuarioDao usuarioDao1 = new Sql2oUsuarioDao(sql2o);
+           if(usuarioDao1.searchByUsername(usuario.getUsername())==null){
 
-               usuarioDao.add(usuario);
+               usuarioDao1.add(usuario);
 
                response.redirect("/login");
 

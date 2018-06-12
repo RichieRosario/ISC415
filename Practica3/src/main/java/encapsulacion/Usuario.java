@@ -14,6 +14,8 @@ public class Usuario implements Serializable{
     private boolean autor;
 
     public Usuario() {
+
+        super();
     }
 
     public Usuario(Long id, String username, String nombre, String password, boolean administrator, boolean autor) {

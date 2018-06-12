@@ -1,5 +1,9 @@
 package encapsulacion;
 
+import dao.Sql2oArticuloDao;
+import org.sql2o.Sql2o;
+
+import java.beans.Transient;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -10,7 +14,7 @@ public class Articulo implements Serializable {
     private Long id;
     private String titulo;
     private String cuerpo;
-    private Usuario autor;
+    private Long autorId;
     private Date fecha;
     private List<Comentario> comentarios = new ArrayList<>();
     private List<Etiqueta> etiquetas = new ArrayList<>();
@@ -18,12 +22,12 @@ public class Articulo implements Serializable {
 
 
     public Articulo(Long id, String titulo, String cuerpo,
-                    Usuario autor, Date fecha, List<Comentario> comentarios,
+                    Long autor, Date fecha, List<Comentario> comentarios,
                     List<Etiqueta> etiquetas) {
         this.id = id;
         this.titulo = titulo;
         this.cuerpo = cuerpo;
-        this.autor = autor;
+        this.autorId = autor;
         this.fecha = fecha;
         this.comentarios = comentarios;
         this.etiquetas = etiquetas;
@@ -53,12 +57,12 @@ public class Articulo implements Serializable {
         this.cuerpo = cuerpo;
     }
 
-    public Usuario getAutor() {
-        return autor;
+    public Long getAutorId() {
+        return autorId;
     }
 
-    public void setAutor(Usuario autor) {
-        this.autor = autor;
+    public void setAutor(Long autor) {
+        this.autorId = autor;
     }
 
     public Date getFecha() {
@@ -85,6 +89,18 @@ public class Articulo implements Serializable {
         this.etiquetas = etiquetas;
     }
 
+    public String getNombreAutor() {
+        Sql2oArticuloDao sql2oArticuloDao = new Sql2oArticuloDao(new Sql2o("jdbc:h2:~/blog", "", ""));
 
+        return sql2oArticuloDao.searchById(this.autorId).getNombre();
+    }
+    public String getResumen(){
+
+        String fini="";
+        for(int i=0;i<70;i++){
+            fini+= this.getCuerpo().charAt(i);
+        }
+        return fini;
+    }
 
 }

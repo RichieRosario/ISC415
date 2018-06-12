@@ -161,7 +161,7 @@
                   <form action="#" class="commenting-form">
                     <div class="row">
                       <div class="form-group col-md-6">
-                        <input type="text" name="username" id="username" value="${username}" class="form-control">
+                        <input type="text" name="username" id="username" value="${articulo.getNombreAutor()}" class="form-control">
                       </div>
                       <div class="form-group col-md-6">
                         <input type="email" name="username" id="useremail" placeholder="Email Address (will not be published)" class="form-control">

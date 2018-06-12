@@ -29,16 +29,20 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-       // ConnectionService.startDb();
+
+
         final Configuration configuration = new Configuration(new Version(2, 3, 0));
-        configuration.setClassForTemplateLoading(Main.class, "/");
-        Spark.staticFileLocation("/public/");
-      //  Spark.get("/", (request, response) -> {
+        configuration.setClassForTemplateLoading(Main.class, "/templates");
+        Spark.staticFileLocation( "public");
+
+        FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
+
+        ConnectionService.startDb();
+        DBService.getInstancia().testConexion();
+        ConnectionService.crearTablas(); ConnectionService.stopDb();
+
+        new RutasWeb(freeMarkerEngine);
 
 
-      //  DBService.getInstancia().testConexion();
-       // ConnectionService.crearTablas();
-       // ConnectionService.stopDb();
-   // }
-}
+    }
 }
