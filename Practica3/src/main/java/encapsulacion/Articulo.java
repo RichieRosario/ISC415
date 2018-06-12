@@ -85,6 +85,14 @@ public class Articulo implements Serializable {
         this.etiquetas = etiquetas;
     }
 
+    public String getResumen(){
+
+        String fini="";
+        for(int i=0;i<70;i++){
+            fini+= this.getCuerpo().charAt(i);
+        }
+        return fini;
+    }
 
 
 }
