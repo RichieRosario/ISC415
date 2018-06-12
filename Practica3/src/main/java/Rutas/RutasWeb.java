@@ -31,7 +31,7 @@ import static spark.Spark.*;
 
 public class RutasWeb {
 
-    public RutasWeb(final Sql2oArticuloDao sql2oArticuloDao, final FreeMarkerEngine freeMarkerEngine) {
+    public RutasWeb(final FreeMarkerEngine freeMarkerEngine) {
 
         Sql2oUsuarioDao usuarioDao;
         Sql2oArticuloDao articuloDao;
@@ -48,6 +48,10 @@ public class RutasWeb {
         etiquetaDao = new Sql2oEtiquetaDao(sql2o);
 
         conn = sql2o.open();
+
+        Usuario usuarioPorDefecto = new Usuario(1L, "admin", null, "admin", true, true);
+        usuarioDao.add(usuarioPorDefecto);
+
 
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();

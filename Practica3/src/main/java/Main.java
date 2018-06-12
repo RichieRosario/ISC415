@@ -1,4 +1,7 @@
 
+import dao.Sql2oUsuarioDao;
+import encapsulacion.Usuario;
+import freemarker.template.Configuration;
 import encapsulacion.Articulo;
 import encapsulacion.Comentario;
 import encapsulacion.Etiqueta;
@@ -10,6 +13,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import Rutas.RutasWeb;
+import spark.template.freemarker.FreeMarkerEngine;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.Version;
@@ -30,6 +35,7 @@ public class Main {
         final Configuration configuration = new Configuration(new Version(2, 3, 0));
         configuration.setClassForTemplateLoading(Main.class, "/");
         Spark.staticFileLocation("/public/");
+
         Spark.get("/", (request, response) -> {
         List<Articulo> articulos = new ArrayList<Articulo>();
         Usuario user = new Usuario((long)1,"admin","Juan Pedro Belmonte García","admin",true,true);
@@ -64,12 +70,13 @@ public class Main {
 
 
 
+      //  Spark.get("/", (request, response) -> {
 
 
-            return writer;
-        });
+
       //  DBService.getInstancia().testConexion();
        // ConnectionService.crearTablas();
        // ConnectionService.stopDb();
-    }
+   // }
+}
 }
