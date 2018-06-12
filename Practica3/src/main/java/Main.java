@@ -3,6 +3,8 @@ import dao.Sql2oUsuarioDao;
 import encapsulacion.Usuario;
 import freemarker.template.Configuration;
 import encapsulacion.Articulo;
+import encapsulacion.Comentario;
+import encapsulacion.Etiqueta;
 import encapsulacion.Usuario;
 import servicios.*;
 
@@ -32,6 +34,7 @@ public class Main {
 
 
         final Configuration configuration = new Configuration(new Version(2, 3, 0));
+		
         configuration.setClassForTemplateLoading(Main.class, "/templates");
         Spark.staticFileLocation( "public");
 
@@ -45,4 +48,18 @@ public class Main {
 
 
     }
+
+
+
+
+
+      //  Spark.get("/", (request, response) -> {
+
+
+
+      //  DBService.getInstancia().testConexion();
+       // ConnectionService.crearTablas();
+       // ConnectionService.stopDb();
+   // }
+}
 }

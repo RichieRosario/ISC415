@@ -12,12 +12,15 @@ public class Usuario implements Serializable{
     private String password;
     private boolean administrator;
     private boolean autor;
+public Usuario(){
 
     public Usuario() {
 
         super();
     }
 
+
+}
     public Usuario(Long id, String username, String nombre, String password, boolean administrator, boolean autor) {
         this.id = id;
         this.username = username;
@@ -34,6 +37,7 @@ public class Usuario implements Serializable{
     public void setId(Long id) {
         this.id = id;
     }
+
 
 
     public String getUsername() {
@@ -75,6 +79,8 @@ public class Usuario implements Serializable{
     public void setAutor(boolean autor) {
         this.autor = autor;
     }
+
+
 
 
 

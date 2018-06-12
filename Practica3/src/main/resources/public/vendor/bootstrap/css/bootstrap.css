@@ -51,6 +51,7 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
+
 @-ms-viewport {
   width: device-width;
 }
@@ -3963,6 +3964,7 @@ input[type="button"].btn-block {
   flex-direction: column;
   padding-left: 0;
   margin-bottom: 0;
+    margin: 0 0 0 8px;
   list-style: none;
 }
 
@@ -8947,5 +8949,9 @@ a.text-dark:hover, a.text-dark:focus {
   .table-bordered td {
     border: 1px solid #dee2e6 !important;
   }
+}
+
+.card + .card {
+    margin: 0 0 0 16px;
 }
 /*# sourceMappingURL=bootstrap.css.map */
