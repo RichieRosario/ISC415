@@ -1,0 +1,694 @@
+package Rutas;
+
+
+import com.google.gson.Gson;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import dao.*;
+import encapsulacion.Articulo;
+import encapsulacion.Comentario;
+import encapsulacion.Etiqueta;
+import encapsulacion.Usuario;
+import org.sql2o.Connection;
+import org.sql2o.Sql2o;
+import spark.ModelAndView;
+import spark.QueryParamsMap;
+import spark.Session;
+import spark.template.freemarker.FreeMarkerEngine;
+import sun.nio.cs.US_ASCII;
+
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+import javax.servlet.http.Cookie;
+
+
+import static spark.Spark.*;
+
+public class RutasWeb {
+
+    public RutasWeb(final FreeMarkerEngine freeMarkerEngine) {
+
+        Sql2oUsuarioDao usuarioDao;
+        Sql2oArticuloDao articuloDao;
+        Sql2oComentarioDao comentarioDao;
+        Sql2oEtiquetaDao etiquetaDao;
+        Connection conn;
+        Gson gson = new Gson();
+
+        Sql2o sql2o = new Sql2o( "jdbc:h2:~/blog", "", "");
+
+        usuarioDao = new Sql2oUsuarioDao(sql2o);
+        articuloDao = new Sql2oArticuloDao(sql2o);
+        comentarioDao = new Sql2oComentarioDao(sql2o);
+        etiquetaDao = new Sql2oEtiquetaDao(sql2o);
+
+        conn = sql2o.open();
+
+//       Usuario usuarioPorDefecto = new Usuario(1L, "admin", null, "admin", true, true);
+//        usuarioDao.add(usuarioPorDefecto);
+//
+//        Articulo articuloPrueba = new Articulo(1L, "Lebron James", "Simplemente el mejor del mundo, sin discusion.", usuarioPorDefecto.getId(),  new Date(new java.util.Date().getTime()), null, null);
+//                articuloDao.add(articuloPrueba);
+
+
+        get("/", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            boolean autenticado = false;
+            boolean admin=false;
+            boolean autor=false;
+
+
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+
+
+            }
+
+
+
+            if(autenticado == true) {
+
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor=user.isAutor();
+                admin=user.isAdministrator();
+
+                List<Articulo> articulos = articuloDao.getAll();
+                attributes.put("autor", autor);
+                attributes.put("usuariodentro",user.getNombre());
+                attributes.put("admin", admin);
+                attributes.put("autenticado", autenticado);
+                attributes.put("articulos", articulos);}
+
+                else {
+                List<Articulo> articulos = articuloDao.getAll();
+                attributes.put("usuariodentro", "Huesped");
+                attributes.put("autor", false);
+                attributes.put("admin", false);
+                attributes.put("autenticado", false);
+                attributes.put("articulos", articulos);
+            }
+
+
+            return new ModelAndView(attributes, "index.ftl");
+        }, freeMarkerEngine);
+
+
+        get("/login", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            boolean autenticado = false;
+            boolean admin=false;
+            boolean autor=false;
+
+
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+
+            }
+
+
+
+            if(autenticado == true) {
+
+                    response.redirect("/");}
+
+            else {
+                attributes.put("autor", false);
+                attributes.put("admin", false);
+                attributes.put("autenticado", false);
+            }
+
+
+            return new ModelAndView(attributes, "login.ftl");
+        }, freeMarkerEngine);
+
+
+
+
+        post("/login", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            String username = request.queryParams("username") != null ? request.queryParams("username") : "";
+            String password = request.queryParams("password") != null ? request.queryParams("password") : "";
+            String remember = request.queryParams("remember") != null ? request.queryParams("remember") : "";
+            Usuario user = usuarioDao.searchByUsername(username);
+            if( user.getUsername().equals(username) && user.getPassword().equals(password)){
+                QueryParamsMap map2 = request.queryMap();
+                Session session = request.session();
+                session.attribute("username", map2.get("username").value());
+                session.maxInactiveInterval(604800);
+                if(!remember.isEmpty()){
+
+                    response.cookie("username", map2.get("username").value(), 604800);
+                    response.redirect("/");
+                }
+
+                List<Articulo> articulos = articuloDao.getAll();
+                attributes.put("autor", user.isAutor());
+                attributes.put("usuariodentro",user.getNombre());
+                attributes.put("admin", user.isAdministrator());
+                attributes.put("autenticado", true);
+                attributes.put("articulos", articulos);}
+
+            else{
+                List<Articulo> articulos = articuloDao.getAll();
+                attributes.put("usuariodentro","Huesped");
+                attributes.put("autor", false);
+                attributes.put("admin", false);
+                attributes.put("autenticado", false);
+                attributes.put("articulos", articulos);}
+
+
+
+            return new ModelAndView(attributes, "login.ftl");
+        }, freeMarkerEngine);
+
+        get("/logout", (request,response) ->{
+            Session session = request.session();
+            session.removeAttribute("username");
+            response.redirect("/");
+
+            Map<String, Object> attributes = new HashMap<>();
+
+                List<Articulo> articulos = articuloDao.getAll();
+            attributes.put("usuariodentro","Huesped");
+                attributes.put("autor", false);
+                attributes.put("admin", false);
+                attributes.put("autenticado", false);
+                attributes.put("articulos", articulos);
+
+        return new ModelAndView(attributes, "index.ftl");
+        },freeMarkerEngine);
+
+        get("/articulo/:id", (request, response) -> {
+            boolean autenticado = false;
+            boolean autor = false;
+            boolean admin = false;
+
+            if(request.session().attribute("username") != null) {
+                autenticado = true;
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+            }
+
+
+            Map<String, Object> attributes = new HashMap<>();
+            QueryParamsMap queryParamsMap = request.queryMap();
+
+
+            Long id = Long.parseLong(request.params("id"));
+
+
+            Articulo articulo = articuloDao.findOne(id);
+
+            List<Comentario> listaComentarios = articuloDao.obtenerComentarios(id);
+            List<Etiqueta> etiquetas = etiquetaDao.getAll();
+
+
+            int cantidadcomentarios = listaComentarios.size();
+
+
+            attributes.put("cantidadcomentarios", cantidadcomentarios);
+            attributes.put("admin", admin);
+            attributes.put("autor", autor);
+            attributes.put("autenticado", autenticado);
+            attributes.put("articulo", articulo);
+            attributes.put("idarticulo", id.toString());
+            attributes.put("listaComentarios", listaComentarios);
+            attributes.put("etiquetas", etiquetas);
+
+            return new ModelAndView(attributes, "post.ftl");
+
+        }, freeMarkerEngine);
+
+        post("/articulo/:id", (request, response) -> {
+            boolean autenticado=false;
+
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+
+            }
+
+
+            QueryParamsMap map = request.queryMap();
+            Long id = Long.parseLong(request.params("id"));
+            System.out.println(request.params("id"));
+            Usuario usuario = new Usuario();
+            Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(sql2o);
+            usuario = sql2oUsuarioDao.searchByUsername(request.session().attribute("username"));
+
+            Comentario comentario = new Comentario();
+            comentario.setAutorid(usuario.getId());
+            comentario.setComentario(map.get("commentbody").value());
+
+            Sql2oArticuloDao sql2oArticuloDao = new Sql2oArticuloDao(sql2o);
+            Articulo articulo = new Articulo();
+            articulo = sql2oArticuloDao.findOne(id);
+            comentario.setArticuloid(articulo.getId());
+            comentarioDao.add(comentario);
+            response.redirect("/articulo/" + id.toString());
+
+            return "Ok";
+        });
+
+//
+               get("/articulos/nuevo", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+                   boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+                    boolean admin=false;
+                    boolean autor=false;
+
+
+                   if(request.session().attribute("username") != null){
+                       autenticado = true;
+                       Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                       autor=user.isAutor();
+                       admin=user.isAdministrator();
+
+
+                   }
+
+
+
+
+
+                   attributes.put("autor", autor);
+            attributes.put("admin", admin);
+            attributes.put("autenticado", autenticado);
+
+            return new ModelAndView(attributes, "crearArticulo.ftl");
+        }, freeMarkerEngine);
+
+        post("/articulos/nuevo", (request, response) -> {
+
+            QueryParamsMap map = request.queryMap();
+
+
+            Articulo articulo = new Articulo();
+            articulo.setTitulo(map.get("titulo").value());
+            articulo.setCuerpo(map.get("cuerpo").value());
+            String etiquetas = (map.get("etiqueta").value());
+            articulo.setAutor(usuarioDao.searchByUsername(request.session().attribute("username")).getId());
+            List<Etiqueta> etiq = new ArrayList<Etiqueta>();
+            articulo.setFecha( new Date(new java.util.Date().getTime()));
+//            for(String eti : etiquetas.split(",")) {
+//                System.out.println(eti);
+                  Etiqueta etiqueta = new Etiqueta();
+//                etiqueta.setEtiqueta(eti);
+//                etiquetaDao.add(etiqueta);
+//            }
+            int size = etiquetaDao.getAll().size();
+            Long size2 = Long.parseLong(String.valueOf(size));
+
+            for (String eti : etiquetas.split(",")) {
+                etiq.add(new Etiqueta(size2, eti));
+
+            }
+
+            for(int i = size + 1; i < etiq.size(); i++){
+
+                Long itmp = Long.parseLong(String.valueOf(i));
+                etiqueta.setId(itmp);
+                etiqueta.setEtiqueta(etiq.get(i).getEtiqueta());
+                etiquetaDao.add(etiqueta);
+            }
+            articulo.setEtiquetas(etiq);
+            articuloDao.add(articulo);
+
+
+
+            response.redirect("/articulos");
+
+            return "Ok";
+        });
+
+
+
+
+        get("/articulos/editar/:id", (request, response) -> {
+
+            Long idarticulo = Long.parseLong(request.params("id"));
+            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+            boolean admin=false;
+            boolean autor=false;
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor=user.isAutor();
+                admin=user.isAdministrator();
+
+
+            }
+
+            Articulo articulo = articuloDao.findOne(idarticulo);;
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("idarticulo", articulo.getId().toString());
+            attributes.put("autenticado", autenticado);
+            attributes.put("admin", admin);
+            attributes.put("autor", autor);
+            attributes.put("articulos", articulo);
+
+            return new ModelAndView(attributes, "modificarArticulo.ftl");
+        }, freeMarkerEngine);
+
+        post("/articulos/editar/:id", (request, response) -> {
+
+            Long idarticulo = Long.parseLong(request.params("id"));
+            String titulo = request.queryParams("titulo");
+            String cuerpo = request.queryParams("cuerpo");
+            String etiquetas = request.queryParams("etiquetas");
+
+            List<Etiqueta> etiq = new ArrayList<Etiqueta>();
+
+//            for (String eti : etiquetas.split(",")) {
+//                etiq.add(new Etiqueta(0L, eti));
+//            }
+
+            Articulo articulo = new Articulo(idarticulo, titulo, cuerpo, articuloDao.findOne(idarticulo).getAutorId(), new Date(new java.util.Date().getTime()), null, null);
+            articuloDao.update(articulo);
+
+            response.redirect("/articulos");
+
+            return null;
+        });
+        get("/articulos/borrar/:id", (request, response) -> {
+
+            Long idarticulo = Long.parseLong(request.params("id"));
+
+            Articulo articulo = articuloDao.findOne(idarticulo);
+
+            if (articulo != null){
+                articuloDao.deleteById(idarticulo);
+            }
+
+            response.redirect("/articulos");
+
+            return null;
+
+        },freeMarkerEngine);
+
+
+
+
+        get("/usuarios", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+            boolean admin=false;
+            boolean autor=false;
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor=user.isAutor();
+                admin=user.isAdministrator();
+
+
+            }
+
+            attributes.put("usuarios", usuarioDao.getAll());
+            attributes.put("autenticado", autenticado);
+            attributes.put("admin", admin);
+            attributes.put("autor", autor);
+
+
+            return new ModelAndView(attributes, "gestionarUsuario.ftl");
+        }, freeMarkerEngine);
+
+        get("/articulos", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+            boolean admin=false;
+            boolean autor=false;
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor=user.isAutor();
+                admin=user.isAdministrator();
+
+
+            }
+
+            attributes.put("articulos", articuloDao.getAll());
+            attributes.put("autenticado", autenticado);
+            attributes.put("admin", admin);
+            attributes.put("autor", autor);
+
+
+            return new ModelAndView(attributes, "gestionarArticulo.ftl");
+        }, freeMarkerEngine);
+
+
+        get("/usuarios/nuevo", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+
+            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+            boolean admin=false;
+            boolean autor=false;
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor=user.isAutor();
+                admin=user.isAdministrator();
+
+
+            }
+
+            attributes.put("autor", autor);
+            attributes.put("admin", admin);
+            attributes.put("autenticado", autenticado);
+
+            return new ModelAndView(attributes, "crearUsuario.ftl");
+        }, freeMarkerEngine);
+
+
+        post("usuarios/nuevo", (request, response) -> {
+
+            QueryParamsMap map = request.queryMap();
+
+            Usuario usuario = new Usuario();
+            usuario.setUsername(map.get("username").value());
+            usuario.setNombre(map.get("nombre").value());
+            usuario.setPassword(map.get("password").value());
+
+            System.out.println(request.queryParams("rol"));
+            if(request.queryParams("rol").equals( "administrator")){
+
+                usuario.setAdministrator(true);
+                usuario.setAutor(false);
+
+            }
+
+            else if(request.queryParams("rol").equals("autor") ){
+
+                usuario.setAdministrator(false);
+                usuario.setAutor(true);
+            }
+
+            else{
+                usuario.setAdministrator(false);
+                usuario.setAutor(false);
+            }
+
+            Sql2oUsuarioDao usuarioDao1 = new Sql2oUsuarioDao(sql2o);
+           if(usuarioDao1.searchByUsername(usuario.getUsername())==null){
+
+               usuarioDao1.add(usuario);
+
+               response.redirect("/usuarios");
+
+               return null;
+           }
+          else {
+            return "Usuario ya existe!";
+        }
+
+        });
+
+        get("/usuarios/editar/:id", (request, response) -> {
+            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+            boolean admin=false;
+            boolean autor=false;
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor=user.isAutor();
+                admin=user.isAdministrator();
+
+
+            }
+
+            Long idusuario = Long.parseLong(request.params("id"));
+
+            Usuario usuario = usuarioDao.findOne(idusuario);
+
+
+            Map<String, Object> attributes = new HashMap<>();
+
+            attributes.put("autenticado", autenticado);
+            attributes.put("admin", admin);
+            attributes.put("autor", autor);
+            attributes.put("idusuario", idusuario.toString());
+            attributes.put("usuarios", usuario);
+
+            return new ModelAndView(attributes, "modificarUsuario.ftl");
+        }, freeMarkerEngine);
+
+        post("/usuarios/editar/:id", (request, response) -> {
+
+            Long idusuario = Long.parseLong(request.params("id"));
+            String username = request.queryParams("username");
+            String nombre = request.queryParams("nombre");
+            String password = request.queryParams("password");
+            Boolean administrator = Boolean.parseBoolean(request.queryParams("administrator"));
+            Boolean autor = Boolean.parseBoolean(request.queryParams("autor"));
+
+
+
+            Usuario usuario = new Usuario(idusuario, username, nombre, password, administrator, autor);
+            usuarioDao.update(usuario);
+
+            response.redirect("/usuarios");
+
+            return null;
+        });
+
+        get("/usuarios/borrar/:id", (request, response) -> {
+
+
+            Long idusuario = Long.parseLong(request.params("id"));
+
+            Usuario usuario = usuarioDao.findOne(idusuario);
+            if (usuario != null){
+                usuarioDao.deleteById(idusuario);
+            }
+
+            response.redirect("/usuarios");
+
+            return null;
+
+        },freeMarkerEngine);
+
+
+        get("/comentarios", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+            boolean admin=false;
+            boolean autor=false;
+
+
+            if(request.session().attribute("username") != null){
+                autenticado = true;
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor=user.isAutor();
+                admin=user.isAdministrator();
+
+
+            }
+            attributes.put("comentarios", comentarioDao.getAll());
+            attributes.put("autenticado", autenticado);
+            attributes.put("admin", admin);
+            attributes.put("autor", autor);
+
+
+            return new ModelAndView(attributes, "gestionarComentario.ftl");
+        }, freeMarkerEngine);
+
+        get("/comentarios/borrar/:id", (request, response) -> {
+
+            Long idcomentario = Long.parseLong(request.params("id"));
+
+            Comentario comentario = comentarioDao.findOne(idcomentario);
+
+            if (comentario != null){
+                comentarioDao.deleteById(idcomentario);
+            }
+
+            response.redirect("/");
+
+            return null;
+
+        },freeMarkerEngine);
+
+
+
+
+
+
+
+
+
+
+//        get("login", (request, response) -> {
+//            Map<String, Object> attributes = new HashMap<>();
+//
+//            return new ModelAndView(attributes, "formularioLogin.ftl");
+//        }, freeMarkerEngine);
+//
+//
+//        post("login", (request, response) -> {
+//
+//            QueryParamsMap map = request.queryMap();
+//
+//            Usuario usuario = usuarioDao.searchByUsername(map.get("username").value());
+////
+////            if(aqui va la logica del checkbox){
+////
+////                Session session = request.session();
+////                session.attribute("username", map.get("username").value());
+////                //setting session to expiry in 30 mins
+////                session.maxInactiveInterval(604800);
+////                response.cookie("username", map.get("username").value(), 604800);
+////            }
+//
+//
+//            if (map.get("username").value() == null || map.get("username").value().isEmpty()) {
+//                return "Digite un nombre de usuario";
+//            }
+//
+//            if (map.get("password").value() == null || map.get("password").value().isEmpty()) {
+//                return "Digite una contrasena";
+//            }
+//
+//            if(usuario != null){
+//
+//                if(map.get("password").value().equals(usuario.getPassword())){
+//                    response.redirect("/inicio");
+//
+//                    return null;
+//                }
+//            }
+//
+//            return "Usuario o contrasena incorrecto";
+//        });
+
+    }
+}
