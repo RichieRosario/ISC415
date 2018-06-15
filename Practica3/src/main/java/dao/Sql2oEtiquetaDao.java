@@ -4,24 +4,32 @@ import encapsulacion.Etiqueta;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
+import java.util.UUID;
+
+import static java.util.jar.Pack200.Packer.PASS;
 
 public class Sql2oEtiquetaDao implements EtiquetaDao {
 
     private final Sql2o sql2o;
     public Sql2oEtiquetaDao(Sql2o sql2o) {this.sql2o = sql2o;}
 
+
     @Override
-    public void add(Etiqueta etiqueta){
+    public void add(Etiqueta etiquetas){
 
 
-        String sql = "INSERT INTO etiquetas (id, etiqueta) VALUES (:id, :etiqueta)";
+
+        String sql = "INSERT INTO etiquetas (id, etiqueta) VALUES (:id, :etiqueta);";
 
         Connection con = sql2o.open();
 
-                 con.createQuery(sql, true)
-                .addParameter("id", etiqueta.getId())
-                .addParameter("etiqueta", etiqueta.getEtiqueta())
+              con.createQuery(sql, true)
+                .addParameter("id", etiquetas.getId())
+                      .addParameter("etiqueta", etiquetas.getEtiqueta())
                 .executeUpdate();
 
     }

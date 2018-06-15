@@ -2,6 +2,7 @@ package dao;
 
 import encapsulacion.Articulo;
 import encapsulacion.Comentario;
+import encapsulacion.Etiqueta;
 import encapsulacion.Usuario;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -15,24 +16,44 @@ public class Sql2oArticuloDao implements ArticuloDao {
     public Sql2oArticuloDao(Sql2o sql2o) {this.sql2o = sql2o;}
 
 
-    public void add(Articulo articulo){
+    public Long add(Articulo articulo){
 
 
         String sql = "INSERT INTO articulos (titulo, cuerpo, autorId, fecha) VALUES ( :titulo, " +
                 ":cuerpo, :autorId, :fecha)";
 
+      //  String sql2 = "INSERT INTO articulos_etiquetas (articuloId, etiquetaId) VALUES ( :articuloId, :etiquetaId)";
+
         Connection con = sql2o.open();
 
-
         Long id = con.createQuery(sql, true)
-                        .addParameter("titulo", articulo.getTitulo())
-                        .addParameter("cuerpo", articulo.getCuerpo())
-                        .addParameter("autorId", articulo.getAutorId())
-                        .addParameter("fecha", articulo.getFecha())
-                        .executeUpdate()
-                        .getKey(Long.class);
+                .addParameter("titulo", articulo.getTitulo())
+                .addParameter("cuerpo", articulo.getCuerpo())
+                .addParameter("autorId", articulo.getAutorId())
+                .addParameter("fecha", articulo.getFecha())
+                .executeUpdate()
+                .getKey(Long.class);
+//        con.createQuery(sql2)
+//                .addParameter("articuloId", articulo.getId())
+//                .addParameter("etiquetaId", etiqueta.getId())
+//                .executeUpdate();
+//        con.commit();
+        return id;
 
     }
+
+    public void addTablaIntermedia(Long idarticulo, Etiqueta etiqueta){
+
+         String sql2 = "INSERT INTO articulos_etiquetas (articuloId, etiquetaId) VALUES ( :articuloId, :etiquetaId)";
+
+        Connection con = sql2o.open();
+
+        con.createQuery(sql2)
+                .addParameter("articuloId", idarticulo)
+                .addParameter("etiquetaId", etiqueta.getId())
+                .executeUpdate();
+    }
+
 
     public Articulo findOne(Long id) {
         Connection  con = sql2o.open();
@@ -45,7 +66,7 @@ public class Sql2oArticuloDao implements ArticuloDao {
     public List<Articulo> getAll() {
 
         Connection con = sql2o.open();
-        return con.createQuery("SELECT * FROM articulos ORDER BY articulos.fecha DESC")
+        return con.createQuery("SELECT * FROM articulos")
                 .executeAndFetch(Articulo.class);
 
     }
@@ -86,6 +107,18 @@ public class Sql2oArticuloDao implements ArticuloDao {
                     .addParameter("articuloid", articuloid)
                     .executeAndFetch(Comentario.class);
         }
+    }
+
+    public List<Long> obtenerEtiquetas(Long articuloId){
+
+        String sql = "SELECT etiquetaId FROM articulos_etiquetas WHERE articuloId = :articuloId";
+
+        try(Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("articuloId", articuloId)
+                     .executeAndFetch(Long.class);
+        }
+
     }
 
     public Usuario searchById(Long id){
