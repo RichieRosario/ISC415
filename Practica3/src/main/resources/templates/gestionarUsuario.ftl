@@ -130,10 +130,16 @@
                 </td>
             <td>
                 <div class="btn-group" role="group">
-            <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
-                    href="/usuarios/editar/${usuario.getId()}" >Modificar</a></button>
+
+            <#if usuario.getUsername() == "admin">
+                <button type="button" class="btn btn-default disabled btn-xs" style="border-color: lightgray">Modificar</button>
+            <button type="button" class="btn btn-default disabled btn-xs" style="border-color: lightgray">Eliminar</button>
+            <#else>
             <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
                     href="/usuarios/borrar/${usuario.getId()}">Eliminar</a></button>
+                 <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
+                         href="/usuarios/editar/${usuario.getId()}" >Modificar</a></button>
+            </#if>
                 </div>
             </td>
     </tr>
@@ -145,45 +151,6 @@
 
 
 </#if>
-
-<div id="loginModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Iniciar Sesión</h4>
-                <button type="button" class="close" data-dismiss="modal"> &times;</button>
-
-            </div>
-            <div class="modal-body">
-                <form class="form" action="/usuarios" method="post">
-                    <div class="form-group">
-                        <label class="sr-only" for="username">Usuario</label><input type="text" class="form-control input-sm" placeholder="Usuario" id="username" name="username">
-                    </div>
-                    <div class="form-group">
-
-                        <label class="sr-only" for="password">Contraseña</label>
-                        <input type="password" class="form-control input-sm" placeholder="Contraseña" id="password" name="password"></div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" id="remember" name="remember" value="true" checked> Recordarme
-
-                        </label>
-                    </div>
-
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-info btn-xs">Sign in</button>
-                    </div>
-
-
-
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div>
 
 
 

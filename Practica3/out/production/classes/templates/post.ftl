@@ -126,6 +126,7 @@
                         </div>
                             <br>
 
+                            <#if autenticado==true && admin == true>
                             <header>
 
                                 <h3 class="h6">Comentarios<span class="no-of-comments">(${cantidadcomentarios})</span></h3>
@@ -133,7 +134,9 @@
 
                             <div class="card">
                                  <#list listaComentarios as comentario>
-                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}</div>
+                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
+                                         <a href="/comentarios/borrar/${comentario.getId()}"><button type="button" class="close" data-dismiss="modal"> &times;</button></a>
+                                     </div>
                                      <div class="card-body">${comentario.getComentario()}</div>
                                  <#else>
                                 No hay comentarios
@@ -143,7 +146,6 @@
 
                             <br>
                             <hr/>
-                            <#if autenticado==true>
                             <header>
                                 <h3>Deja tu opinión</h3>
                             </header>
@@ -158,14 +160,103 @@
                                     </div>
                                 </div>
                             </form>
-                            </#if>
-                        </div>
+                                <#elseif autenticado==true && autor == true>
+                            <header>
+
+                                <h3 class="h6">Comentarios<span class="no-of-comments">(${cantidadcomentarios})</span></h3>
+                            </header>
+
+                            <div class="card">
+                                 <#list listaComentarios as comentario>
+                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
+                                         <a href="comentarios/borrar/${comentario.getId()}"><button type="button" class="close" data-dismiss="modal"> &times;</button></a>
+                                     </div>
+                                     <div class="card-body">${comentario.getComentario()}</div>
+                                 <#else>
+                                No hay comentarios
+                                 </#list>
+
+                            </div>
+
+                            <br>
+                            <hr/>
+                            <header>
+                                <h3>Deja tu opinión</h3>
+                            </header>
+                            <form action="/articulo/${articulo.getId()}" method="post" class="commenting-form">
+                                <div class="row">
+
+                                    <div class="form-group col-md-12">
+                                        <textarea name="commentbody" id="commentbody" placeholder="Escriba su comentario..." class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <button type="submit" class="btn btn-secondary">Enviar</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                                    <#elseif autenticado==true && admin == false && autor==false>
+                            <header>
+
+                                <h3 class="h6">Comentarios<span class="no-of-comments">(${cantidadcomentarios})</span></h3>
+                            </header>
+
+                            <div class="card">
+                                 <#list listaComentarios as comentario>
+                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
+                                     </div>
+                                     <div class="card-body">${comentario.getComentario()}</div>
+                                 <#else>
+                                No hay comentarios
+                                 </#list>
+
+                            </div>
+
+                            <br>
+                            <hr/>
+                            <header>
+                                <h3>Deja tu opinión</h3>
+                            </header>
+                            <form action="/articulo/${articulo.getId()}" method="post" class="commenting-form">
+                                <div class="row">
+
+                                    <div class="form-group col-md-12">
+                                        <textarea name="commentbody" id="commentbody" placeholder="Escriba su comentario..." class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <button type="submit" class="btn btn-secondary">Enviar</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <#else>
+                            <header>
+
+                                <h3 class="h6">Comentarios<span class="no-of-comments">(${cantidadcomentarios})</span></h3>
+                            </header>
+
+                            <div class="card">
+                                 <#list listaComentarios as comentario>
+                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
+                                     </div>
+                                     <div class="card-body">${comentario.getComentario()}</div>
+                                 <#else>
+                                No hay comentarios
+                                 </#list>
+                            </div>
+
+                            <br>
+                            <hr/>
+
+                                                    </#if>
+
+
+
 
 
 
         </main>
-
     </div>
+
 
 <br>
 
@@ -188,7 +279,7 @@
 <script src="/js/front.js"></script>
 </body>
 
-<footer class="main-footer bg-dark text-white" style="position:fixed;height:32px;width:100%;bottom:0;">
+<footer class="main-footer bg-dark text-white" style="margin-top:50px;position:fixed;height:32px;width:100%;bottom:0;">
     <div class="container">
 
         <p>&copy; 2018. Blog de Ricardo y Emilio.</p>

@@ -49,7 +49,7 @@
 
             <#elseif autenticado == true && admin == true>
 
-
+                <li>
                <div class="navbar-nav nav dropdown ">
                    <a class="nav-item text-white dropdown-toggle" id="dropdownMenuButton" href="#" data-toggle="dropdown">
                        Herramientas
@@ -60,9 +60,10 @@
                        <a class="dropdown-item" href="/usuarios">Gestión de Usuarios</a>
                        <a class="dropdown-item" href="/logout">Cerrar Sesión</a>
                    </div>
-               </div>
+               </div></li>
 
                  <#elseif autenticado == true && autor == true>
+                 <li>
                   <div class="navbar-nav nav dropdown ">
                       <a class="nav-item text-white dropdown-toggle" id="dropdownMenuButton" href="#" data-toggle="dropdown">
                           Herramientas
@@ -71,8 +72,9 @@
                           <a class="dropdown-item" href="/articulos">Gestión de Artículos</a>
                           <a class="dropdown-item" href="/logout">Cerrar Sesión</a>
                       </div>
-                  </div>
+                  </div></li>
                  <#elseif autenticado == true && autor == false && admin == false>
+                 <li>
                   <div class="navbar-nav nav dropdown ">
                       <a class="nav-item text-white dropdown-toggle" id="dropdownMenuButton" href="#" data-toggle="dropdown">
                           Herramientas
@@ -80,12 +82,14 @@
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
                           <a class="dropdown-item" href="/logout">Cerrar Sesión</a>
                       </div>
-                  </div>
+                  </div></li>
 
 
             </#if>
-                <li><div id="navbarcollapse" class="text-white navbar-nav nav navbar-right">
-                     Bienvenido, ${usuariodentro}
+                <li style="margin-left:75rem"><div id="navbarcollapse" class="text-white nav navbar-nav">
+                     Bienvenido,
+                <br>
+                ${usuariodentro}
 
                 </div></li>
                 </ul>
@@ -153,7 +157,7 @@
                                      <input type="password" class="form-control input-sm" placeholder="Contraseña" id="password" name="password"></div>
                        <div class="checkbox">
                        <label>
-                       <input type="checkbox" id="remember" name="remember" value="true" checked> Recordarme
+                       <input type="checkbox" id="remember" name="remember" value="remember"> Recordarme
                        </label>
                          </div>
 

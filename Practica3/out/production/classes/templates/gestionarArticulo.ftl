@@ -132,7 +132,7 @@
             <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
                     href="/articulos/editar/${articulo.getId()}" >Modificar</a></button>
             <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
-                    href="/articulos/eliminar/${articulo.getId()}">Eliminar</a></button>
+                    href="/articulos/borrar/${articulo.getId()}">Eliminar</a></button>
                 </div>
             </td>
     </tr>

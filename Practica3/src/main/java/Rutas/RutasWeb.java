@@ -8,6 +8,7 @@ import encapsulacion.Articulo;
 import encapsulacion.Comentario;
 import encapsulacion.Etiqueta;
 import encapsulacion.Usuario;
+import org.jasypt.util.text.StrongTextEncryptor;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import spark.ModelAndView;
@@ -32,7 +33,8 @@ import static spark.Spark.*;
 public class RutasWeb {
 
     public RutasWeb(final FreeMarkerEngine freeMarkerEngine) {
-
+        StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
+        textEncryptor.setPassword("blog");
         Sql2oUsuarioDao usuarioDao;
         Sql2oArticuloDao articuloDao;
         Sql2oComentarioDao comentarioDao;
@@ -59,13 +61,15 @@ public class RutasWeb {
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             boolean autenticado = false;
+            boolean autenticado2 = false;
+            QueryParamsMap map2 = request.queryMap();
             boolean admin=false;
             boolean autor=false;
 
 
 
-
-            if(request.session().attribute("username") != null){
+            if(request.cookie("username")!=null){autenticado2=true;}
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
                 autenticado = true;
 
 
@@ -87,6 +91,21 @@ public class RutasWeb {
                 attributes.put("autenticado", autenticado);
                 attributes.put("articulos", articulos);}
 
+                else if(autenticado2 == true){
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+                autor=user.isAutor();
+                admin=user.isAdministrator();
+
+                List<Articulo> articulos = articuloDao.getAll();
+                attributes.put("autor", autor);
+                attributes.put("usuariodentro",user.getNombre());
+                attributes.put("admin", admin);
+                attributes.put("autenticado", autenticado2);
+                attributes.put("articulos", articulos);
+
+            }
+
                 else {
                 List<Articulo> articulos = articuloDao.getAll();
                 attributes.put("usuariodentro", "Huesped");
@@ -106,20 +125,31 @@ public class RutasWeb {
             boolean autenticado = false;
             boolean admin=false;
             boolean autor=false;
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
 
-
-
-
-            if(request.session().attribute("username") != null){
-                autenticado = true;
+                autor = user.isAutor();
+                admin = user.isAdministrator();
 
             }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
+                autenticado = true;
+                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+            }
+
+
 
 
 
             if(autenticado == true) {
 
                     response.redirect("/");}
+
 
             else {
                 attributes.put("autor", false);
@@ -144,11 +174,12 @@ public class RutasWeb {
                 QueryParamsMap map2 = request.queryMap();
                 Session session = request.session();
                 session.attribute("username", map2.get("username").value());
-                session.maxInactiveInterval(604800);
-                if(!remember.isEmpty()){
+                session.maxInactiveInterval(900);
 
-                    response.cookie("username", map2.get("username").value(), 604800);
-                    response.redirect("/");
+                if(remember.equals("remember")){
+                    response.cookie("username",textEncryptor.encrypt(map2.get("username").value()), 604800);
+                    request.cookie("username");
+
                 }
 
                 List<Articulo> articulos = articuloDao.getAll();
@@ -156,7 +187,9 @@ public class RutasWeb {
                 attributes.put("usuariodentro",user.getNombre());
                 attributes.put("admin", user.isAdministrator());
                 attributes.put("autenticado", true);
-                attributes.put("articulos", articulos);}
+                attributes.put("articulos", articulos);
+                response.redirect("/");
+            }
 
             else{
                 List<Articulo> articulos = articuloDao.getAll();
@@ -174,6 +207,7 @@ public class RutasWeb {
         get("/logout", (request,response) ->{
             Session session = request.session();
             session.removeAttribute("username");
+            response.removeCookie("username");
             response.redirect("/");
 
             Map<String, Object> attributes = new HashMap<>();
@@ -192,8 +226,16 @@ public class RutasWeb {
             boolean autenticado = false;
             boolean autor = false;
             boolean admin = false;
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
 
-            if(request.session().attribute("username") != null) {
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
                 autenticado = true;
                 Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
 
@@ -231,23 +273,28 @@ public class RutasWeb {
 
         }, freeMarkerEngine);
 
+
+
+
+
+
+
+
         post("/articulo/:id", (request, response) -> {
             boolean autenticado=false;
-
-
-
-            if(request.session().attribute("username") != null){
-                autenticado = true;
-
-            }
-
-
             QueryParamsMap map = request.queryMap();
             Long id = Long.parseLong(request.params("id"));
             System.out.println(request.params("id"));
             Usuario usuario = new Usuario();
-            Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(sql2o);
-            usuario = sql2oUsuarioDao.searchByUsername(request.session().attribute("username"));
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+            usuario = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+
+            }
+            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
+            autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
 
             Comentario comentario = new Comentario();
             comentario.setAutorid(usuario.getId());
@@ -271,15 +318,17 @@ public class RutasWeb {
                     boolean autor=false;
 
 
-                   if(request.session().attribute("username") != null){
-                       autenticado = true;
-                       Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
-
-                       autor=user.isAutor();
-                       admin=user.isAdministrator();
+                   Usuario usuario = new Usuario();
+                   Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(sql2o);
+                   if(request.cookie("username")!=null)
+                   {autenticado=true;
+                       usuario = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
 
 
                    }
+                   else if(sql2oUsuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
+                       usuario = sql2oUsuarioDao.searchByUsername(request.session().attribute("username"));}
+
 
 
 
@@ -301,7 +350,18 @@ public class RutasWeb {
             articulo.setTitulo(map.get("titulo").value());
             articulo.setCuerpo(map.get("cuerpo").value());
             String etiquetas = (map.get("etiqueta").value());
-            articulo.setAutor(usuarioDao.searchByUsername(request.session().attribute("username")).getId());
+            Usuario usuario = new Usuario();
+            Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(sql2o);
+            if(request.cookie("username")!=null)
+            {
+                usuario = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+
+            }
+            else if(sql2oUsuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
+                usuario = sql2oUsuarioDao.searchByUsername(request.session().attribute("username"));}
+
+            articulo.setAutor(usuario.getId());
             List<Etiqueta> etiq = new ArrayList<Etiqueta>();
             articulo.setFecha( new Date(new java.util.Date().getTime()));
 //            for(String eti : etiquetas.split(",")) {
@@ -346,14 +406,21 @@ public class RutasWeb {
             boolean autor=false;
 
 
-            if(request.session().attribute("username") != null){
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
                 autenticado = true;
                 Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
 
-                autor=user.isAutor();
-                admin=user.isAdministrator();
-
-
+                autor = user.isAutor();
+                admin = user.isAdministrator();
             }
 
             Articulo articulo = articuloDao.findOne(idarticulo);;
@@ -414,14 +481,21 @@ public class RutasWeb {
             boolean autor=false;
 
 
-            if(request.session().attribute("username") != null){
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
                 autenticado = true;
                 Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
 
-                autor=user.isAutor();
-                admin=user.isAdministrator();
-
-
+                autor = user.isAutor();
+                admin = user.isAdministrator();
             }
 
             attributes.put("usuarios", usuarioDao.getAll());
@@ -440,14 +514,21 @@ public class RutasWeb {
             boolean autor=false;
 
 
-            if(request.session().attribute("username") != null){
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
                 autenticado = true;
                 Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
 
-                autor=user.isAutor();
-                admin=user.isAdministrator();
-
-
+                autor = user.isAutor();
+                admin = user.isAdministrator();
             }
 
             attributes.put("articulos", articuloDao.getAll());
@@ -468,14 +549,21 @@ public class RutasWeb {
             boolean autor=false;
 
 
-            if(request.session().attribute("username") != null){
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
                 autenticado = true;
                 Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
 
-                autor=user.isAutor();
-                admin=user.isAdministrator();
-
-
+                autor = user.isAutor();
+                admin = user.isAdministrator();
             }
 
             attributes.put("autor", autor);
@@ -535,14 +623,21 @@ public class RutasWeb {
             boolean autor=false;
 
 
-            if(request.session().attribute("username") != null){
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
                 autenticado = true;
                 Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
 
-                autor=user.isAutor();
-                admin=user.isAdministrator();
-
-
+                autor = user.isAutor();
+                admin = user.isAdministrator();
             }
 
             Long idusuario = Long.parseLong(request.params("id"));
@@ -604,14 +699,21 @@ public class RutasWeb {
             boolean autor=false;
 
 
-            if(request.session().attribute("username") != null){
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+                autor = user.isAutor();
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
                 autenticado = true;
                 Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
 
-                autor=user.isAutor();
-                admin=user.isAdministrator();
-
-
+                autor = user.isAutor();
+                admin = user.isAdministrator();
             }
             attributes.put("comentarios", comentarioDao.getAll());
             attributes.put("autenticado", autenticado);
@@ -637,6 +739,177 @@ public class RutasWeb {
             return null;
 
         },freeMarkerEngine);
+
+
+        before("/articulos/nuevo/:id", (request, response) ->{
+
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!(user.isAdministrator() || user.isAutor())){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/articulos/editar/:id", (request, response) ->{
+
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!(user.isAdministrator() || user.isAutor())){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/articulos/borrar/:id", (request, response) ->{
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!(user.isAdministrator() || user.isAutor())){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/articulos", (request, response) ->{
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                 user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!(user.isAdministrator() || user.isAutor())){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/usuarios", (request, response) ->{
+
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/usuarios/nuevo/:id", (request, response) ->{
+
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/usuarios/editar/:id", (request, response) ->{
+
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/usuarios/borrar/:id", (request, response) ->{
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+
+
+
 
 
 

@@ -125,12 +125,12 @@
 
             <div class="form-group">
                 <label for="cuerpo">Cuerpo</label>
-                <textarea type="text"
+                <input type="text"
                        class="form-control"
                        id="cuerpo"
                        name="cuerpo"
-                       placeholder=""
-                          value="${articulos.getCuerpo()}"></textarea>
+                          cols="40" rows="50"
+                          value="${articulos.getCuerpo()}"></input>
             </div>
 
 
@@ -138,7 +138,7 @@
 
 
             <div class="modal-footer">
-            <button type="submit" class="btn btn-default" style="border-color: lightgray"><a href="/editar/articulos">Volver</a></button>
+            <button type="submit" class="btn btn-default" style="border-color: lightgray"><a href="/articulos">Volver</a></button>
             <button type="submit" class="btn btn-default" style="border-color: lightgray">Guardar cambios</button>
             </div>
         </form>
@@ -186,12 +186,12 @@
 
 
     <!-- JavaScript files-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-    <script src="vendor/@fancyapps/fancybox/jquery.fancybox.min.js"></script>
-    <script src="js/front.js"></script>
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="/vendor/@fancyapps/fancybox/jquery.fancybox.min.js"></script>
+    <script src="/js/front.js"></script>
     </body>
         <footer class="main-footer bg-dark text-white" style="position:fixed;height:32px;width:100%;bottom:0;">
             <div class="container">

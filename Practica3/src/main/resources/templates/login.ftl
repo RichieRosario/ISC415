@@ -115,7 +115,7 @@
                         <input type="password" class="form-control input-sm" placeholder="Contraseña" id="password" name="password"></div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" id="remember" name="remember" value="true" checked> Recordarme
+                            <input type="checkbox" id="remember" name="remember" value="remember" checked> Recordarme
                         </label>
                     </div>
 
