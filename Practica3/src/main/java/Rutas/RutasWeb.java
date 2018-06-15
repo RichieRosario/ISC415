@@ -2,6 +2,7 @@ package Rutas;
 
 
 import com.google.gson.Gson;
+import com.sun.org.apache.xerces.internal.xs.ShortList;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import dao.*;
 import encapsulacion.Articulo;
@@ -18,10 +19,7 @@ import sun.nio.cs.US_ASCII;
 
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 import javax.servlet.http.Cookie;
@@ -212,11 +210,14 @@ public class RutasWeb {
             Articulo articulo = articuloDao.findOne(id);
 
             List<Comentario> listaComentarios = articuloDao.obtenerComentarios(id);
-            List<Etiqueta> etiquetas = etiquetaDao.getAll();
+            List<Etiqueta> etiquetas = new ArrayList<Etiqueta>();
 
+            List<Long> etiquetasids = articuloDao.obtenerEtiquetas(id);
 
+            for(Long ideti : etiquetasids){
+                    etiquetas.add(etiquetaDao.findOne(ideti));
+            }
             int cantidadcomentarios = listaComentarios.size();
-
 
             attributes.put("cantidadcomentarios", cantidadcomentarios);
             attributes.put("admin", admin);
@@ -296,37 +297,45 @@ public class RutasWeb {
 
             QueryParamsMap map = request.queryMap();
 
+            Long id;
 
             Articulo articulo = new Articulo();
             articulo.setTitulo(map.get("titulo").value());
             articulo.setCuerpo(map.get("cuerpo").value());
-            String etiquetas = (map.get("etiqueta").value());
             articulo.setAutor(usuarioDao.searchByUsername(request.session().attribute("username")).getId());
-            List<Etiqueta> etiq = new ArrayList<Etiqueta>();
             articulo.setFecha( new Date(new java.util.Date().getTime()));
-//            for(String eti : etiquetas.split(",")) {
-//                System.out.println(eti);
-                  Etiqueta etiqueta = new Etiqueta();
-//                etiqueta.setEtiqueta(eti);
-//                etiquetaDao.add(etiqueta);
-//            }
-            int size = etiquetaDao.getAll().size();
-            Long size2 = Long.parseLong(String.valueOf(size));
 
-            for (String eti : etiquetas.split(",")) {
-                etiq.add(new Etiqueta(size2, eti));
+            String etiquetas = (map.get("etiqueta").value());
 
-            }
+            List<Etiqueta> etiq = new ArrayList<Etiqueta>();
 
-            for(int i = size + 1; i < etiq.size(); i++){
+            String[] ets = etiquetas.split(",");
 
-                Long itmp = Long.parseLong(String.valueOf(i));
-                etiqueta.setId(itmp);
-                etiqueta.setEtiqueta(etiq.get(i).getEtiqueta());
+         //   Long size2 = Long.parseLong(String.valueOf(size));
+
+
+            for(String etiquet : etiquetas.split(",")){
+
+                UUID uuid1 = UUID.randomUUID();
+                Long key = uuid1.getMostSignificantBits();
+                Etiqueta etiqueta = new Etiqueta();
+                etiqueta.setId(key);
+                etiqueta.setEtiqueta(etiquet);
                 etiquetaDao.add(etiqueta);
+                etiq.add(new Etiqueta(key, etiquet));
+                System.out.println(key);
             }
+
+
+           Etiqueta etiqueta = new Etiqueta();
             articulo.setEtiquetas(etiq);
-            articuloDao.add(articulo);
+            Long idarticulo = articuloDao.add(articulo);
+
+
+            for(Etiqueta et : etiq){
+
+                articuloDao.addTablaIntermedia(idarticulo, et);
+            }
 
 
 
@@ -450,10 +459,26 @@ public class RutasWeb {
 
             }
 
-            attributes.put("articulos", articuloDao.getAll());
+
+            List<Articulo> articulos = articuloDao.getAll();
+
+            for(Articulo articulo : articulos){
+                List<Etiqueta> etiquetas = new ArrayList<Etiqueta>();
+
+                List<Long> etiquetasids = articuloDao.obtenerEtiquetas(articulo.getId());
+
+                for(Long ideti : etiquetasids){
+                    etiquetas.add(etiquetaDao.findOne(ideti));
+                }
+                articulo.setEtiquetas(etiquetas);
+            }
+
+            attributes.put("articulos", articulos);
             attributes.put("autenticado", autenticado);
             attributes.put("admin", admin);
             attributes.put("autor", autor);
+
+
 
 
             return new ModelAndView(attributes, "gestionarArticulo.ftl");
