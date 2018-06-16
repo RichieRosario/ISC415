@@ -68,10 +68,9 @@ public class RutasWeb {
 
             if(request.cookie("username")!=null){
                 autenticado=true;
-                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
-                autor = user.isAutor();
-                admin=user.isAdministrator();
-
+                 user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+                 autor = user.isAutor();
+                 admin=user.isAdministrator();
             }
             else if(request.session().attribute("username") != null && request.cookie("username")==null){
                 user = usuarioDao.searchByUsername(request.session().attribute("username"));
@@ -98,7 +97,8 @@ public class RutasWeb {
 
 
 
-            else {
+
+                else {
                 List<Articulo> articulos = articuloDao.getAll();
                 attributes.put("usuariodentro", "Huesped");
                 attributes.put("autor", false);
@@ -603,8 +603,7 @@ public class RutasWeb {
             usuario.setUsername(map.get("username").value());
             usuario.setNombre(map.get("nombre").value());
             usuario.setPassword(map.get("password").value());
-
-            System.out.println(request.queryParams("rol"));
+            if(request.queryParams("rol")!=null){
             if(request.queryParams("rol").equals( "administrator")){
 
                 usuario.setAdministrator(true);
@@ -616,7 +615,7 @@ public class RutasWeb {
 
                 usuario.setAdministrator(false);
                 usuario.setAutor(true);
-            }
+            }}
 
             else{
                 usuario.setAdministrator(false);
