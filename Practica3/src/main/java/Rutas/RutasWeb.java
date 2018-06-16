@@ -60,17 +60,24 @@ public class RutasWeb {
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             boolean autenticado = false;
-            boolean autenticado2 = false;
             QueryParamsMap map2 = request.queryMap();
             boolean admin=false;
             boolean autor=false;
+            Usuario user = new Usuario();
 
 
+            if(request.cookie("username")!=null){
+                autenticado=true;
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+                autor = user.isAutor();
+                admin=user.isAdministrator();
 
-            if(request.cookie("username")!=null){autenticado2=true;}
+            }
             else if(request.session().attribute("username") != null && request.cookie("username")==null){
-                autenticado = true;
-
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+                autenticado=true;
+                autor = user.isAutor();
+                admin=user.isAdministrator();
 
             }
 
@@ -78,7 +85,6 @@ public class RutasWeb {
 
             if(autenticado == true) {
 
-                Usuario user = usuarioDao.searchByUsername(request.session().attribute("username"));
 
                 autor=user.isAutor();
                 admin=user.isAdministrator();
@@ -90,22 +96,9 @@ public class RutasWeb {
                 attributes.put("autenticado", autenticado);
                 attributes.put("articulos", articulos);}
 
-                else if(autenticado2 == true){
-                Usuario user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
 
-                autor=user.isAutor();
-                admin=user.isAdministrator();
 
-                List<Articulo> articulos = articuloDao.getAll();
-                attributes.put("autor", autor);
-                attributes.put("usuariodentro",user.getNombre());
-                attributes.put("admin", admin);
-                attributes.put("autenticado", autenticado2);
-                attributes.put("articulos", articulos);
-
-            }
-
-                else {
+            else {
                 List<Articulo> articulos = articuloDao.getAll();
                 attributes.put("usuariodentro", "Huesped");
                 attributes.put("autor", false);

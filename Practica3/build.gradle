@@ -21,5 +21,4 @@ dependencies {
     compile 'com.sparkjava:spark-template-freemarker:2.7.1'
     compile "org.slf4j:slf4j-simple:1.7.21"
     compile "org.jasypt:jasypt:1.9.2"
-
 }
