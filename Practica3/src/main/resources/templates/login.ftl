@@ -77,7 +77,7 @@
                       <a class="nav-item text-white dropdown-toggle" id="dropdownMenuButton" href="#" data-toggle="dropdown">
                           Herramientas
                       </a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                       <a class="dropdown-item" href="/logout">Cerrar Sesión</a>
                   </div>
                   </div>

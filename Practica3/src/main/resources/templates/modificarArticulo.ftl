@@ -77,7 +77,7 @@
                       <a class="nav-item text-white dropdown-toggle" id="dropdownMenuButton" href="#" data-toggle="dropdown">
                           Herramientas
                       </a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                       <a class="dropdown-item" href="/logout">Cerrar Sesión</a>
                   </div>
                   </div>
@@ -93,7 +93,7 @@
 
     <div class="container-fluid">
         <div class="modal-body">
-        <form class="form" method="POST" action="/editar/articulos/${articulos.getId()}">
+        <form class="form" method="POST" action="/articulos/editar/${articulos.getId()}">
             <div class="form-group">
                 <label for="id">ID</label>
                 <input id="id"
