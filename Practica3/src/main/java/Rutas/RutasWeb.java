@@ -12,6 +12,7 @@ import encapsulacion.Usuario;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
+import servicios.Hash;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Session;
@@ -168,7 +169,7 @@ public class RutasWeb {
             String password = request.queryParams("password") != null ? request.queryParams("password") : "";
             String remember = request.queryParams("remember") != null ? request.queryParams("remember") : "";
             Usuario user = usuarioDao.searchByUsername(username);
-            if( user.getUsername().equals(username) && user.getPassword().equals(password)){
+            if( user.getUsername().equals(username) && user.getPassword().equals(Hash.sha1(password))){
                 QueryParamsMap map2 = request.queryMap();
                 Session session = request.session();
                 session.attribute("username", map2.get("username").value());

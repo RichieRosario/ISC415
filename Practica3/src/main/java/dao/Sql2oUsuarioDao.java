@@ -3,6 +3,7 @@ package dao;
 import encapsulacion.Usuario;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
+import servicios.Hash;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Sql2oUsuarioDao implements UsuariosDao{
 
                 .addParameter("username", usuario.getUsername())
                 .addParameter("nombre", usuario.getNombre())
-                .addParameter("password", usuario.getPassword())
+                .addParameter("password", Hash.sha1(usuario.getPassword()))
                 .addParameter("administrator", usuario.isAdministrator())
                 .addParameter("autor", usuario.isAutor())
                 .executeUpdate()
