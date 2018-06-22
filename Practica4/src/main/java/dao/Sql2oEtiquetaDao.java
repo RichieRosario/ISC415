@@ -44,6 +44,15 @@ public class Sql2oEtiquetaDao implements EtiquetaDao {
     }
 
     @Override
+    public Etiqueta searchByTag(String tag) {
+        Connection  con = sql2o.open();
+
+        return con.createQuery("SELECT * FROM etiquetas WHERE etiqueta = :etiqueta")
+                .addParameter("etiqueta", tag)
+                .executeAndFetchFirst(Etiqueta.class);
+    }
+
+    @Override
     public List<Etiqueta> getAll() {
 
         Connection con = sql2o.open();

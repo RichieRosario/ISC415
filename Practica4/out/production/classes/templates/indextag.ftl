@@ -103,14 +103,14 @@
 
                 <br>
             <div class="container justify-content-center">
-          <h2 >Últimas Entradas</h2></div>
+          <h2 >Entradas con la etiqueta ${etiqueta}</h2></div>
             <hr/>
 
-                <div class=" mt-auto justify-content-center align-content-center">
+                <div class="card-deck mt-auto justify-content-center">
                 <#list articulos as articulo>
-                <center><div class="row">
+                <div class="row">
                     <div class="container">
-                <div class="card my-4" style="width:720px">
+                <div class="card my-4" style="width:480px">
                  <div class="card-header"><h3 class="d-inline">${articulo.getTitulo()}</h3>
                  </div>
                   <div class="card-body text-muted d-inline-block">${articulo.getResumen()}
@@ -123,29 +123,58 @@
                       </div>
                   </div>
                 </div>
-                    </div></center>
+                    </div>
 
                     <#else>
-                    <center><p>No hay entradas..</p></center>
+                    <p>No hay entradas..</p>
                 <br>
               </#list>
                 </div>
 
-<p>
-    <div class="container modal-footer">
-<#if 1 <= (paginaactual-1)>
-<a href="/page/${paginaactual-1}" class="form-inline">Anterior</a>
-    </#if>
-        <a class="form-inline">${paginaactual}</a>
-    <#if (paginaactual) < maxpage>
-        <a href="/page/${paginaactual+1}" class="form-inline">Siguiente</a>
-    </#if>
-    </div>
-    </p>
+
+
 
     
     <!-- Page Footer-->
 
+
+    <div id="loginModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h4>Iniciar Sesión</h4>
+                <button type="button" class="close" data-dismiss="modal"> &times;</button>
+                
+            </div>
+            <div class="modal-body">
+                   <form class="form" action="/" method="post">
+                   <div class="form-group">
+                       <label class="sr-only" for="username">Usuario</label><input type="text" class="form-control input-sm" placeholder="Usuario" id="username" name="username">
+                       </div>
+                        <div class="form-group">  
+                          
+                           <label class="sr-only" for="password">Contraseña</label>
+                                     <input type="password" class="form-control input-sm" placeholder="Contraseña" id="password" name="password"></div>
+                       <div class="checkbox">
+                       <label>
+                       <input type="checkbox" id="remember" name="remember" value="remember"> Recordarme
+                       </label>
+                         </div>
+
+
+                         <div class="modal-footer">
+                       <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">Cancel</button> 
+                       <button type="submit" class="btn btn-info btn-xs">Sign in</button>
+                    </div>
+                   
+                     
+               
+                    </form>
+            </div>
+
+        </div>
+        </div>
+    </div>
 
 
 

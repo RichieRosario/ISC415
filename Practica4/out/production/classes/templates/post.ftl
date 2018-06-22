@@ -115,11 +115,19 @@
                             ${articulo.getCuerpo()}
                         </div>
                 <br>
+            <div class="post-ratings">
+
+                <i class="fa fa-thumbs-up text-green" style="color:green">Me divierte</i>(5)
+                <i class="fa fa-thumbs-down text-red" style="color:red">Me aborrece</i>(0)
+            </div>
                 <br>
-                        <div class="post-tags">
+
+
+
+            <div class="post-tags">
                             <p>Etiquetas:</p>
                        <#list etiquetas as etiqueta>
-                           ${etiqueta.getEtiqueta()}
+                           <a href="/etiqueta/${etiqueta.getEtiqueta()}">${etiqueta.getEtiqueta()}</a>
                        <#else>
                                 No hay etiquetas
                        </#list>
@@ -136,6 +144,9 @@
                                  <#list listaComentarios as comentario>
                                      <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
                                          <a href="/comentarios/borrar/${comentario.getId()}"><button type="button" class="close" data-dismiss="modal"> &times;</button></a>
+                                         <i class="fa fa-thumbs-up text-green" style="color:green"></i>(0)
+                                         <i class="fa fa-thumbs-down text-red" style="color:red"></i>(2)
+
                                      </div>
                                      <div class="card-body">${comentario.getComentario()}</div>
                                  <#else>
@@ -169,6 +180,9 @@
                             <div class="card">
                                  <#list listaComentarios as comentario>
                                      <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
+                                         <i class="fa fa-thumbs-up text-green" style="color:green"></i>(0)
+                                         <i class="fa fa-thumbs-down text-red" style="color:red"></i>(2)
+
                                          <a href="comentarios/borrar/${comentario.getId()}"><button type="button" class="close" data-dismiss="modal"> &times;</button></a>
                                      </div>
                                      <div class="card-body">${comentario.getComentario()}</div>
@@ -237,6 +251,9 @@
                             <div class="card">
                                  <#list listaComentarios as comentario>
                                      <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
+                                         <i class="fa fa-thumbs-up text-green" style="color:green"></i>(0)
+                                         <i class="fa fa-thumbs-down text-red" style="color:red"></i>(2)
+
                                      </div>
                                      <div class="card-body">${comentario.getComentario()}</div>
                                  <#else>

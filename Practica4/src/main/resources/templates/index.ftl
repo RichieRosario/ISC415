@@ -9,16 +9,16 @@
     <meta name="robots" content="all,follow">
 
     <!-- Bootstrap CSS-->
-      <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.css">
+      <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.css">
 
     <!-- Font Awesome CSS-->
-    <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
     <!-- Custom icon font-->
-    <link rel="stylesheet" href="css/fontastic.css">
+    <link rel="stylesheet" href="/css/fontastic.css">
     <!-- Google fonts - Open Sans-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
     <!-- Fancybox-->
-    <link rel="stylesheet" href="vendor/@fancyapps/fancybox/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="/vendor/@fancyapps/fancybox/jquery.fancybox.min.css">
 
 
 
@@ -30,7 +30,7 @@
   <body>
 
     <!-- Hero Section-->
-    <section style="background: url(img/hero.jpg); background-size: cover; background-position: center center; height:240px">
+    <section style="background: url(/img/hero.jpg); background-size: cover; background-position: center center; height:240px">
 
         <nav class="navbar navbar-expand-lg bg-transparent position-fixed">
 
@@ -106,11 +106,11 @@
           <h2 >Últimas Entradas</h2></div>
             <hr/>
 
-                <div class="card-deck mt-auto justify-content-center">
+                <div class=" mt-auto justify-content-center align-content-center">
                 <#list articulos as articulo>
-                <div class="row">
+                <center><div class="row">
                     <div class="container">
-                <div class="card my-4" style="width:480px">
+                <div class="card my-4" style="width:720px">
                  <div class="card-header"><h3 class="d-inline">${articulo.getTitulo()}</h3>
                  </div>
                   <div class="card-body text-muted d-inline-block">${articulo.getResumen()}
@@ -123,68 +123,39 @@
                       </div>
                   </div>
                 </div>
-                    </div>
+                    </div></center>
 
                     <#else>
-                    <p>No hay entradas..</p>
+                    <center><p>No hay entradas..</p></center>
                 <br>
               </#list>
                 </div>
 
-
-
+<p>
+    <div class="container modal-footer">
+<#if 1 <= (paginaactual-1)>
+<a href="/page/${paginaactual-1}" class="form-inline">Anterior</a>
+    </#if>
+        <a class="form-inline">${paginaactual}</a>
+    <#if (paginaactual) < maxpage>
+        <a href="/page/${paginaactual+1}" class="form-inline">Siguiente</a>
+    </#if>
+    </div>
+    </p>
 
     
     <!-- Page Footer-->
 
 
-    <div id="loginModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-              <h4>Iniciar Sesión</h4>
-                <button type="button" class="close" data-dismiss="modal"> &times;</button>
-                
-            </div>
-            <div class="modal-body">
-                   <form class="form" action="/" method="post">
-                   <div class="form-group">
-                       <label class="sr-only" for="username">Usuario</label><input type="text" class="form-control input-sm" placeholder="Usuario" id="username" name="username">
-                       </div>
-                        <div class="form-group">  
-                          
-                           <label class="sr-only" for="password">Contraseña</label>
-                                     <input type="password" class="form-control input-sm" placeholder="Contraseña" id="password" name="password"></div>
-                       <div class="checkbox">
-                       <label>
-                       <input type="checkbox" id="remember" name="remember" value="remember"> Recordarme
-                       </label>
-                         </div>
-
-
-                         <div class="modal-footer">
-                       <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">Cancel</button> 
-                       <button type="submit" class="btn btn-info btn-xs">Sign in</button>
-                    </div>
-                   
-                     
-               
-                    </form>
-            </div>
-
-        </div>
-        </div>
-    </div>
-
 
 
     <!-- JavaScript files-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-    <script src="vendor/@fancyapps/fancybox/jquery.fancybox.min.js"></script>
-    <script src="js/front.js"></script>
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="/vendor/@fancyapps/fancybox/jquery.fancybox.min.js"></script>
+    <script src="/js/front.js"></script>
   </body>
 
   <footer class="main-footer bg-dark text-white" style="position:fixed;height:32px;width:100%;bottom:0;">

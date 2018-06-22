@@ -25,6 +25,8 @@ public interface ArticuloDao {
 
     List<Long> obtenerEtiquetas(Long id);
 
+    List<String> obtenerEtiquetas2(Long id);
+
     Usuario searchById(Long id);
 
 }

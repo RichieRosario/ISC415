@@ -91,10 +91,13 @@ public class Sql2oArticuloDao implements ArticuloDao {
 
         String sql = "DELETE from articulos WHERE id=:id";
         String sql2 = "DELETE from comentarios c WHERE c.articuloId = :id" ;
+        String sql3 = "DELETE from articulos_etiquetas d WHERE d.articuloId=:id";
 
         try (Connection con = sql2o.beginTransaction()) {
+            con.createQuery(sql3).addParameter("id", id).executeUpdate();
             con.createQuery(sql2).addParameter("id", id).executeUpdate();
             con.createQuery(sql).addParameter("id", id).executeUpdate();
+
             con.commit();
         }
     }
@@ -117,6 +120,18 @@ public class Sql2oArticuloDao implements ArticuloDao {
             return con.createQuery(sql)
                     .addParameter("articuloId", articuloId)
                      .executeAndFetch(Long.class);
+        }
+
+    }
+
+    public List<String> obtenerEtiquetas2(Long articuloId){
+
+        String sql = "SELECT etiquetaId FROM articulos_etiquetas WHERE articuloId = :articuloId";
+
+        try(Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("articuloId", articuloId)
+                    .executeAndFetch(String.class);
         }
 
     }

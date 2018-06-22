@@ -9,6 +9,8 @@ public interface EtiquetaDao{
 
     Etiqueta findOne(Long id);
 
+    Etiqueta searchByTag(String tag);
+
     List<Etiqueta> getAll();
 
     void update(Etiqueta etiqueta);
