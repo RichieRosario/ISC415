@@ -43,18 +43,18 @@ public class RutasWeb {
 
         Sql2o sql2o = new Sql2o( "jdbc:h2:~/blog", "", "");
 
-        usuarioDao = new Sql2oUsuarioDao(sql2o);
-        articuloDao = new Sql2oArticuloDao(sql2o);
-        comentarioDao = new Sql2oComentarioDao(sql2o);
-        etiquetaDao = new Sql2oEtiquetaDao(sql2o);
+        usuarioDao = new Sql2oUsuarioDao(Usuario.class);
+        articuloDao = new Sql2oArticuloDao(Articulo.class);
+        comentarioDao = new Sql2oComentarioDao(Comentario.class);
+        etiquetaDao = new Sql2oEtiquetaDao(Etiqueta.class);
 
-        conn = sql2o.open();
+//        conn = sql2o.open();
 
-//       Usuario usuarioPorDefecto = new Usuario(1L, "admin", null, "admin", true, true);
+//       Usuario usuarioPorDefecto = new Usuario(1L, "admin", null, Hash.sha1("admin"), true, true);
 //        usuarioDao.add(usuarioPorDefecto);
-//
-//        Articulo articuloPrueba = new Articulo(1L, "Lebron James", "Simplemente el mejor del mundo, sin discusion.", usuarioPorDefecto.getId(),  new Date(new java.util.Date().getTime()), null, null);
-//                articuloDao.add(articuloPrueba);
+
+    //        Articulo articuloPrueba = new Articulo(1L, "Lebron James", "Simplemente el mejor del mundo, sin discusion.", usuarioPorDefecto.getId(),  new Date(new java.util.Date().getTime()), null, null);
+    //                articuloDao.add(articuloPrueba);
 
 
         int perpage = 5;
@@ -206,21 +206,22 @@ public class RutasWeb {
             Etiqueta etiquetaobj = etiquetaDao.searchByTag(etiqueta);
             List<Articulo> articulosetiqueta = new ArrayList<Articulo>();
             for(Articulo articulo : articulosglob){
-
-                List<Long> etiquetasids = articuloDao.obtenerEtiquetas(articulo.getId());
-                List<String> etiquetas = new ArrayList<>();
-                for(Long lid : etiquetasids){
-                    etiquetas.add(etiquetaDao.findOne(lid).getEtiqueta());
-                }
-
-                for(String st : etiquetas){
-                    if(etiquetaobj.getEtiqueta().equals(st)){
+//                List<Long> etiquetasids = articuloDao.obtenerEtiquetas(articulo.getId());
+//                List<String> etiquetas = new ArrayList<>();
+//                for(Long lid : etiquetasids){
+//                    etiquetas.add(etiquetaDao.findOne(lid).getEtiqueta());
+//                }
+//
+//                for(String st : etiquetas){
+//                    if(etiquetaobj.getEtiqueta().equals(st)){
+//                        articulosetiqueta.add(articulo);
+//                    }
+//                }
+                for(Etiqueta etiqueta1 : articulo.getEtiquetas()){
+                    if(etiqueta1.getEtiqueta().equals(etiqueta)){
                         articulosetiqueta.add(articulo);
                     }
                 }
-
-
-
             }
             Usuario user = new Usuario();
             int maxpage = articulosglob.size()/5;
@@ -256,7 +257,7 @@ public class RutasWeb {
                 attributes.put("usuariodentro",user.getNombre());
                 attributes.put("admin", admin);
                 attributes.put("autenticado", autenticado);
-                attributes.put("articulos", articulos);}
+                attributes.put("articulos", articulosetiqueta);}
 
 
 
@@ -409,7 +410,8 @@ public class RutasWeb {
 
             Articulo articulo = articuloDao.findOne(id);
 
-            List<Comentario> listaComentarios = articuloDao.obtenerComentarios(id);
+//            List<Comentario> listaComentarios = articuloDao.obtenerComentarios(id);
+
             List<Etiqueta> etiquetas = new ArrayList<Etiqueta>();
 
             List<Long> etiquetasids = articuloDao.obtenerEtiquetas(id);
@@ -417,15 +419,15 @@ public class RutasWeb {
             for(Long ideti : etiquetasids){
                 etiquetas.add(etiquetaDao.findOne(ideti));
             }
-            int cantidadcomentarios = listaComentarios.size();
+        //    int cantidadcomentarios = listaComentarios.size();
 
-            attributes.put("cantidadcomentarios", cantidadcomentarios);
+            attributes.put("cantidadcomentarios", articulo.getComentarios().size());
             attributes.put("admin", admin);
             attributes.put("autor", autor);
             attributes.put("autenticado", autenticado);
             attributes.put("articulo", articulo);
             attributes.put("idarticulo", id.toString());
-            attributes.put("listaComentarios", listaComentarios);
+            attributes.put("listaComentarios", articulo.getComentarios());
             attributes.put("etiquetas", etiquetas);
 
             return new ModelAndView(attributes, "post.ftl");
@@ -455,14 +457,16 @@ public class RutasWeb {
                 usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
 
             Comentario comentario = new Comentario();
-            comentario.setAutorid(usuario.getId());
+            comentario.setAutorid(usuario);
             comentario.setComentario(map.get("commentbody").value());
 
-            Sql2oArticuloDao sql2oArticuloDao = new Sql2oArticuloDao(sql2o);
+            Sql2oArticuloDao sql2oArticuloDao = new Sql2oArticuloDao(Articulo.class);
             Articulo articulo = new Articulo();
             articulo = sql2oArticuloDao.findOne(id);
-            comentario.setArticuloid(articulo.getId());
+            comentario.setArticuloid(articulo);
             comentarioDao.add(comentario);
+            articulo.getComentarios().add(comentario);
+            articuloDao.update(articulo);
             response.redirect("/articulo/" + id.toString());
 
             return "Ok";
@@ -477,7 +481,7 @@ public class RutasWeb {
 
 
             Usuario usuario = new Usuario();
-            Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(sql2o);
+            Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(Usuario.class);
             if(request.cookie("username")!=null)
             {autenticado=true;
                 usuario = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
@@ -506,11 +510,12 @@ public class RutasWeb {
             Long id;
 
             Articulo articulo = new Articulo();
+
             articulo.setTitulo(map.get("titulo").value());
             articulo.setCuerpo(map.get("cuerpo").value());
 
             Usuario usuario = new Usuario();
-            Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(sql2o);
+            Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(Usuario.class);
             if(request.cookie("username")!=null)
             {
                 usuario = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
@@ -520,7 +525,7 @@ public class RutasWeb {
             else if(sql2oUsuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
                 usuario = sql2oUsuarioDao.searchByUsername(request.session().attribute("username"));}
 
-            articulo.setAutor(usuario.getId());
+            articulo.setAutor(usuario);
 
             articulo.setFecha( new Date(new java.util.Date().getTime()));
 
@@ -532,28 +537,26 @@ public class RutasWeb {
 
             //   Long size2 = Long.parseLong(String.valueOf(size));
 
+            Set<Etiqueta> etiqs = new HashSet<>();
 
             for(String etiquet : etiquetas.split(",")){
-
-                UUID uuid1 = UUID.randomUUID();
-                Long key = uuid1.getMostSignificantBits();
+//
+//                UUID uuid1 = UUID.randomUUID();
+//                Long key = uuid1.getMostSignificantBits();
                 Etiqueta etiqueta = new Etiqueta();
-                etiqueta.setId(key);
-                etiqueta.setEtiqueta(etiquet);
-                etiquetaDao.add(etiqueta);
-                etiq.add(new Etiqueta(key, etiquet));
+                etiqueta = etiquetaDao.searchByTag(etiquet);
+                    etiqs.add(new Etiqueta(etiquet));
             }
 
 
-            Etiqueta etiqueta = new Etiqueta();
-            articulo.setEtiquetas(etiq);
-            Long idarticulo = articuloDao.add(articulo);
-
-
-            for(Etiqueta et : etiq){
-
-                articuloDao.addTablaIntermedia(idarticulo, et);
-            }
+            articulo.setEtiquetas(etiqs);
+            articuloDao.add(articulo);
+//
+//
+//            for(Etiqueta et : etiq){
+//
+//                articuloDao.addTablaIntermedia(idarticulo, et);
+//            }
 
 
 
@@ -615,7 +618,7 @@ public class RutasWeb {
 //                etiq.add(new Etiqueta(0L, eti));
 //            }
 
-            Articulo articulo = new Articulo(idarticulo, titulo, cuerpo, articuloDao.findOne(idarticulo).getAutorId(), new Date(new java.util.Date().getTime()), null, null);
+            Articulo articulo = new Articulo(idarticulo, titulo, cuerpo, articuloDao.findOne(idarticulo).getAutorId(), new Date(new java.util.Date().getTime()), null, null, null);
             articuloDao.update(articulo);
 
             response.redirect("/articulos");
@@ -629,7 +632,7 @@ public class RutasWeb {
             Articulo articulo = articuloDao.findOne(idarticulo);
 
             if (articulo != null){
-                articuloDao.deleteById(idarticulo);
+                articuloDao.deleteById(articulo);
             }
 
             response.redirect("/articulos");
@@ -705,11 +708,12 @@ public class RutasWeb {
                 List<Etiqueta> etiquetas = new ArrayList<Etiqueta>();
 
                 List<Long> etiquetasids = articuloDao.obtenerEtiquetas(articulo.getId());
+                Set<Etiqueta> etiqs = new HashSet<>();
 
                 for(Long ideti : etiquetasids){
-                    etiquetas.add(etiquetaDao.findOne(ideti));
+                    etiqs.add(etiquetaDao.findOne(ideti));
                 }
-                articulo.setEtiquetas(etiquetas);
+                articulo.setEtiquetas(etiqs);
             }
 
             attributes.put("articulos", articulos);
@@ -784,7 +788,7 @@ public class RutasWeb {
                 usuario.setAutor(false);
             }
 
-            Sql2oUsuarioDao usuarioDao1 = new Sql2oUsuarioDao(sql2o);
+            Sql2oUsuarioDao usuarioDao1 = new Sql2oUsuarioDao(Usuario.class);
             if(usuarioDao1.searchByUsername(usuario.getUsername())==null){
 
                 usuarioDao1.add(usuario);
@@ -864,7 +868,7 @@ public class RutasWeb {
 
             Usuario usuario = usuarioDao.findOne(idusuario);
             if (usuario != null){
-                usuarioDao.deleteById(idusuario);
+                usuarioDao.deleteById(usuario);
             }
 
             response.redirect("/usuarios");
@@ -913,7 +917,7 @@ public class RutasWeb {
             Comentario comentario = comentarioDao.findOne(idcomentario);
 
             if (comentario != null){
-                comentarioDao.deleteById(idcomentario);
+                comentarioDao.deleteById(comentario);
             }
 
             response.redirect("/");

@@ -142,7 +142,7 @@
 
                             <div class="card">
                                  <#list listaComentarios as comentario>
-                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
+                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid().getId())}
                                          <a href="/comentarios/borrar/${comentario.getId()}"><button type="button" class="close" data-dismiss="modal"> &times;</button></a>
                                          <i class="fa fa-thumbs-up text-green" style="color:green"></i>(0)
                                          <i class="fa fa-thumbs-down text-red" style="color:red"></i>(2)
@@ -250,7 +250,7 @@
 
                             <div class="card">
                                  <#list listaComentarios as comentario>
-                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
+                                     <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid().getId())}
                                          <i class="fa fa-thumbs-up text-green" style="color:green"></i>(0)
                                          <i class="fa fa-thumbs-down text-red" style="color:red"></i>(2)
 

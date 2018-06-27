@@ -18,8 +18,9 @@ dependencies {
     compile 'com.h2database:h2:1.4.191'
     compile 'com.google.code.gson:gson:2.8.5'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+    compile 'com.sparkjava:spark-debug-tools:0.5'
     compile 'com.sparkjava:spark-template-freemarker:2.7.1'
-    compile "org.slf4j:slf4j-simple:1.7.21"
     compile "org.jasypt:jasypt:1.9.2"
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.5.Final'
 
 }

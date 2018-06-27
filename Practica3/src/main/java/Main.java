@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.*;
 
-
+import static spark.debug.DebugScreen.enableDebugScreen;
 
 public class Main {
 
@@ -49,7 +49,9 @@ public class Main {
 
         FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
 
-
+		enableDebugScreen();
+		
+		
         new RutasWeb(freeMarkerEngine);
 
 

@@ -7,26 +7,31 @@ import encapsulacion.Usuario;
 
 import java.util.List;
 
-public interface ArticuloDao {
+public interface ArticuloDao extends IRepositorio<Articulo, Long> {
 
-    Long add(Articulo articulo);
+    @Override
+    void add(Articulo articulo);
 
-    void addTablaIntermedia(Long idarticulo, Etiqueta etiqueta);
+//    void addTablaIntermedia(Long idarticulo, Etiqueta etiqueta);
 
+    @Override
     Articulo findOne(Long id);
 
+    @Override
     List<Articulo> getAll();
 
+    @Override
     void update(Articulo articulo);
 
-    void deleteById(Long id);
+//    @Override
+    void deleteById(Articulo articulo);
 
     List<Comentario> obtenerComentarios(Long id);
-
+//
     List<Long> obtenerEtiquetas(Long id);
-
-    List<String> obtenerEtiquetas2(Long id);
-
+//
+//    List<String> obtenerEtiquetas2(Long id);
+//
     Usuario searchById(Long id);
 
 }

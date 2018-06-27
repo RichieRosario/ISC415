@@ -3,77 +3,52 @@ package dao;
 
 import encapsulacion.Comentario;
 import encapsulacion.Usuario;
+import org.hibernate.Session;
+import org.slf4j.Logger;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class Sql2oComentarioDao implements ComentarioDao {
+public class Sql2oComentarioDao extends Repositorio<Comentario, Long> implements ComentarioDao {
 
-    private final Sql2o sql2o;
-    public Sql2oComentarioDao(Sql2o sql2o) {this.sql2o = sql2o;}
+    private static final Logger logger = LoggerFactory.getLogger(Sql2oComentarioDao.class);
+
+    public Sql2oComentarioDao(Class<Comentario> comentarioClass) {
+        super(comentarioClass);
+    }
 
     @Override
     public void add(Comentario comentario){
 
-
-        String sql = "INSERT INTO comentarios (comentario, autorId, articuloId) VALUES (:comentario, " +
-                ":autorId, :articuloId)";
-
-
-        Connection con = sql2o.open();
-
-        Long id = con.createQuery(sql, true)
-                .addParameter("comentario", comentario.getComentario())
-                .addParameter("autorId", comentario.getAutorid())
-                .addParameter("articuloId", comentario.getArticuloid())
-                .executeUpdate()
-                .getKey(Long.class);
-
+        super.add(comentario);
 
     }
 
     @Override
     public Comentario findOne(Long id) {
-        Connection  con = sql2o.open();
 
-        return con.createQuery("SELECT * FROM comentarios WHERE id = :id")
-                .addParameter("id", id)
-                .executeAndFetchFirst(Comentario.class);
+        return super.findOne(id);
     }
 
     @Override
     public List<Comentario> getAll() {
 
-        Connection con = sql2o.open();
-        return con.createQuery("SELECT * FROM comentarios")
-                .executeAndFetch(Comentario.class);
-
+        return super.getAll();
     }
+
 
     @Override
     public void update(Comentario comentario) {
 
-        String sql = "UPDATE comentarios set comentario = :comentario, autor_di= :autorId, articuloId= :articuloId, " +
-                " WHERE id = :id";
-
-        Connection con = sql2o.open();
-
-        con.createQuery(sql)
-                .bind(comentario)
-                .executeUpdate();
+        super.update(comentario);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Comentario comentario) {
 
-        String sql = "DELETE from comentarios WHERE id=:id";
-
-
-        Connection con = sql2o.open();
-        con.createQuery(sql)
-                .addParameter("id", id)
-                .executeUpdate();
+        super.deleteById(comentario);
     }
 
 

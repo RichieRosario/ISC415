@@ -3,22 +3,43 @@ package encapsulacion;
 import dao.Sql2oComentarioDao;
 import dao.Sql2oUsuarioDao;
 import org.sql2o.Sql2o;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import java.io.Serializable;
 
+@Entity
+@Table(name = "comentario")
+@Access(AccessType.FIELD)
 public class Comentario implements Serializable{
 
-
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "comentario")
     private String comentario;
-    private Long autorId;
-    private Long articuloId;
+
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuarioId", nullable = false)
+    private Usuario autorId;
+
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "articuloId", nullable = false)
+    private Articulo articuloId;
+
+
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinTable(name = "comentarioUsuarios", joinColumns = {@JoinColumn(name = "comentarioId")}, inverseJoinColumns = {@JoinColumn(name = "usuarioId")})
+//    private Set<Usuario> listaUsuarios;
 
     public Comentario(){
 
         super();
     }
-    public Comentario(Long id, String comentario, Long autorId, Long articuloId) {
+    public Comentario(Long id, String comentario, Usuario autorId, Articulo articuloId) {
         this.id = id;
         this.comentario = comentario;
         this.autorId = autorId;
@@ -41,26 +62,25 @@ public class Comentario implements Serializable{
         this.comentario = comentario;
     }
 
-    public Long getAutorid() {
+    public Usuario getAutorid() {
         return autorId;
     }
 
-    public void setAutorid(Long autorid) {
+    public void setAutorid(Usuario autorid) {
         this.autorId = autorid;
     }
 
-    public Long getArticuloid() {
+    public Articulo getArticuloid() {
         return articuloId;
     }
 
-    public void setArticuloid(Long articuloId) {
+    public void setArticuloid(Articulo articuloId) {
         this.articuloId = articuloId;
     }
 
-
+//
     public String getNombreAutor(Long id) {
-        Sql2oComentarioDao sql2oComentarioDao = new Sql2oComentarioDao(new Sql2o("jdbc:h2:~/blog", "", ""));
-        Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(new Sql2o("jdbc:h2:~/blog", "", ""));
+        Sql2oUsuarioDao sql2oUsuarioDao = new Sql2oUsuarioDao(Usuario.class);
         Usuario usuario = sql2oUsuarioDao.searchById(id);
         return usuario.getNombre();
     }

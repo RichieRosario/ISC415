@@ -1,18 +1,28 @@
 package encapsulacion;
 
+import javax.persistence.*;
 import java.io.Serializable;
+
+
+@Entity
+@Table(name = "etiqueta")
+@Access(AccessType.FIELD)
 
 public class Etiqueta implements Serializable{
 
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "etiqueta")
     private String etiqueta;
 
     public Etiqueta(){
 
-        super();
     }
-    public Etiqueta(Long id, String etiqueta) {
-        this.id = id;
+    public Etiqueta( String etiqueta) {
+
         this.etiqueta = etiqueta;
     }
 

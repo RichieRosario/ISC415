@@ -1,6 +1,12 @@
 package dao;
 
 import encapsulacion.Etiqueta;
+import hibernate.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.hibernate.HibernateException;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
@@ -9,78 +15,62 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 import java.util.UUID;
+import org.slf4j.LoggerFactory;
 
 import static java.util.jar.Pack200.Packer.PASS;
 
-public class Sql2oEtiquetaDao implements EtiquetaDao {
+public class Sql2oEtiquetaDao extends Repositorio<Etiqueta, Long> implements EtiquetaDao {
 
-    private final Sql2o sql2o;
-    public Sql2oEtiquetaDao(Sql2o sql2o) {this.sql2o = sql2o;}
+    private static final Logger logger = LoggerFactory.getLogger(Sql2oEtiquetaDao.class);
 
-
-    @Override
-    public void add(Etiqueta etiquetas){
-
-
-
-        String sql = "INSERT INTO etiquetas (id, etiqueta) VALUES (:id, :etiqueta);";
-
-        Connection con = sql2o.open();
-
-              con.createQuery(sql, true)
-                .addParameter("id", etiquetas.getId())
-                      .addParameter("etiqueta", etiquetas.getEtiqueta())
-                .executeUpdate();
-
+    public Sql2oEtiquetaDao(Class<Etiqueta> etiquetaClass) {
+        super(etiquetaClass);
     }
 
     @Override
-    public Etiqueta findOne(Long id) {
-        Connection  con = sql2o.open();
-
-        return con.createQuery("SELECT * FROM etiquetas WHERE id = :id")
-                .addParameter("id", id)
-                .executeAndFetchFirst(Etiqueta.class);
+    public void add(Etiqueta etiqueta) {
+        super.add(etiqueta);
     }
 
     @Override
-    public Etiqueta searchByTag(String tag) {
-        Connection  con = sql2o.open();
+    public Etiqueta findOne(Long aLong) {
+        return super.findOne(aLong);
+    }
 
-        return con.createQuery("SELECT * FROM etiquetas WHERE etiqueta = :etiqueta")
-                .addParameter("etiqueta", tag)
-                .executeAndFetchFirst(Etiqueta.class);
+    @Override
+    public Etiqueta searchByTag(String etiqueta) {
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+
+            query = session.createQuery("from Etiqueta e where e.etiqueta = :etiqueta").setParameter("etiqueta", etiqueta);
+
+            return (Etiqueta) query.uniqueResult();
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
+        }
     }
 
     @Override
     public List<Etiqueta> getAll() {
-
-        Connection con = sql2o.open();
-        return con.createQuery("SELECT * FROM etiquetas")
-                .executeAndFetch(Etiqueta.class);
-
+        return super.getAll();
     }
 
     @Override
     public void update(Etiqueta etiqueta) {
-
-        String sql = "UPDATE etiquetas set etiqueta = :etiqueta WHERE id = :id";
-
-        Connection con = sql2o.open();
-
-        con.createQuery(sql)
-                .bind(etiqueta)
-                .executeUpdate();
+        super.update(etiqueta);
     }
 
     @Override
-    public void deleteById(Long id) {
-
-        String sql = "DELETE from etiquetas WHERE id=:id";
-
-        Connection con = sql2o.open();
-        con.createQuery(sql)
-                .addParameter("id", id)
-                .executeUpdate();
+    public void deleteById(Etiqueta etiqueta) {
+        super.deleteById(etiqueta);
     }
 }

@@ -2,17 +2,35 @@ package encapsulacion;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
+import javax.persistence.*;
 import java.io.Serializable;
+
+
+@Entity
+@Table(name = "usuario")
+@Access(AccessType.FIELD)
 
 public class Usuario implements Serializable{
 
 
-
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
     private Long id;
+
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "administrator")
     private boolean administrator;
+
+    @Column(name = "autor")
     private boolean autor;
 
     public Usuario(){

@@ -5,6 +5,10 @@ plugins {
 group 'ce.pucmm.edu.do'
 version '1.0-SNAPSHOT'
 
+apply plugin: 'java'
+apply plugin: 'application'
+
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -21,4 +25,8 @@ dependencies {
     compile 'com.sparkjava:spark-template-freemarker:2.7.1'
     compile "org.slf4j:slf4j-simple:1.7.21"
     compile "org.jasypt:jasypt:1.9.2"
+}
+
+task stage {
+	dependsOn installDist
 }

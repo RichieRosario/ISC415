@@ -6,6 +6,7 @@ import encapsulacion.Articulo;
 import encapsulacion.Comentario;
 import encapsulacion.Etiqueta;
 import encapsulacion.Usuario;
+import hibernate.HibernateUtil;
 import servicios.*;
 import org.sql2o.Sql2o;
 
@@ -32,20 +33,25 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-        Sql2o sql2o = new Sql2o( "jdbc:h2:~/blog", "", "");
+       // Sql2o sql2o = new Sql2o( "jdbc:h2:~/blog", "", "");
         ConnectionService.startDb();
-        DBService.getInstancia().testConexion();
-        ConnectionService.crearTablas();
-        ConnectionService.stopDb();
-        Sql2oUsuarioDao usuarioadmin = new Sql2oUsuarioDao(sql2o);
+        final Configuration configuration = new Configuration(new Version(2, 3, 0));
+        configuration.setClassForTemplateLoading(Main.class, "/templates");
+        Spark.staticFileLocation("/public/");
+
+
+//        DBService.getInstancia().testConexion();
+//        ConnectionService.crearTablas();
+//        ConnectionService.stopDb();
+
+        HibernateUtil.buildSessionFactory().openSession().close();
+
+        Sql2oUsuarioDao usuarioadmin = new Sql2oUsuarioDao(Usuario.class);
         if(usuarioadmin.searchByUsername("admin") == null){
         Usuario usuarioPorDefecto = new Usuario(1L, "admin", "Administrador", "admin", true, false);
         usuarioadmin.add(usuarioPorDefecto);}
 
-        final Configuration configuration = new Configuration(new Version(2, 3, 0));
-
-        configuration.setClassForTemplateLoading(Main.class, "/templates");
-        Spark.staticFileLocation("/public/");
+        HibernateUtil.openSession().close();
 
         FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
 

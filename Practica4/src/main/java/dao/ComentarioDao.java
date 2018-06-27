@@ -6,14 +6,20 @@ import encapsulacion.Usuario;
 
 import java.util.List;
 
-public interface ComentarioDao{
+public interface ComentarioDao extends IRepositorio<Comentario, Long> {
+
+
     void add(Comentario comentario);
 
+    @Override
     Comentario findOne(Long id);
 
+    @Override
     List<Comentario> getAll();
 
+    @Override
     void update(Comentario comentario);
 
-    void deleteById(Long id);
+    //    @Override
+    void deleteById(Comentario comentario);
 }

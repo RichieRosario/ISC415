@@ -1,150 +1,185 @@
+
 package dao;
 
 import encapsulacion.Articulo;
 import encapsulacion.Comentario;
 import encapsulacion.Etiqueta;
 import encapsulacion.Usuario;
+import hibernate.HibernateUtil;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Sql2oArticuloDao implements ArticuloDao {
+public class Sql2oArticuloDao extends Repositorio<Articulo, Long>  implements ArticuloDao {
 
-    private final Sql2o sql2o;
-    public Sql2oArticuloDao(Sql2o sql2o) {this.sql2o = sql2o;}
+    private static final Logger logger = LoggerFactory.getLogger(Sql2oArticuloDao.class);
+
+    public Sql2oArticuloDao(Class<Articulo> articuloClass) {
+        super(articuloClass);
+    }
 
 
-    public Long add(Articulo articulo){
+    public void add(Articulo articulo){
 
+        super.add(articulo);
 
-        String sql = "INSERT INTO articulos (titulo, cuerpo, autorId, fecha) VALUES ( :titulo, " +
-                ":cuerpo, :autorId, :fecha)";
-
-      //  String sql2 = "INSERT INTO articulos_etiquetas (articuloId, etiquetaId) VALUES ( :articuloId, :etiquetaId)";
-
-        Connection con = sql2o.open();
-
-        Long id = con.createQuery(sql, true)
-                .addParameter("titulo", articulo.getTitulo())
-                .addParameter("cuerpo", articulo.getCuerpo())
-                .addParameter("autorId", articulo.getAutorId())
-                .addParameter("fecha", articulo.getFecha())
-                .executeUpdate()
-                .getKey(Long.class);
+    }
+//
+//    public void addTablaIntermedia(Long idarticulo, Etiqueta etiqueta){
+//
+//         String sql2 = "INSERT INTO articulos_etiquetas (articuloId, etiquetaId) VALUES ( :articuloId, :etiquetaId)";
+//
+//        Connection con = sql2o.open();
+//
 //        con.createQuery(sql2)
-//                .addParameter("articuloId", articulo.getId())
+//                .addParameter("articuloId", idarticulo)
 //                .addParameter("etiquetaId", etiqueta.getId())
 //                .executeUpdate();
-//        con.commit();
-        return id;
-
-    }
-
-    public void addTablaIntermedia(Long idarticulo, Etiqueta etiqueta){
-
-         String sql2 = "INSERT INTO articulos_etiquetas (articuloId, etiquetaId) VALUES ( :articuloId, :etiquetaId)";
-
-        Connection con = sql2o.open();
-
-        con.createQuery(sql2)
-                .addParameter("articuloId", idarticulo)
-                .addParameter("etiquetaId", etiqueta.getId())
-                .executeUpdate();
-    }
+//    }
 
 
     public Articulo findOne(Long id) {
-        Connection  con = sql2o.open();
 
-        return con.createQuery("SELECT * FROM articulos WHERE id = :id")
-                .addParameter("id", id)
-                .executeAndFetchFirst(Articulo.class);
+        return super.findOne(id);
     }
 
     public List<Articulo> getAll() {
+//
+//        Connection con = sql2o.open();
+//        return con.createQuery("SELECT * FROM articulos")
+//                .executeAndFetch(Articulo.class);
 
-        Connection con = sql2o.open();
-        return con.createQuery("SELECT * FROM articulos")
-                .executeAndFetch(Articulo.class);
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+
+        try {
+            session = HibernateUtil.openSession();
+
+
+            transaction = session.beginTransaction();
+
+            query = session.createQuery("from Articulo a order by a.fecha desc ");
+
+            return query.list();
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
+        }
 
     }
 
     public void update(Articulo articulo) {
 
-        String sql = "UPDATE articulos set id = :id, titulo = :titulo , cuerpo= :cuerpo, autorId= :autorId, " +
-                "fecha = :fecha WHERE id = :id";
-
-        Connection con = sql2o.open();
-
-        con.createQuery(sql)
-                .addParameter("id", articulo.getId())
-                .addParameter("titulo", articulo.getTitulo())
-                .addParameter("cuerpo", articulo.getCuerpo())
-                .addParameter("autorId", articulo.getAutorId())
-                .addParameter("fecha", articulo.getFecha())
-                .executeUpdate();
+        super.update(articulo);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Articulo articulo) {
 
-        String sql = "DELETE from articulos WHERE id=:id";
-        String sql2 = "DELETE from comentarios c WHERE c.articuloId = :id" ;
-        String sql3 = "DELETE from articulos_etiquetas d WHERE d.articuloId=:id";
-
-        try (Connection con = sql2o.beginTransaction()) {
-            con.createQuery(sql3).addParameter("id", id).executeUpdate();
-            con.createQuery(sql2).addParameter("id", id).executeUpdate();
-            con.createQuery(sql).addParameter("id", id).executeUpdate();
-
-            con.commit();
-        }
+        super.deleteById(articulo);
     }
 
     public List<Comentario> obtenerComentarios(Long articuloid){
 
-        String sql = "SELECT * FROM comentarios  WHERE articuloId = :articuloid";
-        try(Connection con = sql2o.open()) {
-            return con.createQuery(sql)
-                    .addParameter("articuloid", articuloid)
-                    .executeAndFetch(Comentario.class);
-        }
-    }
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+        List<Comentario> list = new ArrayList<>();
+        Sql2oComentarioDao comentarioDao = null;
 
-    public List<Long> obtenerEtiquetas(Long articuloId){
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+            query = session.createNativeQuery("SELECT etiquetaId FROM ARTICULOETIQUETAS WHERE articuloId = " + articuloid);
 
-        String sql = "SELECT etiquetaId FROM articulos_etiquetas WHERE articuloId = :articuloId";
+            for (Object object : query.list()) {
 
-        try(Connection con = sql2o.open()) {
-            return con.createQuery(sql)
-                    .addParameter("articuloId", articuloId)
-                     .executeAndFetch(Long.class);
-        }
+                    list.add(comentarioDao.findOne(Long.parseLong(object.toString())));
+            }
 
-    }
+            return list;
 
-    public List<String> obtenerEtiquetas2(Long articuloId){
-
-        String sql = "SELECT etiquetaId FROM articulos_etiquetas WHERE articuloId = :articuloId";
-
-        try(Connection con = sql2o.open()) {
-            return con.createQuery(sql)
-                    .addParameter("articuloId", articuloId)
-                    .executeAndFetch(String.class);
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
         }
 
     }
 
-    public Usuario searchById(Long id){
+    public List<Long> obtenerEtiquetas(Long articuloId) {
+//
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+        List<Long> list = new ArrayList<>();
+        Sql2oEtiquetaDao etiquetaDao = null;
 
-        Connection  con = sql2o.open();
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
 
-        return con.createQuery("SELECT * FROM usuarios WHERE id=:id")
-                .addParameter("id", id)
-                .executeAndFetchFirst(Usuario.class);
+            query = session.createNativeQuery("SELECT etiquetaId FROM ARTICULOETIQUETAS WHERE articuloId = " + articuloId);
+
+            for (Object object : query.list()) {
+                list.add(Long.parseLong(object.toString()));
+            }
+
+            return list;
+
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
+        }
     }
+//        String sql = "SELECT etiquetaId FROM articulos_etiquetas WHERE articuloId = :articuloId";
+//
+//        try(Connection con = sql2o.open()) {
+//            return con.createQuery(sql)
+//                    .addParameter("articuloId", articuloId)
+//                     .executeAndFetch(Long.class);
+//        }
+//
+//    }
+//
+//    public List<String> obtenerEtiquetas2(Long articuloId){
+//
+//        String sql = "SELECT etiquetaId FROM articulos_etiquetas WHERE articuloId = :articuloId";
+//
+//        try(Connection con = sql2o.open()) {
+//            return con.createQuery(sql)
+//                    .addParameter("articuloId", articuloId)
+//                    .executeAndFetch(String.class);
+//        }
+//
+//    }
+//
+    public Usuario searchById(Long id) {
 
+        Session session = null;
+        Query query = null;
 
+        session = HibernateUtil.buildSessionFactory().openSession();
+        return session.find(Usuario.class, id);
+    }
 
 }

@@ -108,7 +108,7 @@
             <#list comentarios as comentario>
             <tr>
                 <td>${comentario.getId()}</td>
-                <td>${comentario.getNombreAutor(comentario.getAutorid())}</td>
+                <td>${comentario.getNombreAutor(comentario.getAutorid().getId())}</td>
                 <td>${comentario.getComentario()}</td>
                 <td>
                 <div class="btn-group" role="group">
