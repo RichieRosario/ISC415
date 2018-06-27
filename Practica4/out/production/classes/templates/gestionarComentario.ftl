@@ -112,9 +112,7 @@
                 <td>${comentario.getComentario()}</td>
                 <td>
                 <div class="btn-group" role="group">
-
-            <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
-                    href="/comentarios/borrar/${comentario.getId()}">Eliminar</a></button>
+                    <a href="/comentarios/borrar/${comentario.getId()}"> <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray">Eliminar</button></a>
                 </div>
             </td>
     </tr>

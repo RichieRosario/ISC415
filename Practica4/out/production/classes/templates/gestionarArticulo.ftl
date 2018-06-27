@@ -126,12 +126,10 @@
                 </td>
             <td>
                 <div class="btn-group" role="group">
-            <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
-                    href="/articulo/${articulo.getId()}">Consultar</a></button>
-            <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
-                    href="/articulos/editar/${articulo.getId()}" >Modificar</a></button>
-            <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
-                    href="/articulos/borrar/${articulo.getId()}">Eliminar</a></button>
+                <a href="/articulo/${articulo.getId()}"><button type="button" class="btn btn-primary btn-xs">Consultar</button></a>
+                <a href="/articulos/editar/${articulo.getId()}"><button type="button" class="btn btn-primary btn-xs">Modificar</button></a>
+
+                <a href="/articulos/borrar/${articulo.getId()}"><button type="button" class="btn btn-primary btn-xs">Eliminar</button></a>
                 </div>
             </td>
     </tr>

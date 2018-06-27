@@ -34,6 +34,7 @@ public class Main {
     public static void main(String[] args) throws SQLException {
 
        // Sql2o sql2o = new Sql2o( "jdbc:h2:~/blog", "", "");
+        Hash hash = null;
         ConnectionService.startDb();
         final Configuration configuration = new Configuration(new Version(2, 3, 0));
         configuration.setClassForTemplateLoading(Main.class, "/templates");
@@ -48,7 +49,7 @@ public class Main {
 
         Sql2oUsuarioDao usuarioadmin = new Sql2oUsuarioDao(Usuario.class);
         if(usuarioadmin.searchByUsername("admin") == null){
-        Usuario usuarioPorDefecto = new Usuario(1L, "admin", "Administrador", "admin", true, false);
+        Usuario usuarioPorDefecto = new Usuario(1L, "admin", "Administrador", hash.sha1("admin"), true, false);
         usuarioadmin.add(usuarioPorDefecto);}
 
         HibernateUtil.openSession().close();

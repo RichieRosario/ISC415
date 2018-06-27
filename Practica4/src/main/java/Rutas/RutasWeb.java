@@ -327,6 +327,9 @@ public class RutasWeb {
             String password = request.queryParams("password") != null ? request.queryParams("password") : "";
             String remember = request.queryParams("remember") != null ? request.queryParams("remember") : "";
             Usuario user = usuarioDao.searchByUsername(username);
+
+//            System.out.println(user.getUsername());
+//            System.out.println(user.getPassword());
             if( user.getUsername().equals(username) && user.getPassword().equals(Hash.sha1(password))){
                 QueryParamsMap map2 = request.queryMap();
                 Session session = request.session();
