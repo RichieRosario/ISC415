@@ -116,9 +116,10 @@
                         </div>
                 <br>
             <div class="post-ratings">
-
-                <i class="fa fa-thumbs-up text-green" style="color:green">Me divierte</i>(5)
-                <i class="fa fa-thumbs-down text-red" style="color:red">Me aborrece</i>(0)
+                    <form action="/like/articulo/${articulo.getId()}" method="post">
+                <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me divierte" style="border:none">Me divierte</button></i>(${articulo.getLikes()})
+                <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="Me aborrece"style="border:none">Me aborrece</button></i>(${articulo.getDislikes()})
+                    </form>
             </div>
                 <br>
 
@@ -144,8 +145,10 @@
                                  <#list listaComentarios as comentario>
                                      <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid().getId())}
                                          <a href="/comentarios/borrar/${comentario.getId()}"><button type="button" class="close" data-dismiss="modal"> &times;</button></a>
-                                         <i class="fa fa-thumbs-up text-green" style="color:green"></i>(0)
-                                         <i class="fa fa-thumbs-down text-red" style="color:red"></i>(2)
+                                         <form action="/like/comentario/${comentario.getId()}" method="post">
+                                         <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me divierte"style="border:none">Me divierte</button></i>(${comentario.getLikes()})
+                                         <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="Me aborrece"style="border:none">Me aborrece</button></i>(${comentario.getDislikes()})
+                                         </form>
 
                                      </div>
                                      <div class="card-body">${comentario.getComentario()}</div>
@@ -180,9 +183,10 @@
                             <div class="card">
                                  <#list listaComentarios as comentario>
                                      <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
-                                         <i class="fa fa-thumbs-up text-green" style="color:green"></i>(0)
-                                         <i class="fa fa-thumbs-down text-red" style="color:red"></i>(2)
-
+                                         <form action="/like/comentario/${comentario.getId()}" method="post">
+                                             <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me divierte"style="border:none">Me divierte</button></i>(${comentario.getLikes()})
+                                             <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="Me aborrece"style="border:none">Me aborrece</button></i>(${comentario.getDislikes()})
+                                         </form>
                                          <a href="comentarios/borrar/${comentario.getId()}"><button type="button" class="close" data-dismiss="modal"> &times;</button></a>
                                      </div>
                                      <div class="card-body">${comentario.getComentario()}</div>
@@ -220,6 +224,10 @@
                                      <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid())}
                                      </div>
                                      <div class="card-body">${comentario.getComentario()}</div>
+                                     <form action="/like/comentario/${comentario.getId()}" method="post">
+                                         <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me divierte"style="border:none">Me divierte</button></i>(${comentario.getLikes()})
+                                         <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="Me aborrece"style="border:none">Me aborrece</button></i>(${comentario.getDislikes()})
+                                     </form>
                                  <#else>
                                 No hay comentarios
                                  </#list>
@@ -251,8 +259,8 @@
                             <div class="card">
                                  <#list listaComentarios as comentario>
                                      <div class="card-header">${comentario.getNombreAutor(comentario.getAutorid().getId())}
-                                         <i class="fa fa-thumbs-up text-green" style="color:green"></i>(0)
-                                         <i class="fa fa-thumbs-down text-red" style="color:red"></i>(2)
+                                         <i class="fa fa-thumbs-up text-green" style="color:green"></i>(${comentario.getLikes()})
+                                         <i class="fa fa-thumbs-down text-red" style="color:red"></i>(${comentario.getDislikes()})
 
                                      </div>
                                      <div class="card-body">${comentario.getComentario()}</div>

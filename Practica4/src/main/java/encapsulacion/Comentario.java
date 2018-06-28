@@ -27,11 +27,15 @@ public class Comentario implements Serializable{
 
     @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "usuarioId", nullable = false)
-    private Usuario autorId = new Usuario();
+    private Usuario autorId;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "articuloId", nullable = false)
-    private Articulo articuloId = new Articulo();
+    private Articulo articuloId;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "comentarioValoraciones", joinColumns = {@JoinColumn(name = "comentarioId")}, inverseJoinColumns = {@JoinColumn(name = "valoracionId")})
+    private Set<Valoracion> valoraciones;
 
     private boolean deleted = false;
 
@@ -42,11 +46,12 @@ public class Comentario implements Serializable{
 
         super();
     }
-    public Comentario(Long id, String comentario, Usuario autorId, Articulo articuloId) {
+    public Comentario(Long id, String comentario, Usuario autorId, Articulo articuloId,  Set<Valoracion> valoraciones) {
         this.id = id;
         this.comentario = comentario;
         this.autorId = autorId;
         this.articuloId = articuloId;
+        this.valoraciones = valoraciones;
     }
 
     public Long getId() {
@@ -87,8 +92,30 @@ public class Comentario implements Serializable{
         Usuario usuario = sql2oUsuarioDao.searchById(id);
         return usuario.getNombre();
     }
+    public Set<Valoracion> getValoraciones() {
+        return valoraciones;
+    }
+
+    public void setValoraciones(Set<Valoracion> valoraciones) {
+        this.valoraciones = valoraciones;
+    }
+
+    public Integer getLikes(){
+        int ans=0;
+        for(Valoracion val : valoraciones){
+            if(val.getValoracion())ans++;
+        }
+        return ans;
+    }
 
 
+    public Integer getDislikes(){
+        int ans=0;
+        for(Valoracion val : valoraciones){
+            if(!val.getValoracion())ans++;
+        }
+        return ans;
+    }
     public boolean isDeleted() {
         return deleted;
     }

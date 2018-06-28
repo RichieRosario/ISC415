@@ -5,10 +5,7 @@ import com.google.gson.Gson;
 import com.sun.org.apache.xerces.internal.xs.ShortList;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import dao.*;
-import encapsulacion.Articulo;
-import encapsulacion.Comentario;
-import encapsulacion.Etiqueta;
-import encapsulacion.Usuario;
+import encapsulacion.*;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -505,6 +502,132 @@ public class RutasWeb {
 
             return new ModelAndView(attributes, "crearArticulo.ftl");
         }, freeMarkerEngine);
+
+        post("/like/articulo/:id", (request, response) -> {
+            boolean autenticado=false;
+            QueryParamsMap map = request.queryMap();
+            Long id = Long.parseLong(request.params("id"));
+            Usuario usuario = new Usuario();
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                usuario = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+
+            }
+            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
+                autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
+
+            Valoracion valoracion = new Valoracion();
+            valoracion.setArticuloid(articuloDao.findOne(id));
+            valoracion.setAutorid(usuario);
+            String value = request.queryParams("like");
+            if(value.equals("Me divierte")){
+                valoracion.setValoracion(true);
+            }
+            else if(value.equals("Me aborrece")){
+                valoracion.setValoracion(false);
+            }
+
+
+
+            Sql2oArticuloDao sql2oArticuloDao = new Sql2oArticuloDao(Articulo.class);
+            Articulo articulo = new Articulo();
+            articulo = sql2oArticuloDao.findOne(id);
+
+            Sql2oValoracionDao valoracionDao = new Sql2oValoracionDao(Valoracion.class);
+                boolean check = false;
+                for(Valoracion val: articulo.getValoraciones()){
+                    if(val.getAutorid().getId()==valoracion.getAutorid().getId()){
+                        val.setValoracion( valoracion.getValoracion());
+                        check=true;
+                        valoracionDao.update(val);
+                        articuloDao.update(articulo);
+                    }
+
+                }
+
+
+                if(check==false){
+                    articulo.getValoraciones().add(valoracion);
+                    valoracionDao.add(valoracion);
+                    articuloDao.update(articulo);
+                }
+
+
+
+
+            response.redirect("/articulo/" + id.toString());
+
+            return "Ok";
+        });
+
+        post("/like/comentario/:id", (request, response) -> {
+            boolean autenticado=false;
+            QueryParamsMap map = request.queryMap();
+            Long id = Long.parseLong(request.params("id"));
+            Usuario usuario = new Usuario();
+            Comentario comentario = comentarioDao.findOne(id);
+            Long artid=0L;
+
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                usuario = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+
+
+            }
+            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
+                autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
+
+            Valoracion valoracion = new Valoracion();
+            valoracion.setComentarioId(comentario);
+            valoracion.setAutorid(usuario);
+            Sql2oValoracionDao valoracionDao = new Sql2oValoracionDao(Valoracion.class);
+
+            String value = request.queryParams("like");
+            if(value.equals("Me divierte")){
+                valoracion.setValoracion(true);
+            }
+            else if(value.equals("Me aborrece")){
+                valoracion.setValoracion(false);
+            }
+
+            boolean check = false;
+            for(Valoracion val: comentario.getValoraciones()){
+                if(val.getAutorid().getId()==valoracion.getAutorid().getId()){
+                    val.setValoracion( valoracion.getValoracion());
+                    check=true;
+                    valoracionDao.update(val);
+                    comentarioDao.update(comentario);
+                }
+
+            }
+
+
+            if(check==false){
+                comentario.getValoraciones().add(valoracion);
+                valoracionDao.add(valoracion);
+                comentarioDao.update(comentario);
+            }
+
+
+            for(Articulo arti:articuloDao.getAll()){
+                for(Comentario comen:arti.getComentarios()){
+                    if(comen.getId() == comentario.getId()){
+                        artid=arti.getId();
+                    }
+                }
+            }
+
+
+            response.redirect("/articulo/" + artid.toString() );
+
+            return "Ok";
+        });
+
+
+
 
         post("/articulos/nuevo", (request, response) -> {
 
