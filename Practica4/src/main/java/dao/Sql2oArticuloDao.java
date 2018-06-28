@@ -89,8 +89,8 @@ public class Sql2oArticuloDao extends Repositorio<Articulo, Long>  implements Ar
     }
 
     public void deleteById(Articulo articulo) {
-
-        super.deleteById(articulo);
+        articulo.setDeleted(true);
+        this.update(articulo);
     }
 
     public List<Comentario> obtenerComentarios(Long articuloid){

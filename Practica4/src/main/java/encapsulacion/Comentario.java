@@ -2,6 +2,7 @@ package encapsulacion;
 
 import dao.Sql2oComentarioDao;
 import dao.Sql2oUsuarioDao;
+import org.hibernate.annotations.Where;
 import org.sql2o.Sql2o;
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,6 +13,8 @@ import java.io.Serializable;
 @Entity
 @Table(name = "comentario")
 @Access(AccessType.FIELD)
+@Where(clause = "deleted = 0")
+
 public class Comentario implements Serializable{
 
     @Id
@@ -22,18 +25,18 @@ public class Comentario implements Serializable{
     @Column(name = "comentario")
     private String comentario;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @OneToOne( fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "usuarioId", nullable = false)
-    private Usuario autorId;
+    private Usuario autorId = new Usuario();
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "articuloId", nullable = false)
-    private Articulo articuloId;
+    private Articulo articuloId = new Articulo();
+
+    private boolean deleted = false;
 
 
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinTable(name = "comentarioUsuarios", joinColumns = {@JoinColumn(name = "comentarioId")}, inverseJoinColumns = {@JoinColumn(name = "usuarioId")})
-//    private Set<Usuario> listaUsuarios;
+
 
     public Comentario(){
 
@@ -86,4 +89,11 @@ public class Comentario implements Serializable{
     }
 
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

@@ -1,5 +1,7 @@
 package encapsulacion;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -7,6 +9,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "etiqueta")
 @Access(AccessType.FIELD)
+@Where(clause = "deleted = 0")
 
 public class Etiqueta implements Serializable{
 
@@ -17,6 +20,8 @@ public class Etiqueta implements Serializable{
 
     @Column(name = "etiqueta")
     private String etiqueta;
+
+    private boolean deleted = false;
 
     public Etiqueta(){
 
@@ -43,5 +48,11 @@ public class Etiqueta implements Serializable{
     }
 
 
+    public boolean isDeleted() {
+        return deleted;
+    }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

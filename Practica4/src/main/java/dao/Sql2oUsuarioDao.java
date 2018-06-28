@@ -49,7 +49,8 @@ public class Sql2oUsuarioDao extends Repositorio<Usuario, Long> implements Usuar
     @Override
     public void deleteById(Usuario usuario) {
 
-        super.deleteById(usuario);
+        usuario.setDeleted(true);
+        this.update(usuario);
     }
 
     @Override

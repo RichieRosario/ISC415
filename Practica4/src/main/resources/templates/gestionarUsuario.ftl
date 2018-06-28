@@ -135,10 +135,8 @@
                 <button type="button" class="btn btn-default disabled btn-xs" style="border-color: lightgray">Modificar</button>
             <button type="button" class="btn btn-default disabled btn-xs" style="border-color: lightgray">Eliminar</button>
             <#else>
-            <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
-                    href="/usuarios/borrar/${usuario.getId()}">Eliminar</a></button>
-                 <button type="button" class="btn btn-default btn-xs" style="border-color: lightgray"><a
-                         href="/usuarios/editar/${usuario.getId()}" >Modificar</a></button>
+                <a href="/usuarios/borrar/${usuario.getId()}"><button type="button" class="btn btn-default btn-xs" style="border-color: lightgray">Eliminar</button></a>
+                <a href="/usuarios/editar/${usuario.getId()}" ><button type="button" class="btn btn-default btn-xs" style="border-color: lightgray">Modificar</button></a>
             </#if>
                 </div>
             </td>

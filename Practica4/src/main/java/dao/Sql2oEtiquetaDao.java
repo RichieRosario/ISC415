@@ -71,6 +71,7 @@ public class Sql2oEtiquetaDao extends Repositorio<Etiqueta, Long> implements Eti
 
     @Override
     public void deleteById(Etiqueta etiqueta) {
-        super.deleteById(etiqueta);
+        etiqueta.setDeleted(true);
+        this.update(etiqueta);
     }
 }

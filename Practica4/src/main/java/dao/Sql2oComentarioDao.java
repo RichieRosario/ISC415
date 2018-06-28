@@ -48,8 +48,8 @@ public class Sql2oComentarioDao extends Repositorio<Comentario, Long> implements
     @Override
     public void deleteById(Comentario comentario) {
 
-        super.deleteById(comentario);
-    }
+        comentario.setDeleted(true);
+        this.update(comentario);    }
 
 
 }

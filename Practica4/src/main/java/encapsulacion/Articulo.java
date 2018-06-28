@@ -1,6 +1,8 @@
 package encapsulacion;
 
 import dao.Sql2oArticuloDao;
+import org.hibernate.annotations.Where;
+
 import org.sql2o.Sql2o;
 
 import javax.enterprise.inject.TransientReference;
@@ -18,6 +20,8 @@ import java.util.List;
 @Entity
 @Table(name = "articulo")
 @Access(AccessType.FIELD)
+@Where(clause = "deleted = 0")
+
 public class Articulo implements Serializable {
 
     @Id
@@ -41,7 +45,7 @@ public class Articulo implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "articuloComentarios", joinColumns = {@JoinColumn(name = "articuloId")}, inverseJoinColumns = {@JoinColumn(name = "comentarioId")})
-    private Set<Comentario> comentarios;
+    private List<Comentario> comentarios;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "articuloEtiquetas", joinColumns = {@JoinColumn(name = "articuloId")}, inverseJoinColumns = {@JoinColumn(name = "etiquetaId")})
@@ -51,18 +55,19 @@ public class Articulo implements Serializable {
     @JoinTable(name = "articuloValoraciones", joinColumns = {@JoinColumn(name = "articuloId")}, inverseJoinColumns = {@JoinColumn(name = "valoracionId")})
     private Set<Valoracion> valoraciones;
 
+    private boolean deleted = false;
 
     private String resumen;
 
     private Long idusuario;
 
     public Articulo() {
-        comentarios = new HashSet<>();
+        comentarios = new ArrayList<>();
         etiquetas = new HashSet<>();
         valoraciones = new HashSet<>();
     }
 
-        public Articulo(Long id, String titulo, String cuerpo, Usuario autor, Date fecha,Set<Comentario> comentarios, Set<Etiqueta> etiquetas,
+        public Articulo(Long id, String titulo, String cuerpo, Usuario autor, Date fecha,List<Comentario> comentarios, Set<Etiqueta> etiquetas,
                     Set<Valoracion> valoraciones) {
         this.id = id;
         this.titulo = titulo;
@@ -114,11 +119,11 @@ public class Articulo implements Serializable {
         this.fecha = fecha;
     }
 
-    public Set<Comentario> getComentarios() {
+    public List<Comentario> getComentarios() {
         return comentarios;
     }
 
-    public void setComentarios(Set<Comentario> comentarios) {
+    public void setComentarios(List<Comentario> comentarios) {
         this.comentarios = comentarios;
     }
 
@@ -160,4 +165,11 @@ public class Articulo implements Serializable {
         this.resumen = resumen;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

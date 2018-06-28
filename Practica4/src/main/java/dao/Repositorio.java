@@ -73,6 +73,7 @@ public class Repositorio<T,K extends Long> implements IRepositorio<T, K>{
             session.delete(t);
 
             transaction.commit();
+
         } catch (HibernateException e) {
             transaction.rollback();
             logger.debug("Error al borrar el objeto en la base de datos.", e);

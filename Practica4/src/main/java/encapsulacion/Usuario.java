@@ -1,6 +1,7 @@
 package encapsulacion;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "usuario")
 @Access(AccessType.FIELD)
+@Where(clause = "deleted = 0")
 
 public class Usuario implements Serializable{
 
@@ -32,6 +34,9 @@ public class Usuario implements Serializable{
 
     @Column(name = "autor")
     private boolean autor;
+
+    private boolean deleted = false;
+
 
     public Usuario(){
 
@@ -100,8 +105,11 @@ public class Usuario implements Serializable{
     }
 
 
+    public boolean isDeleted() {
+        return deleted;
+    }
 
-
-
-
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

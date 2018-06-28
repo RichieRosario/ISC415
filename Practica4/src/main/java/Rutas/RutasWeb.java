@@ -766,12 +766,13 @@ public class RutasWeb {
 
         post("usuarios/nuevo", (request, response) -> {
 
+            Hash hash = null;
             QueryParamsMap map = request.queryMap();
 
             Usuario usuario = new Usuario();
             usuario.setUsername(map.get("username").value());
             usuario.setNombre(map.get("nombre").value());
-            usuario.setPassword(map.get("password").value());
+            usuario.setPassword(hash.sha1(map.get("password").value()));
             if(request.queryParams("rol")!=null){
                 if(request.queryParams("rol").equals( "administrator")){
 
@@ -904,7 +905,20 @@ public class RutasWeb {
                 autor = user.isAutor();
                 admin = user.isAdministrator();
             }
-            attributes.put("comentarios", comentarioDao.getAll());
+
+            Sql2oComentarioDao comentarioDao1 = new Sql2oComentarioDao(Comentario.class);
+
+            List<Comentario> comentarios = new ArrayList<>();
+
+            for (Articulo articulo : articuloDao.getAll()){
+
+                for (Comentario comentario : articulo.getComentarios()){
+                    System.out.println(comentario.getComentario());
+                    comentarios.add(comentario);
+                }
+            }
+
+            attributes.put("comentarios", comentarios);
             attributes.put("autenticado", autenticado);
             attributes.put("admin", admin);
             attributes.put("autor", autor);
@@ -920,7 +934,9 @@ public class RutasWeb {
             Comentario comentario = comentarioDao.findOne(idcomentario);
 
             if (comentario != null){
+
                 comentarioDao.deleteById(comentario);
+
             }
 
             response.redirect("/");
@@ -1077,7 +1093,9 @@ public class RutasWeb {
         } );
 
         before("/usuarios/borrar/:id", (request, response) ->{
+
             Usuario user = new Usuario();
+
             if(request.cookie("username")!=null)
             {
                 user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
