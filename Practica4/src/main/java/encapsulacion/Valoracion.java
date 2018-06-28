@@ -34,6 +34,10 @@ public class Valoracion implements Serializable {
     @JoinColumn(name = "articuloId", nullable = false)
     private Articulo articuloId;
 
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuarioId", nullable = false)
+    private Usuario usuario;
+
     private boolean deleted = false;
 
 

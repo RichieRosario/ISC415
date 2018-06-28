@@ -931,11 +931,12 @@ public class RutasWeb {
 
             Long idcomentario = Long.parseLong(request.params("id"));
 
-            Comentario comentario = comentarioDao.findOne(idcomentario);
+            Sql2oComentarioDao comentarioDao1 = new Sql2oComentarioDao(Comentario.class);
+            Comentario comentario = comentarioDao1.findOne(idcomentario);
 
             if (comentario != null){
 
-                comentarioDao.deleteById(comentario);
+                comentarioDao1.deleteById(comentario);
 
             }
 
