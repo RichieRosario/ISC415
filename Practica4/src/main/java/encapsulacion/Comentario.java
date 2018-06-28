@@ -25,11 +25,11 @@ public class Comentario implements Serializable{
     @Column(name = "comentario")
     private String comentario;
 
-    @OneToOne( fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "usuarioId", nullable = false)
     private Usuario autorId = new Usuario();
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "articuloId", nullable = false)
     private Articulo articuloId = new Articulo();
 
