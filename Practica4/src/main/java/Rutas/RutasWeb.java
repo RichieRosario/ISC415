@@ -720,13 +720,23 @@ public class RutasWeb {
             }
 
             Articulo articulo = articuloDao.findOne(idarticulo);;
+            String etiquetastemp="";
+            for(Etiqueta et : articulo.getEtiquetas()){
+                etiquetastemp+=et.getEtiqueta()+',';
+            }
+            String etiquetasfini="";
+            for(int i=0;i<etiquetastemp.length()-1;i++){
+                etiquetasfini+=etiquetastemp.charAt(i);
+            }
 
+            ;
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("idarticulo", articulo.getId().toString());
             attributes.put("autenticado", autenticado);
             attributes.put("admin", admin);
             attributes.put("autor", autor);
             attributes.put("articulos", articulo);
+            attributes.put("etiquetas",etiquetasfini);
 
             return new ModelAndView(attributes, "modificarArticulo.ftl");
         }, freeMarkerEngine);
@@ -736,15 +746,33 @@ public class RutasWeb {
             Long idarticulo = Long.parseLong(request.params("id"));
             String titulo = request.queryParams("titulo");
             String cuerpo = request.queryParams("cuerpo");
-            String etiquetas = request.queryParams("etiquetas");
+
+            String etiquetas = request.queryParams("etiqueta");
 
             List<Etiqueta> etiq = new ArrayList<Etiqueta>();
 
-//            for (String eti : etiquetas.split(",")) {
-//                etiq.add(new Etiqueta(0L, eti));
-//            }
+            String[] ets = etiquetas.split(",");
+
+            //   Long size2 = Long.parseLong(String.valueOf(size));
+
+            Set<Etiqueta> etiqs = new HashSet<>();
+
+            for(String etiquet : etiquetas.split(",")){
+//
+//                UUID uuid1 = UUID.randomUUID();
+//                Long key = uuid1.getMostSignificantBits();
+                Etiqueta etiqueta = new Etiqueta();
+                etiqueta = etiquetaDao.searchByTag(etiquet);
+                etiqs.add(new Etiqueta(etiquet));
+            }
+
+
+
 
             Articulo articulo = new Articulo(idarticulo, titulo, cuerpo, articuloDao.findOne(idarticulo).getAutorId(), new Date(new java.util.Date().getTime()), null, null, null);
+            articulo.setEtiquetas(etiqs);
+            articulo.setComentarios(articuloDao.findOne(idarticulo).getComentarios());
+            articulo.setValoraciones(articuloDao.findOne(idarticulo).getValoraciones());
             articuloDao.update(articulo);
 
             response.redirect("/articulos");
