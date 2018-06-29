@@ -161,6 +161,23 @@ public class Articulo implements Serializable {
         return fini;
     }
 
+
+    public Integer getLikes(){
+        int ans=0;
+        for(Valoracion val : valoraciones){
+            if(val.getValoracion())ans++;
+        }
+        return ans;
+    }
+
+
+    public Integer getDislikes(){
+        int ans=0;
+        for(Valoracion val : valoraciones){
+            if(!val.getValoracion())ans++;
+        }
+        return ans;
+    }
     public void setResumen(String resumen) {
         this.resumen = resumen;
     }

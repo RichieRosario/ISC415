@@ -95,7 +95,6 @@
         <div class="modal-body">
         <form class="form" method="POST" action="/articulos/editar/${articulos.getId()}">
             <div class="form-group">
-                <label for="id">ID</label>
                 <input id="id"
                 type="hidden"
                 class="form-control"
@@ -125,19 +124,25 @@
 
             <div class="form-group">
                 <label for="cuerpo">Cuerpo</label>
-                <input type="text"
-                       class="form-control"
+                <textarea type="text"
+                       class="form-control input"
                        id="cuerpo"
                        name="cuerpo"
-                          cols="40" rows="50"
-                          value="${articulos.getCuerpo()}"></input>
+                          cols="8" rows="10">${articulos.getCuerpo()}</textarea>
             </div>
 
+        <div class="form-group">
+        <label for="etiqueta">Etiquetas</label>
+            <input type="text"  data-role="tagsinput" class="form-control input-sm" placeholder="Etiquetas" id="etiqueta" name="etiqueta"
+                   value="${etiquetas}">
+    </div>
 
 
 
 
-            <div class="modal-footer">
+
+
+<div class="modal-footer">
             <button type="submit" class="btn btn-default" style="border-color: lightgray"><a href="/articulos">Volver</a></button>
             <button type="submit" class="btn btn-default" style="border-color: lightgray">Guardar cambios</button>
             </div>
@@ -167,6 +172,7 @@
 
                             </label>
                         </div>
+
 
 
                         <div class="modal-footer">
