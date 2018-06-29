@@ -60,14 +60,8 @@
       <file leaf-file-name="Valoracion.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Valoracion.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
+            <state relative-caret-position="510">
               <caret line="36" column="43" selection-start-line="36" selection-start-column="43" selection-end-line="36" selection-end-column="43" />
-              <folding>
-                <element signature="e#855#856#0" expanded="true" />
-                <element signature="e#885#886#0" expanded="true" />
-                <element signature="e#932#933#0" expanded="true" />
-                <element signature="e#970#971#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -75,7 +69,7 @@
       <file leaf-file-name="Sql2oComentarioDao.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oComentarioDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
+            <state relative-caret-position="357">
               <caret line="31" column="25" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
             </state>
           </provider>
@@ -93,25 +87,31 @@
       <file leaf-file-name="Sql2oArticuloDao.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oArticuloDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="27" column="34" lean-forward="true" selection-start-line="27" selection-end-line="30" />
+            <state relative-caret-position="119">
+              <caret line="25" column="34" selection-start-line="25" selection-end-line="26" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Sql2oValoracionDao.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Sql2oValoracionDao.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oValoracionDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="29" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
+            <state relative-caret-position="391">
+              <caret line="41" selection-start-line="41" selection-end-line="41" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ValoracionDao.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ValoracionDao.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/dao/ValoracionDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
+            <state relative-caret-position="425">
               <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -123,14 +123,10 @@
       <file leaf-file-name="Comentario.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Comentario.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
+            <state relative-caret-position="391">
               <caret line="31" column="36" selection-start-line="31" selection-start-column="36" selection-end-line="31" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1968#1969#0" expanded="true" />
-                <element signature="e#1998#1999#0" expanded="true" />
-                <element signature="e#2045#2046#0" expanded="true" />
-                <element signature="e#2083#2084#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -139,8 +135,8 @@
       <file leaf-file-name="ArticuloDao.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dao/ArticuloDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="383">
-              <caret line="34" column="32" lean-forward="true" selection-start-line="11" selection-start-column="3" selection-end-line="34" selection-end-column="32" />
+            <state relative-caret-position="493">
+              <caret line="34" column="32" selection-start-line="11" selection-start-column="3" selection-end-line="34" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -151,14 +147,10 @@
       <file leaf-file-name="Articulo.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Articulo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
+            <state relative-caret-position="1496">
               <caret line="124" selection-start-line="124" selection-end-line="124" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4262#4263#0" expanded="true" />
-                <element signature="e#4292#4293#0" expanded="true" />
-                <element signature="e#4339#4340#0" expanded="true" />
-                <element signature="e#4377#4378#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -167,7 +159,7 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
+            <state relative-caret-position="187">
               <caret line="37" column="31" selection-start-line="37" selection-end-line="38" />
             </state>
           </provider>
@@ -615,8 +607,8 @@
         </subPane>
       </pane>
       <pane id="AndroidView" />
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -762,12 +754,13 @@
       <workItem from="1529971264577" duration="6639000" />
       <workItem from="1530022531715" duration="22000" />
       <workItem from="1530023378222" duration="11158000" />
-      <workItem from="1530124025266" duration="24135000" />
+      <workItem from="1530124025266" duration="24924000" />
+      <workItem from="1530289792907" duration="256000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="279671000" />
+    <option name="totallyTimeSpent" value="280716000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -780,7 +773,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="5" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50858366" side_tool="true" weight="0.3292683" />
@@ -802,11 +794,9 @@
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4914163" visible="true" weight="0.32384825" />
-      <window_info anchor="right" id="Coverage" order="11" side_tool="true" weight="0.32969153" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Persistence" order="7" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3251928" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3292683" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.32969153" />
       <window_info anchor="right" id="Gradle" order="7" weight="0.3277635" />
       <window_info anchor="right" id="Theme Preview" order="9" />
       <window_info id="Favorites" order="4" side_tool="true" />
@@ -816,6 +806,8 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3292683" />
+      <window_info anchor="right" id="Coverage" order="11" side_tool="true" weight="0.32969153" />
     </layout>
     <layout-to-restore>
       <window_info id="Persistence" order="7" side_tool="true" />
@@ -1050,10 +1042,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
           <caret line="138" column="16" selection-start-line="138" selection-start-column="16" selection-end-line="138" selection-end-column="16" />
-          <folding>
-            <element signature="n#style#0;n#button#0;n#div#0;n#td#5;n#tr#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#button#1;n#div#0;n#td#5;n#tr#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1153,7 +1141,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
+        <state relative-caret-position="187">
           <caret line="37" column="31" selection-start-line="37" selection-end-line="38" />
         </state>
       </provider>
@@ -1167,21 +1155,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Articulo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
+        <state relative-caret-position="1496">
           <caret line="124" selection-start-line="124" selection-end-line="124" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4262#4263#0" expanded="true" />
-            <element signature="e#4292#4293#0" expanded="true" />
-            <element signature="e#4339#4340#0" expanded="true" />
-            <element signature="e#4377#4378#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oComentarioDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
+        <state relative-caret-position="357">
           <caret line="31" column="25" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
         </state>
       </provider>
@@ -1200,47 +1184,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Valoracion.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="36" column="43" selection-start-line="36" selection-start-column="43" selection-end-line="36" selection-end-column="43" />
-          <folding>
-            <element signature="e#855#856#0" expanded="true" />
-            <element signature="e#885#886#0" expanded="true" />
-            <element signature="e#932#933#0" expanded="true" />
-            <element signature="e#970#971#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Comentario.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
+        <state relative-caret-position="391">
           <caret line="31" column="36" selection-start-line="31" selection-start-column="36" selection-end-line="31" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1968#1969#0" expanded="true" />
-            <element signature="e#1998#1999#0" expanded="true" />
-            <element signature="e#2045#2046#0" expanded="true" />
-            <element signature="e#2083#2084#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/dao/ArticuloDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="383">
-          <caret line="34" column="32" lean-forward="true" selection-start-line="11" selection-start-column="3" selection-end-line="34" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/dao/ValoracionDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
+        <state relative-caret-position="493">
+          <caret line="34" column="32" selection-start-line="11" selection-start-column="3" selection-end-line="34" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1249,15 +1206,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oArticuloDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="27" column="34" lean-forward="true" selection-start-line="27" selection-end-line="30" />
+        <state relative-caret-position="119">
+          <caret line="25" column="34" selection-start-line="25" selection-end-line="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Valoracion.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="36" column="43" selection-start-line="36" selection-start-column="43" selection-end-line="36" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oValoracionDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="29" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="29" />
+        <state relative-caret-position="391">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/dao/ValoracionDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
