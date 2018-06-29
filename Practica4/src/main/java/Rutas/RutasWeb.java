@@ -456,7 +456,7 @@ public class RutasWeb {
                 autenticado=true;
                 usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
 
-            Comentario comentario = new Comentario();
+            Comentario comentario=new Comentario();
             comentario.setAutorid(usuario);
             comentario.setComentario(map.get("commentbody").value());
 
@@ -771,8 +771,11 @@ public class RutasWeb {
 
             Articulo articulo = new Articulo(idarticulo, titulo, cuerpo, articuloDao.findOne(idarticulo).getAutorId(), new Date(new java.util.Date().getTime()), null, null, null);
             articulo.setEtiquetas(etiqs);
-            articulo.setComentarios(articuloDao.findOne(idarticulo).getComentarios());
             articulo.setValoraciones(articuloDao.findOne(idarticulo).getValoraciones());
+
+            Set<Comentario>comentariostemp= articuloDao.findOne(idarticulo).getComentarios();
+            articulo.setComentarios(comentariostemp);
+
             articuloDao.update(articulo);
 
             response.redirect("/articulos");

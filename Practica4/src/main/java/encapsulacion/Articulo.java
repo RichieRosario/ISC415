@@ -45,7 +45,7 @@ public class Articulo implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "articuloComentarios", joinColumns = {@JoinColumn(name = "articuloId")}, inverseJoinColumns = {@JoinColumn(name = "comentarioId")})
-    private List<Comentario> comentarios;
+    private Set<Comentario> comentarios;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "articuloEtiquetas", joinColumns = {@JoinColumn(name = "articuloId")}, inverseJoinColumns = {@JoinColumn(name = "etiquetaId")})
@@ -62,12 +62,12 @@ public class Articulo implements Serializable {
     private Long idusuario;
 
     public Articulo() {
-        comentarios = new ArrayList<>();
+        comentarios = new HashSet<>();
         etiquetas = new HashSet<>();
         valoraciones = new HashSet<>();
     }
 
-        public Articulo(Long id, String titulo, String cuerpo, Usuario autor, Date fecha,List<Comentario> comentarios, Set<Etiqueta> etiquetas,
+        public Articulo(Long id, String titulo, String cuerpo, Usuario autor, Date fecha,Set<Comentario> comentarios, Set<Etiqueta> etiquetas,
                     Set<Valoracion> valoraciones) {
         this.id = id;
         this.titulo = titulo;
@@ -119,11 +119,11 @@ public class Articulo implements Serializable {
         this.fecha = fecha;
     }
 
-    public List<Comentario> getComentarios() {
+    public Set<Comentario> getComentarios() {
         return comentarios;
     }
 
-    public void setComentarios(List<Comentario> comentarios) {
+    public void setComentarios(Set<Comentario> comentarios) {
         this.comentarios = comentarios;
     }
 

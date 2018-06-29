@@ -25,27 +25,28 @@ public class Comentario implements Serializable{
     @Column(name = "comentario")
     private String comentario;
 
-    @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "usuarioId", nullable = false)
-    private Usuario autorId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "articuloId", nullable = false)
     private Articulo articuloId;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "usuarioId", nullable = false)
+    private Usuario autorId;
+
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinTable(name = "comentarioValoraciones", joinColumns = {@JoinColumn(name = "comentarioId")}, inverseJoinColumns = {@JoinColumn(name = "valoracionId")})
     private Set<Valoracion> valoraciones;
 
     private boolean deleted = false;
 
+public Comentario(){
+
+    valoraciones = new HashSet<>();
+}
 
 
-
-    public Comentario(){
-
-        super();
-    }
     public Comentario(Long id, String comentario, Usuario autorId, Articulo articuloId,  Set<Valoracion> valoraciones) {
         this.id = id;
         this.comentario = comentario;
