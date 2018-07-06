@@ -47,7 +47,7 @@ public class Sql2oEtiquetaDao extends Repositorio<Etiqueta, Long> implements Eti
             session = HibernateUtil.openSession();
             transaction = session.beginTransaction();
 
-            query = session.createQuery("from Etiqueta e where e.etiqueta = :etiqueta").setParameter("etiqueta", etiqueta);
+            query = session.createQuery("from Etiqueta t where t.etiqueta ='"+etiqueta+"'");
 
             return (Etiqueta) query.uniqueResult();
         } catch (HibernateException e) {

@@ -6,6 +6,7 @@ import com.sun.org.apache.xerces.internal.xs.ShortList;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import dao.*;
 import encapsulacion.*;
+import hibernate.HibernateUtil;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -18,9 +19,13 @@ import sun.nio.cs.US_ASCII;
 
 
 import java.sql.Date;
+import java.sql.SQLOutput;
 import java.util.*;
 
 
+import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.Cookie;
 
 
@@ -66,14 +71,20 @@ public class RutasWeb {
             boolean autor=false;
             Usuario user = new Usuario();
             int numpage = Integer.parseInt(request.params("numpage"));
-            List<Articulo> articulosglob = articuloDao.getAll();
-            int cntpage= 1+ (int) (Math.ceil(articulosglob.size()/perpage));
-
             List<Articulo> articulosact = new ArrayList<>();
-            for(int i=((numpage-1)*5);i<((numpage-1)*5)+5;i++){
-                if(articulosglob.size() > i){
-                    articulosact.add(articulosglob.get(i));
-                }}
+
+            org.hibernate.Session session = HibernateUtil.openSession();
+            Query query = session.createQuery("From Articulo f ORDER BY f.fecha DESC");
+            query.setFirstResult((numpage-1)*5);
+            query.setMaxResults(5);
+            List<Articulo> articulosglob = articulosglob = query.getResultList();
+
+            String countQ = "Select count (f.id) from Articulo f";
+            Query countQuery = session.createQuery(countQ);
+            Long temp = (Long) ((org.hibernate.query.Query) countQuery).uniqueResult();
+            int cntpage= 1+ (int) (Math.ceil(temp/perpage));
+
+            if(articulosglob != null) articulosact=articulosglob;
 
             if(request.cookie("username")!=null){
                 autenticado=true;
@@ -133,13 +144,19 @@ public class RutasWeb {
             boolean autor=false;
             Usuario user = new Usuario();
             List<Articulo> articulosact = new ArrayList<>();
-            List<Articulo> articulosglob = articuloDao.getAll();
-            int cntpage= 1+ (int) (Math.ceil(articulosglob.size()/perpage));
 
-            for(int i=0;i<5;i++){
-                if(articulosglob.size() > i){
-                    articulosact.add(articulosglob.get(i));
-                }}
+            org.hibernate.Session session = HibernateUtil.openSession();
+            Query query = session.createQuery("From Articulo f ORDER BY f.fecha DESC");
+            query.setFirstResult(0);
+            query.setMaxResults(5);
+            List<Articulo> articulosglob = query.getResultList();
+
+            String countQ = "Select count (f.id) from Articulo f";
+            Query countQuery = session.createQuery(countQ);
+            Long temp = (Long) ((org.hibernate.query.Query) countQuery).uniqueResult();
+            int cntpage= 1+ (int) (Math.ceil(temp/perpage));
+
+            if(articulosglob != null) articulosact=articulosglob;
 
 
             if(request.cookie("username")!=null){
@@ -189,7 +206,6 @@ public class RutasWeb {
 
             return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
-
         get("/etiqueta/:etiqueta", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             boolean autenticado = false;
@@ -1226,6 +1242,48 @@ public class RutasWeb {
 
         } );
 
+
+        before("/like/comentario/:id", (request, response) ->{
+
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/like/articulo/:id", (request, response) ->{
+
+            Usuario user = new Usuario();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+                user = usuarioDao.searchByUsername(request.session().attribute("username"));
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
         before("/usuarios/editar/:id", (request, response) ->{
 
             Usuario user = new Usuario();

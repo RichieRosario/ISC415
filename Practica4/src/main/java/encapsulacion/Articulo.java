@@ -47,8 +47,8 @@ public class Articulo implements Serializable {
     @JoinTable(name = "articuloComentarios", joinColumns = {@JoinColumn(name = "articuloId")}, inverseJoinColumns = {@JoinColumn(name = "comentarioId")})
     private Set<Comentario> comentarios;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "articuloEtiquetas", joinColumns = {@JoinColumn(name = "articuloId")}, inverseJoinColumns = {@JoinColumn(name = "etiquetaId")})
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Etiqueta> etiquetas;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
