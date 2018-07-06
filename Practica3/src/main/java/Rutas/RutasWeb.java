@@ -65,7 +65,7 @@ public class RutasWeb {
             boolean autor=false;
             Usuario user = new Usuario();
 
-
+            request.cookies().containsKey()
             if(request.cookie("username")!=null){
                 autenticado=true;
                  user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));

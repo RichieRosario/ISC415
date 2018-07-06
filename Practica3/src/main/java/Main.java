@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.*;
 
-import static spark.debug.DebugScreen.enableDebugScreen;
-
 public class Main {
 
     public static void main(String[] args) throws SQLException {
@@ -49,8 +47,6 @@ public class Main {
 
         FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
 
-		enableDebugScreen();
-		
 		
         new RutasWeb(freeMarkerEngine);
 
