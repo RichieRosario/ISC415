@@ -14,10 +14,8 @@ import servicios.Hash;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Session;
-import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 import sun.nio.cs.US_ASCII;
-import websocket.ServidorMensajesWebSocketHandler;
 
 
 import java.sql.Date;
@@ -36,8 +34,6 @@ import static spark.Spark.*;
 public class RutasWeb {
 
     public RutasWeb(final FreeMarkerEngine freeMarkerEngine) {
-
-
         StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
         textEncryptor.setPassword("blog");
         Sql2oUsuarioDao usuarioDao;
@@ -54,118 +50,18 @@ public class RutasWeb {
         comentarioDao = new Sql2oComentarioDao(Comentario.class);
         etiquetaDao = new Sql2oEtiquetaDao(Etiqueta.class);
 
+//        conn = sql2o.open();
+
+//       Usuario usuarioPorDefecto = new Usuario(1L, "admin", null, Hash.sha1("admin"), true, true);
+//        usuarioDao.add(usuarioPorDefecto);
+
+    //        Articulo articuloPrueba = new Articulo(1L, "Lebron James", "Simplemente el mejor del mundo, sin discusion.", usuarioPorDefecto.getId(),  new Date(new java.util.Date().getTime()), null, null);
+    //                articuloDao.add(articuloPrueba);
+
 
         int perpage = 5;
         int currpage=1;
         int lastartidx=0;
-
-        get("/chatRoom", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            Usuario user =  usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
-            boolean autenticado = false;
-            boolean admin=false;
-            boolean autor=false;
-            if(user==null){
-                user = new Usuario();
-                user.setAutor(false);
-                user.setAdministrator(false);
-                user.setUsername("invitado");
-            }
-            if(request.cookie("username")!=null){
-                autenticado=true;
-                user = usuarioDao.searchByUsername(textEncryptor.decrypt(request.cookie("username")));
-                autor = user.isAutor();
-                admin=user.isAdministrator();
-
-            }
-            else if(request.session().attribute("username") != null && request.cookie("username")==null){
-                user = usuarioDao.searchByUsername(request.session().attribute("username"));
-                autenticado=true;
-                autor = user.isAutor();
-                admin=user.isAdministrator();
-
-            }
-            attributes.put("usuario",user);
-
-
-
-            attributes.put("autenticado",autenticado);
-            attributes.put("admin",admin);
-            attributes.put("autor",autor);
-
-            return new ModelAndView(attributes, "chatservidor.ftl");
-        }, freeMarkerEngine);
-
-        get("/administradoresConectados", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            Usuario user = new Usuario();
-            user.setAutor(false);
-            user.setAdministrator(false);
-            user.setUsername(request.queryParams("nombre"));
-            List<Usuario> usuarioadm = new ArrayList<>();
-
-            org.hibernate.Session session = HibernateUtil.openSession();
-            Query query = session.createQuery("From Usuario f WHERE f.administrator = true");
-            List<Usuario> usuariotemp1 = query.getResultList();
-
-            query = session.createQuery("From Usuario f WHERE f.autor = true");
-            List<Usuario> usuariotemp2 = query.getResultList();
-            usuarioadm = usuariotemp1;
-            usuarioadm.addAll(usuariotemp2);
-
-            attributes.put("administradores",usuarioadm);
-            attributes.put("usuario",user);
-            attributes.put("autenticado",false);
-            attributes.put("admin",user.isAdministrator());
-            attributes.put("autor",user.isAutor());
-            return new ModelAndView(attributes, "listadodeadmins.ftl");
-        }, freeMarkerEngine);
-
-        get("/chatRoom/:autor", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            Usuario user = new Usuario();
-            user.setAutor(false);
-            user.setAdministrator(false);
-            user.setUsername(request.queryParams("nombre"));
-
-
-            Usuario a = usuarioDao.findOne(Long.parseLong(request.params("autor")));
-            if(a==null){
-                response.redirect("/");
-            }
-
-            attributes.put("usuario",user);
-            attributes.put("administrador",a);
-            attributes.put("autenticado",false);
-            attributes.put("admin",user.isAdministrator());
-            attributes.put("autor",user.isAutor());
-            return new ModelAndView(attributes, "chatcliente.ftl");
-        }, freeMarkerEngine);
-
-        get("/chatRoom/:admin/:nombre", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            Usuario user = request.session().attribute("usuario");
-            if(user==null){
-                user = new Usuario();
-                user.setAutor(false);
-                user.setAdministrator(false);
-                user.setUsername(request.params("nombre"));
-
-            }
-            Usuario a = usuarioDao.findOne(Long.parseLong(request.params("admin")));
-            if(a==null){
-                response.redirect("/");
-            }
-            attributes.put("administrador",a);
-            attributes.put("usuario",user);
-            attributes.put("autenticado",false);
-            attributes.put("admin",user.isAdministrator());
-            attributes.put("autor",user.isAutor());
-
-            return new ModelAndView(attributes, "chatcliente.ftl");
-        }, freeMarkerEngine);
-
-
 
         get("/page/:numpage", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -220,10 +116,24 @@ public class RutasWeb {
                 mapa.put("titulo", art.getTitulo());
                 mapa.put("fecha", art.getFecha().toString());
                 mapa.put("autor", art.getNombreAutor());
-                String cuerpo = art.getResumen();
+                String cuerpo = art.getCuerpo();
+
+                if( cuerpo.length() > 70)
+                    cuerpo = cuerpo.substring(0, 69);
 
                 mapa.put("cuerpo", cuerpo);
 
+
+                String tags = "";
+
+                for(Etiqueta et : art.getEtiquetas()){
+                    if( tags.equals(""))
+                        tags = et.getEtiqueta();
+                    else
+                        tags = tags + " " + et.getEtiqueta();
+                }
+
+                mapa.put("etiquetas", tags);
                 mapa.put("id", String.valueOf(art.getId()) );
 
                 articulos.add(mapa);
@@ -239,7 +149,7 @@ public class RutasWeb {
                 autor=user.isAutor();
                 admin=user.isAdministrator();
 
-                // List<Articulo> articulos = articulosact;
+               // List<Articulo> articulos = articulosact;
                 attributes.put("autor", autor);
                 attributes.put("usuariodentro",user.getNombre());
                 attributes.put("admin", admin);
@@ -251,7 +161,7 @@ public class RutasWeb {
 
 
             else {
-                // List<Articulo> articulos = articulosact;
+               // List<Articulo> articulos = articulosact;
                 attributes.put("usuariodentro", "Huesped");
                 attributes.put("autor", false);
                 attributes.put("admin", false);

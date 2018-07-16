@@ -1,4 +1,4 @@
-package encapsulacion;
+	package encapsulacion;
 
 import org.hibernate.annotations.Where;
 

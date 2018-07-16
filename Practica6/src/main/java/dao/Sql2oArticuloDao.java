@@ -111,7 +111,7 @@ public class Sql2oArticuloDao extends Repositorio<Articulo, Long>  implements Ar
 
             for (Object object : query.list()) {
 
-                list.add(comentarioDao.findOne(Long.parseLong(object.toString())));
+                    list.add(comentarioDao.findOne(Long.parseLong(object.toString())));
             }
 
             return list;
@@ -154,7 +154,7 @@ public class Sql2oArticuloDao extends Repositorio<Articulo, Long>  implements Ar
             session.close();
         }
     }
-    //        String sql = "SELECT etiquetaId FROM articulos_etiquetas WHERE articuloId = :articuloId";
+//        String sql = "SELECT etiquetaId FROM articulos_etiquetas WHERE articuloId = :articuloId";
 //
 //        try(Connection con = sql2o.open()) {
 //            return con.createQuery(sql)
@@ -187,16 +187,16 @@ public class Sql2oArticuloDao extends Repositorio<Articulo, Long>  implements Ar
 
     public long getPageCount(){
 
-        Session session = null;
-        Query query = null;
-        session = HibernateUtil.openSession();
+            Session session = null;
+            Query query = null;
+            session = HibernateUtil.openSession();
 
-        query = session.createNativeQuery("Select count(*) from Articulo a");
+            query = session.createNativeQuery("Select count(*) from Articulo a");
 
-        BigInteger resultado = (BigInteger) query.getSingleResult();
+            BigInteger resultado = (BigInteger) query.getSingleResult();
 
-        long result = resultado.longValue();
-        return (result + pageSize - 1)/pageSize;
+            long result = resultado.longValue();
+            return (result + pageSize - 1)/pageSize;
 
 
     }

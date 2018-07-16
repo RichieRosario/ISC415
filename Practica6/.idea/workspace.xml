@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/src/main/java/dao/Sql2oUsuarioDao.java" line="70" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/java/dao/Sql2oUsuarioDao.java" line="66" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="16775fac-dbd8-4387-a7e2-b0a83d80f2fb" name="Default" comment="" />
@@ -16,9 +16,9 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/Practica4$Main.ic" NAME="Main Coverage Results" MODIFIED="1530124755888" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/Practica6$Main.ic" NAME="Main Coverage Results" MODIFIED="1531515303763" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/Practica3$Main.ic" NAME="Main Coverage Results" MODIFIED="1528987356927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/Practica4$Main.ic" NAME="Main Coverage Results" MODIFIED="1530124755888" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -61,7 +61,7 @@
       <file leaf-file-name="ServidorMensajesWebSocketHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/websocket/ServidorMensajesWebSocketHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
+            <state relative-caret-position="238">
               <caret line="27" selection-start-line="27" selection-end-line="27" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -73,8 +73,8 @@
       <file leaf-file-name="index.ftl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/index.ftl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="206">
-              <caret line="199" selection-start-line="199" selection-end-line="199" />
+            <state relative-caret-position="3655">
+              <caret line="215" selection-start-line="215" selection-end-line="215" />
             </state>
           </provider>
         </entry>
@@ -82,7 +82,7 @@
       <file leaf-file-name="Sql2oArticuloDao.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oArticuloDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3165">
+            <state relative-caret-position="3230">
               <caret line="213" selection-start-line="213" selection-end-line="213" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -94,26 +94,8 @@
       <file leaf-file-name="post.ftl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/post.ftl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4305">
+            <state relative-caret-position="4879">
               <caret line="287" selection-start-line="287" selection-end-line="287" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="chatcliente.ftl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/templates/chatcliente.ftl">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2175">
-              <caret line="145" column="29" selection-start-line="145" selection-start-column="29" selection-end-line="145" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="chatservidor.ftl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/templates/chatservidor.ftl">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="103" column="14" selection-start-line="103" selection-start-column="14" selection-end-line="103" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -122,16 +104,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="256">
-              <caret line="234" lean-forward="true" selection-start-line="234" selection-end-line="234" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="listadodeadmins.ftl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/templates/listadodeadmins.ftl">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1950">
-              <caret line="130" column="9" selection-start-line="130" selection-start-column="9" selection-end-line="130" selection-end-column="9" />
+              <caret line="324" selection-start-line="324" selection-end-line="324" />
             </state>
           </provider>
         </entry>
@@ -361,9 +334,9 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="4592394240000" />
+        <entry key="$PROJECT_DIR$" value="4593454481364" />
         <entry key="$PROJECT_DIR$/.gradle" value="0" />
-        <entry key="$PROJECT_DIR$/build.gradle" value="3488855608" />
+        <entry key="$PROJECT_DIR$/build.gradle" value="3654582989" />
         <entry key="$PROJECT_DIR$/settings.gradle" value="711825233" />
       </map>
     </option>
@@ -488,6 +461,8 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -593,8 +568,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -602,7 +575,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="H2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Parcial 2" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Libraries" />
@@ -776,11 +749,12 @@
       <workItem from="1531426369924" duration="820000" />
       <workItem from="1531511634078" duration="6603000" />
       <workItem from="1531518720622" duration="661000" />
+      <workItem from="1531661693254" duration="19000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="340853000" />
+    <option name="totallyTimeSpent" value="340872000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -797,36 +771,36 @@
     <layout>
       <window_info anchor="right" id="Palette" order="5" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3292683" />
-      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49356222" weight="0.3298153" />
       <window_info anchor="right" id="Palette&#9;" order="10" />
-      <window_info anchor="bottom" id="Java Enterprise" order="13" />
+      <window_info id="Image Layers" order="6" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.509299" side_tool="true" weight="0.323219" />
       <window_info anchor="right" id="Maven Projects" order="8" weight="0.32969153" />
-      <window_info anchor="right" id="CDI" order="0" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.490701" weight="0.323219" />
       <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.490701" weight="0.323219" />
       <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info id="Capture Tool" order="5" />
       <window_info id="Persistence" order="7" side_tool="true" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.41201717" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.41811594" />
       <window_info anchor="right" id="Database" order="2" weight="0.32904148" />
       <window_info anchor="right" id="Gradle" order="7" weight="0.25679544" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="3" weight="0.24935733" />
       <window_info id="UI Designer" order="3" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39972898" />
+      <window_info anchor="right" id="Theme Preview" order="9" />
       <window_info id="Favorites" order="4" side_tool="true" />
-      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39972898" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49356222" weight="0.3298153" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
-      <window_info id="Image Layers" order="6" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info id="Capture Tool" order="5" />
       <window_info anchor="bottom" id="Build" order="10" weight="0.32717678" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="right" id="Theme Preview" order="9" />
+      <window_info anchor="right" id="CDI" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Java Enterprise" order="13" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32849604" />
       <window_info anchor="right" id="Coverage" order="11" side_tool="true" weight="0.32904148" />
     </layout>
@@ -888,13 +862,7 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/listadodeadmins.ftl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1950">
-          <caret line="130" column="9" selection-start-line="130" selection-start-column="9" selection-end-line="130" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/listadodeadmins.ftl" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/post.ftl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4350">
@@ -1153,7 +1121,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/websocket/ServidorMensajesWebSocketHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
+        <state relative-caret-position="238">
           <caret line="27" selection-start-line="27" selection-end-line="27" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1163,31 +1131,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/public/js/chatAdminAutor.js" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/public/js/chatUsuario.js" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/main/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="41" selection-start-line="41" selection-end-line="41" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/public/js/bootstrap.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9000" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/listadodeadmins.ftl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1950">
-          <caret line="130" column="9" selection-start-line="130" selection-start-column="9" selection-end-line="130" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/main/Main.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/resources/public/js/bootstrap.js" />
+    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/listadodeadmins.ftl" />
     <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oArticuloDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3165">
+        <state relative-caret-position="3230">
           <caret line="213" selection-start-line="213" selection-end-line="213" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1197,43 +1146,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/post.ftl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4305">
+        <state relative-caret-position="4879">
           <caret line="287" selection-start-line="287" selection-end-line="287" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Chat.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/chatcliente.ftl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2175">
-          <caret line="145" column="29" selection-start-line="145" selection-start-column="29" selection-end-line="145" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/chatservidor.ftl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="103" column="14" selection-start-line="103" selection-start-column="14" selection-end-line="103" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/encapsulacion/Chat.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/chatcliente.ftl" />
+    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/chatservidor.ftl" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/index.ftl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="199" selection-start-line="199" selection-end-line="199" />
+        <state relative-caret-position="3655">
+          <caret line="215" selection-start-line="215" selection-end-line="215" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="256">
-          <caret line="234" lean-forward="true" selection-start-line="234" selection-end-line="234" />
+          <caret line="324" selection-start-line="324" selection-end-line="324" />
         </state>
       </provider>
     </entry>
