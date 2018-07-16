@@ -9,8 +9,8 @@ import javafx.geometry.Pos;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
-@Entity
-@Table(name = "Timeline")
+@Entity(name = "Timeline")
+@Table(name = "timeline")
 @Where(clause = "deleted = 0")
 
 public class Timeline implements Serializable {

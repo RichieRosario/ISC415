@@ -5,8 +5,8 @@ import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
-@Entity
-@Table(name = "Tag")
+@Entity(name = "Tag")
+@Table(name = "tag")
 @Where(clause = "deleted = 0")
 
 public class Tag implements Serializable {

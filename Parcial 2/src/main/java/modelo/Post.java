@@ -8,8 +8,8 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "Post")
+@Entity(name = "Post")
+@Table(name = "post")
 @Where(clause = "deleted = 0")
 
 public class Post implements Serializable {
@@ -26,10 +26,10 @@ public class Post implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(  mappedBy = "Post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(  mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(  mappedBy = "Post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(  mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> etiquetas = new ArrayList<>();
 
     private boolean deleted = false;

@@ -6,8 +6,8 @@ import org.hibernate.annotations.Where;
 
 import java.io.Serializable;
 
-@Entity
-@Table(name = "LikeDislike")
+@Entity(name = "LikeDislike")
+@Table(name = "likedislike")
 @Where(clause = "deleted = 0")
 
 public class LikeDislike implements Serializable {

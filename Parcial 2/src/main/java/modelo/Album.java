@@ -8,8 +8,8 @@ import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
-@Entity
-@Table(name = "Album")
+@Entity(name = "Album")
+@Table(name = "album")
 @Where(clause = "deleted = 0")
 
 public class Album implements Serializable {
@@ -29,7 +29,7 @@ public class Album implements Serializable {
     @Column(name = "descripcion")
     private String nombredescripcion;
 
-    @OneToMany(  mappedBy = "Album", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(  mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos = new ArrayList<>();
 
     private boolean deleted = false;

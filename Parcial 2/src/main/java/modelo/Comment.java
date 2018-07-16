@@ -5,8 +5,8 @@ import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
-@Entity
-@Table(name = "Comment")
+@Entity(name = "Comment")
+@Table(name = "comment")
 @Where(clause = "deleted = 0")
 
 public class Comment implements Serializable {
@@ -68,4 +68,5 @@ public class Comment implements Serializable {
     public void setPhoto(Photo photo) {
         this.photo = photo;
     }
+
 }

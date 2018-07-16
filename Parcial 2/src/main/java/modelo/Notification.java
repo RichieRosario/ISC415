@@ -8,8 +8,8 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "Notification")
+@Entity(name = "Notification")
+@Table(name = "notification")
 @Where(clause = "deleted = 0")
 
 public class Notification implements Serializable {
@@ -28,4 +28,35 @@ public class Notification implements Serializable {
 
     private boolean deleted = false;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNotificacion() {
+        return notificacion;
+    }
+
+    public void setNotificacion(String notificacion) {
+        this.notificacion = notificacion;
+    }
+
+    public Boolean getSeen() {
+        return isSeen;
+    }
+
+    public void setSeen(Boolean seen) {
+        isSeen = seen;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

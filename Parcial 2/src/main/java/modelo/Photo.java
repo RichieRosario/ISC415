@@ -8,8 +8,8 @@ import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
-@Entity
-@Table(name = "Photo")
+@Entity(name = "Photo")
+@Table(name = "photo")
 @Where(clause = "deleted = 0")
 
 public class Photo implements Serializable {
@@ -22,10 +22,10 @@ public class Photo implements Serializable {
     @Column(name = "caption")
     private String caption;
 
-    @OneToMany(  mappedBy = "Photo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(  mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(  mappedBy = "Photo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(  mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> etiquetas = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -72,5 +72,13 @@ public class Photo implements Serializable {
 
     public void setAlbum(Album album) {
         this.album = album;
+    }
+
+    public List<Tag> getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void setEtiquetas(List<Tag> etiquetas) {
+        this.etiquetas = etiquetas;
     }
 }

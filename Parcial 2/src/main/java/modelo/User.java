@@ -9,8 +9,8 @@ import javafx.geometry.Pos;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
-@Entity
-@Table(name = "User")
+@Entity(name = "User")
+@Table(name = "user")
 @Where(clause = "deleted = 0")
 
 public class User implements Serializable {
@@ -32,7 +32,7 @@ public class User implements Serializable {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
     private boolean deleted = false;

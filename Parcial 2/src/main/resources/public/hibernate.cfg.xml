@@ -20,7 +20,7 @@
 
         <property name="hibernate.transaction.auto_close_session">true</property>
 
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
 
         <property name="hibernate.generate_statistics">false</property>
 
@@ -34,9 +34,7 @@
 
         <!-- List of XML mapping files -->
 
-        <mapping class="modelo.Album"/>
 
-        <mapping class="modelo.Comment"/>
 
         <mapping class="modelo.Friendship"/>
 
@@ -56,6 +54,9 @@
 
 		<mapping class="modelo.User"/>
 
+        <mapping class="modelo.Album"/>
+
+        <mapping class="modelo.Comment"/>
 
 
 
