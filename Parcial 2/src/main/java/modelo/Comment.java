@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
+import java.util.Optional;
 
 @Entity(name = "Comment")
 @Table(name = "comment")
@@ -19,13 +20,17 @@ public class Comment implements Serializable {
     @Column(name = "comentario")
     private String comentario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "post_id",nullable = true, updatable = false)
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "photo_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "photo_id",nullable = true, updatable = false)
     private Photo photo;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private boolean deleted = false;
 
@@ -69,4 +74,11 @@ public class Comment implements Serializable {
         this.photo = photo;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

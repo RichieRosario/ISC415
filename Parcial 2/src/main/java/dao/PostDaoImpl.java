@@ -2,8 +2,7 @@ package dao;
 
 import hibernate.HibernateUtil;
 import javafx.geometry.Pos;
-import modelo.Photo;
-import modelo.Post;
+import modelo.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,10 +10,14 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static hibernate.HibernateUtil.getSession;
 
 public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
 
+    private static ArrayList<Integer> friends;
     private static final Logger logger = LoggerFactory.getLogger(PostDaoImpl.class);
     public PostDaoImpl(Class<Post> postClass){
 
@@ -64,4 +67,126 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
         post.setDeleted(true);
         this.update(post);
     }
+
+    public List<Post> getFriendPosts(User user, ArrayList<Integer> friendList)
+    {
+        friendList.add(user.getId());
+        Query query = getSession().createQuery("from Post where user in (:personid) order by fecha desc");
+        query.setParameterList("personid", friendList);
+        List<Post> postList = (ArrayList<Post>) query.list();
+        friends = friendList;
+        return postList;
+    }
+    public List<Post> getMyPosts(int userId)
+    {
+        Query q = getSession().createQuery("from Post where user = :userId");
+        q.setInteger("userId", userId);
+        List<Post> postList = (ArrayList<Post>) q.list();
+
+        return postList;
+    }
+    public int addLike(int postId, User user)
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery("from Post where id = :postId");
+        query.setInteger("postId", postId);
+        Post post = (Post) query.uniqueResult();
+        int likes = post.getLikes() + 1;
+        try
+        {
+            Transaction transaction = session.beginTransaction();
+            post.setLikes(likes);
+            session.update(post);
+            transaction.commit();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            session.close();
+        }
+
+        UserDaoImpl userDao = null;
+        Profile profile = userDao.getProfile(user.getId());
+        String notification = "A " + profile.getNombre() + " " + profile.getApellido() + " le gusta tu post";
+        addNotification(user, notification, post);
+
+        return likes;
+    }
+
+    public void addNotification(User user, String notification, Post post)
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Notification n = new Notification();
+            n.setUser(user);
+            n.setToUser(post.getUser());
+            n.setNotificacion(notification);
+            n.setSeen(false);
+//            n.set(post);
+//            post.getNotifications().add(n);
+
+            Transaction transaction = session.beginTransaction();
+            session.save(n);
+            transaction.commit();
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            session.close();
+        }
+
+    }
+    public String addComments(int postId, String comment, User user)
+    {
+       // String safe_comment = StringEscapeUtils.escapeHtml(comment);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Query q = session.createQuery("from Post where id = :postId");
+        q.setInteger("postId", postId);
+        Post post = (Post) q.uniqueResult();
+        try
+        {
+            Comment c = new Comment();
+            c.setComentario(comment);
+            c.setUser(user);
+            //c.s(new Date());
+            c.setPost(post);
+            post.getComments().add(c);
+
+            Transaction transaction = session.beginTransaction();
+
+            session.update(post);
+
+            transaction.commit();
+        }
+        catch(Exception e)
+        {
+            System.out.println("Could not PostDao");
+            e.printStackTrace();
+        }
+        finally
+        {
+            session.close();
+        }
+
+        UserDaoImpl userDao = null;
+        Profile profile = userDao.getProfile(user.getId());
+
+        String notification = profile.getNombre() + " " + profile.getApellido() + " comento en tu post";
+        addNotification(user, notification, post);
+//
+//        String html = "<a href='profile.html'><img src='" + user.getPerson().getProfilePicPath() + "' width=20px class='img-circle pull-left' />" +
+//                "<h5>&nbsp; " + user.getPerson().getFirstName() + " " + user.getPerson().getLastName() + "</a></h5>" +
+//                "<p>" + comment + "</p>";
+        String html = "Hola";
+        return html;
+    }
+
 }

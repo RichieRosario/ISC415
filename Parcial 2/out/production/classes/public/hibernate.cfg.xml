@@ -58,6 +58,12 @@
 
         <mapping class="modelo.Comment"/>
 
+        <mapping class="modelo.Event"/>
+
+        <mapping class="modelo.Wall"/>
+
+
+
 
 
     </session-factory>

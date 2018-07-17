@@ -1,20 +1,20 @@
-package dao;
+	package dao;
 
-import java.util.List;
+	import java.util.List;
 
-public interface IRepositorio<T,K extends Long> {
+	public interface IRepositorio<T,K extends Long> {
 
-    void add(T k);
+		void add(T k);
 
-    void update(T k);
+		void update(T k);
 
-    void deleteById(T k);
+		void deleteById(T k);
 
-    void merge(T k);
+		void merge(T k);
 
-    T findOne(K k);
+		T findOne(K k);
 
-    List<T> getAll();
-}
+		List<T> getAll();
+	}
 
 

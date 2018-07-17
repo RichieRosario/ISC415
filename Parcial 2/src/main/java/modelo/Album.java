@@ -29,7 +29,7 @@ public class Album implements Serializable {
     @Column(name = "descripcion")
     private String nombredescripcion;
 
-    @OneToMany(  mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany( mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos = new ArrayList<>();
 
     private boolean deleted = false;
@@ -81,4 +81,6 @@ public class Album implements Serializable {
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
     }
+
+
 }

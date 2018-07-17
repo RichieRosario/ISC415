@@ -3,6 +3,7 @@ package dao;
 import hibernate.HibernateUtil;
 import modelo.LikeDislike;
 import modelo.Notification;
+import modelo.User;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
+import static hibernate.HibernateUtil.getSession;
 
 public class NotificationDaoImpl extends Repositorio<Notification, Integer> implements NotificationDao {
 
@@ -63,4 +66,38 @@ public class NotificationDaoImpl extends Repositorio<Notification, Integer> impl
         notification.setDeleted(true);
         this.update(notification);
     }
+
+    public List<Notification> unseenNotifications(User user)
+    {
+        Query q = getSession().createQuery("from Notification where toUser = :personid and isSeen = false");
+        q.setInteger("personid", user.getId());
+        List<Notification> notificationList = (List<Notification>) q.list();
+        return notificationList;
+    }
+    public void markAsRead(User user)
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Query q = session.createQuery("from Notification where toUser = :userId and isSeen = false ");
+        q.setInteger("userId", user.getId());
+        List<Notification> notificationList = (List<Notification>) q.list();
+        try
+        {
+            Transaction transaction = session.beginTransaction();
+            for(Notification n : notificationList)
+            {
+                n.setSeen(true);
+                session.update(n);
+            }
+            transaction.commit();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            session.close();
+        }
+    }
+
 }

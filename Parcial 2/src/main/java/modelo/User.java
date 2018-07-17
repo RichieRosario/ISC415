@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import hibernate.HibernateUtil;
 import javafx.geometry.Pos;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
@@ -32,8 +36,17 @@ public class User implements Serializable {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "administrator")
+    private boolean administrator;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, cascade =  CascadeType.ALL, mappedBy = "user")
+    private Comment comment;
 
     private boolean deleted = false;
 
@@ -84,5 +97,29 @@ public class User implements Serializable {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public boolean isAdministrator() {
+        return administrator;
+    }
+
+    public void setAdministrator(boolean administrator) {
+        this.administrator = administrator;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 }

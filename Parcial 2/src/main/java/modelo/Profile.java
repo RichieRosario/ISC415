@@ -40,6 +40,9 @@ public class Profile implements Serializable {
     @Column(name = "lugartrabajo")
     private String lugartrabajo;
 
+    @Column(name = "sexo")
+    private Character sexo;
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private User user;
@@ -108,6 +111,22 @@ public class Profile implements Serializable {
 
     public void setLugartrabajo(String lugartrabajo) {
         this.lugartrabajo = lugartrabajo;
+    }
+
+    public Character getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(Character sexo) {
+        this.sexo = sexo;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public boolean isDeleted() {

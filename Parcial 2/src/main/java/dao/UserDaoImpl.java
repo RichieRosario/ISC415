@@ -1,6 +1,7 @@
 package dao;
 
 import hibernate.HibernateUtil;
+import modelo.Profile;
 import modelo.Timeline;
 import modelo.User;
 import org.hibernate.HibernateException;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
+import static hibernate.HibernateUtil.getSession;
 
 public class UserDaoImpl extends Repositorio<User, Integer> implements UserDao {
 
@@ -63,4 +66,51 @@ public class UserDaoImpl extends Repositorio<User, Integer> implements UserDao {
         user.setDeleted(true);
         this.update(user);
     }
+
+    public Profile getProfile(int userId){
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery("from Profile where user = :userId");
+        query.setInteger("userId", userId);
+        Profile profile = (Profile) query.uniqueResult();
+
+        return profile;
+    }
+
+    public User searchByUsername(String username){
+
+        User user = null;
+        try
+        {
+            Query q = getSession().createQuery("from User where username = :username");
+            q.setString("username", username);
+            user = (User) q.uniqueResult();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public User matchUsernameAndPassword(String username, String password)
+            throws Exception {
+        try
+        {
+            Query q = getSession().createQuery("from User where username = :username1 and password = :password1");
+
+            q.setString("username1", username);
+            q.setString("password1", password);
+            User user = (User) q.uniqueResult();
+            System.out.println(user.getId());
+
+            return user;
+        }
+        catch (HibernateException e)
+        {
+            throw new Exception("No se pudo obtener el usuario: " + username, e);
+        }
+    }
+
+
 }

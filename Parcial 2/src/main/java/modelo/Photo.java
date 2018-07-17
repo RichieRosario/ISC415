@@ -2,7 +2,9 @@ package modelo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -22,17 +24,29 @@ public class Photo implements Serializable {
     @Column(name = "caption")
     private String caption;
 
-    @OneToMany(  mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade =  CascadeType.ALL, mappedBy = "photo")
+    private Post post;
+
+    @OneToMany( mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(  mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tag> etiquetas = new ArrayList<>();
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "photo_tag",
+            joinColumns = @JoinColumn(name = "photo_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> etiquetas = new HashSet<>();
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_id")
     private Album album;
 
     private boolean deleted = false;
+
 
     public int getId() {
         return id;
@@ -74,11 +88,19 @@ public class Photo implements Serializable {
         this.album = album;
     }
 
-    public List<Tag> getEtiquetas() {
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public Set<Tag> getEtiquetas() {
         return etiquetas;
     }
 
-    public void setEtiquetas(List<Tag> etiquetas) {
+    public void setEtiquetas(Set<Tag> etiquetas) {
         this.etiquetas = etiquetas;
     }
 }

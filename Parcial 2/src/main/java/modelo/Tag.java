@@ -1,6 +1,10 @@
 package modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
@@ -22,13 +26,11 @@ public class Tag implements Serializable {
     @Column(name="toUser")
     private int toUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "photo_id")
-    private Photo photo;
+    @ManyToMany(mappedBy = "etiquetas")
+    private Set<Post> posts = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @ManyToMany(mappedBy = "etiquetas")
+    private Set<Photo> photos = new HashSet<>();
 
 
 
