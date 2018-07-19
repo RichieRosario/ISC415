@@ -20,6 +20,9 @@ public class Comment implements Serializable {
     @Column(name = "comentario")
     private String comentario;
 
+    @Column(name = "likes")
+    private int likes;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "post_id",nullable = true, updatable = false)
     private Post post;
@@ -80,5 +83,13 @@ public class Comment implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 }

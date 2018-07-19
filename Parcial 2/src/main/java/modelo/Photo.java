@@ -1,6 +1,7 @@
 package modelo;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,9 @@ public class Photo implements Serializable {
     @Column(name = "caption")
     private String caption;
 
+    @Column(name = "foto")
+    private Blob foto;
+
     @OneToOne(fetch = FetchType.LAZY, cascade =  CascadeType.ALL, mappedBy = "photo")
     private Post post;
 
@@ -40,10 +44,8 @@ public class Photo implements Serializable {
     )
     private Set<Tag> etiquetas = new HashSet<>();
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "album_id")
-    private Album album;
+    @ManyToMany(mappedBy = "photos")
+    private Set<Album> albums = new HashSet<>();
 
     private boolean deleted = false;
 
@@ -80,14 +82,6 @@ public class Photo implements Serializable {
         this.comments = comments;
     }
 
-    public Album getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(Album album) {
-        this.album = album;
-    }
-
     public Post getPost() {
         return post;
     }
@@ -102,5 +96,21 @@ public class Photo implements Serializable {
 
     public void setEtiquetas(Set<Tag> etiquetas) {
         this.etiquetas = etiquetas;
+    }
+
+    public Set<Album> getAlbums() {
+        return albums;
+    }
+
+    public void setAlbums(Set<Album> albums) {
+        this.albums = albums;
+    }
+
+    public Blob getFoto() {
+        return foto;
+    }
+
+    public void setFoto(Blob foto) {
+        this.foto = foto;
     }
 }

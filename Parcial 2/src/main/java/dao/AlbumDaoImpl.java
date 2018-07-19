@@ -1,5 +1,6 @@
 package dao;
 
+import modelo.Photo;
 import org.hibernate.HibernateException;
 import hibernate.HibernateUtil;
 import modelo.Album;
@@ -10,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
+
+import static hibernate.HibernateUtil.getSession;
 
 public class AlbumDaoImpl extends Repositorio<Album, Integer> implements AlbumDao {
 
@@ -62,4 +66,5 @@ public class AlbumDaoImpl extends Repositorio<Album, Integer> implements AlbumDa
         album.setDeleted(true);
         this.update(album);
     }
+
 }

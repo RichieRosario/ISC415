@@ -3,7 +3,9 @@ package modelo;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
@@ -29,8 +31,15 @@ public class Album implements Serializable {
     @Column(name = "descripcion")
     private String nombredescripcion;
 
-    @OneToMany( mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Photo> photos = new ArrayList<>();
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "photo_album",
+            joinColumns = @JoinColumn(name = "photo_id"),
+            inverseJoinColumns = @JoinColumn(name = "album_id")
+    )
+    private Set<Photo> photos = new HashSet<>();
 
     private boolean deleted = false;
 
@@ -74,13 +83,11 @@ public class Album implements Serializable {
         this.deleted = deleted;
     }
 
-    public List<Photo> getPhotos() {
+    public Set<Photo> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<Photo> photos) {
+    public void setPhotos(Set<Photo> photos) {
         this.photos = photos;
     }
-
-
 }

@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 import java.sql.Blob;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,10 @@ public class Event implements Serializable {
     private int id;
 
     @Column(name = "fecha")
-    private Date fecha;
+    private LocalDate fecha;
+
+    @Column(name = "evento")
+    private String evento;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -41,11 +45,11 @@ public class Event implements Serializable {
         this.id = id;
     }
 
-    public Date getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
@@ -73,5 +77,11 @@ public class Event implements Serializable {
         this.deleted = deleted;
     }
 
+    public String getEvento() {
+        return evento;
+    }
 
+    public void setEvento(String evento) {
+        this.evento = evento;
+    }
 }

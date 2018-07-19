@@ -10,6 +10,9 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +20,7 @@ import static hibernate.HibernateUtil.getSession;
 
 public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
 
-    private static ArrayList<Integer> friends;
+    private static List<Integer> friends;
     private static final Logger logger = LoggerFactory.getLogger(PostDaoImpl.class);
     public PostDaoImpl(Class<Post> postClass){
 
@@ -68,12 +71,12 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
         this.update(post);
     }
 
-    public List<Post> getFriendPosts(User user, ArrayList<Integer> friendList)
+    public List<Post> getFriendPosts(User user, List<Integer> friendList)
     {
         friendList.add(user.getId());
         Query query = getSession().createQuery("from Post where user in (:personid) order by fecha desc");
         query.setParameterList("personid", friendList);
-        List<Post> postList = (ArrayList<Post>) query.list();
+        List<Post> postList = (List<Post>) query.list();
         friends = friendList;
         return postList;
     }
@@ -110,8 +113,20 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
 
         UserDaoImpl userDao = null;
         Profile profile = userDao.getProfile(user.getId());
-        String notification = "A " + profile.getNombre() + " " + profile.getApellido() + " le gusta tu post";
+        String notification = "A " + profile.getNombre() + " " + profile.getApellido() + " le gusto tu publicacion";
         addNotification(user, notification, post);
+
+        EventDaoImpl eventDao = null;
+        WallDaoImpl wallDao = null;
+        Wall wall = null;
+
+        Event event = new Event();
+        wall =  wallDao.findWallByUser(user.getId());
+        event.setUser(user);
+        event.setEvento(notification);
+        event.setWall(wall);
+        event.setFecha(LocalDate.now());
+        eventDao.add(event);
 
         return likes;
     }

@@ -4,6 +4,7 @@ import hibernate.HibernateUtil;
 import modelo.Profile;
 import modelo.Timeline;
 import modelo.User;
+import modelo.Wall;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,6 +12,7 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static hibernate.HibernateUtil.getSession;
@@ -112,5 +114,20 @@ public class UserDaoImpl extends Repositorio<User, Integer> implements UserDao {
         }
     }
 
+    public List<User> getUsersById(List<Integer> userIds)
+    {
+        List<User> users;
+
+        if(userIds.size() > 0)
+        {
+            Query q = getSession().createQuery("from User where id in (:userIds)");
+            q.setParameterList("userIds", userIds);
+            users = (List<User>) q.list();
+        }
+        else
+            users = new ArrayList<User>();
+
+        return users;
+    }
 
 }

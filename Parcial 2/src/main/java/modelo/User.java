@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import dao.FriendshipDaoImpl;
+import dao.UserDaoImpl;
 import hibernate.HibernateUtil;
 import javafx.geometry.Pos;
 import org.hibernate.Session;
@@ -121,5 +123,40 @@ public class User implements Serializable {
 
     public void setComment(Comment comment) {
         this.comment = comment;
+    }
+
+    public List<User> usersMayKnow(int userId){
+
+        FriendshipDaoImpl friendshipDao = null;
+        UserDaoImpl userDao = null;
+
+        List<Integer> amigos = friendshipDao.getAllFriends(userDao.findOne(userId));
+        List<Integer> noamigos = null;
+        List<User> todos = userDao.getAll();
+
+        for (User usuario : todos) {
+            for (Integer amigo : amigos) {
+                if (usuario.getId() == amigo) {
+                    continue;
+                } else noamigos.add(usuario.getId());
+            }
+        }
+        List<User> desconocidos = null;
+
+        for (Integer noamigo : noamigos) {
+            desconocidos.add(userDao.findOne(noamigo));
+        }
+
+        List<User> posiblesConocidos = null;
+
+        for (User desconocido : desconocidos) {
+            if(userDao.getProfile(desconocido.getId()).getCiudadactual() == userDao.getProfile(userDao.findOne(userId).getId()).getCiudadactual()
+                    || userDao.getProfile(desconocido.getId()).getLugarestudio() == userDao.getProfile(userDao.findOne(userId).getId()).getLugarestudio()
+                    || userDao.getProfile(desconocido.getId()).getLugartrabajo() == userDao.getProfile(userDao.findOne(userId).getId()).getLugartrabajo()){
+
+                posiblesConocidos.add(desconocido);
+            }
+        }
+        return posiblesConocidos;
     }
 }

@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 import java.sql.Blob;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Post implements Serializable {
     private String texto;
 
     @Column(name = "fecha")
-    private Date fecha;
+    private LocalDate fecha;
 
     @Column(name = "likes")
     private int likes;
@@ -116,11 +117,11 @@ public class Post implements Serializable {
         this.wall = wall;
     }
 
-    public Date getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 

@@ -2,6 +2,7 @@ package dao;
 
 import hibernate.HibernateUtil;
 import modelo.Album;
+import modelo.User;
 import modelo.Wall;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
+import static hibernate.HibernateUtil.getSession;
 
 public class WallDaoImpl extends Repositorio<Wall, Integer> implements WallDao{
 
@@ -62,5 +65,22 @@ public class WallDaoImpl extends Repositorio<Wall, Integer> implements WallDao{
     public void deleteById(Wall wall) {
         wall.setDeleted(true);
         this.update(wall);
+    }
+
+    public Wall findWallByUser(int userId){
+
+        Wall wall = null;
+        try
+        {
+            Query q = getSession().createQuery("from Wall where user = :userId");
+            q.setInteger("userId", userId);
+            wall = (Wall) q.uniqueResult();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return wall;
+
     }
 }
