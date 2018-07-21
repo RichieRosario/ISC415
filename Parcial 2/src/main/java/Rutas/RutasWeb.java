@@ -80,53 +80,91 @@ public class RutasWeb {
             QueryParamsMap map = request.queryMap();
 
             User user = new User();
-            user = usuarioDao.findOne(1); //prueba
+            user = usuarioDao.findOne(2); //prueba
 
             List<Integer> friendlist = friendshipDao.getAllFriends(user);
+            List<User> amigos = usuarioDao.getUsersById(friendlist);
+            ArrayList<Profile> profilesList = new ArrayList<>();
+
+            if(amigos.size() > 0)
+            {
+                for(User user1 : amigos){
+                    Profile profile = usuarioDao.getProfile(user1);
+                    profilesList.add(profile);
+                }
+            }
+
 
             List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
-            attributes.put("friends", friendlist);
+            attributes.put("user", user);
+            attributes.put("profile", usuarioDao.getProfile(user));
+            attributes.put("amigos", amigos);
+            attributes.put("perfiles", profilesList);
             attributes.put("numeroNotificaciones", notificationList.size());
             attributes.put("notificaciones", notificationList);
 
             return new ModelAndView(attributes, "friends.ftl");
         }, freeMarkerEngine);
 
-        get("/friendRquests", (request, response) -> {
+        get("/friendRequests", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
-
             User user = new User();
-            user = usuarioDao.findOne(1); //prueba
+            user = usuarioDao.findOne(2); //prueba
 
             List<Integer> friendRequests = friendshipDao.getFriendRequests(user);
             List<User> solicitudes = usuarioDao.getUsersById(friendRequests);
 
-            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+            ArrayList<Profile> profilesList = new ArrayList<>();
 
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+            attributes.put("user", user);
+            attributes.put("profile", usuarioDao.getProfile(user));
             attributes.put("solicitudes", solicitudes);
             attributes.put("numeroNotificaciones", notificationList.size());
             attributes.put("notificaciones", notificationList);
 
+            if(friendRequests.size() > 0)
+            {
+                List<User> personList = usuarioDao.getUsersById(friendRequests);
+
+                for(User user1 : personList){
+                    Profile profile = usuarioDao.getProfile(user1);
+                    profilesList.add(profile);
+                }
+                attributes.put("profilesList", profilesList);
+            }
+
+
             return new ModelAndView(attributes, "friendRequests.ftl");
         }, freeMarkerEngine);
+
         get("/pendingRequests", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
 
             User user = new User();
-            user = usuarioDao.findOne(1); //prueba
+            user = usuarioDao.findOne(2); //prueba
 
             List<Integer> pendingRequests = friendshipDao.getPendingRequests(user);
+            for (Integer integer: pendingRequests) {
+                System.out.println(integer);
+            }
             List<User> solicitudesPendientes = usuarioDao.getUsersById(pendingRequests);
 
             List<Notification> notificationList = notificationDao.unseenNotifications(user);
-
+            attributes.put("user", user);
+            attributes.put("profile", usuarioDao.getProfile(user));
             attributes.put("solicitudesPendientes", solicitudesPendientes);
             attributes.put("numeroNotificaciones", notificationList.size());
             attributes.put("notificaciones", notificationList);
 
+            if(pendingRequests.size() > 0)
+            {
+                List<User> personList = usuarioDao.getUsersById(pendingRequests);
+                attributes.put("personList", personList);
+            }
             return new ModelAndView(attributes, "pendingRequests.ftl");
         }, freeMarkerEngine);
 
@@ -320,7 +358,7 @@ public class RutasWeb {
             String lugarnacimiento = request.queryParams("lugarnacimiento");
             Character sexo = request.queryParams("sexo").charAt(0);
             User usuario = new User(idusuario, username, nombre, password, administrator, null, null, null);
-            Profile profile = usuarioDao.getProfile(idusuario);
+            Profile profile = usuarioDao.getProfile(usuario);
             profile = new Profile(profile.getId(), nombre, apellido,fechanacimiento, lugarnacimiento, ciudadactual, lugarestudio, lugartrabajo, sexo);
             profileDao.update(profile);
             usuarioDao.update(usuario);
@@ -359,7 +397,7 @@ public class RutasWeb {
             String lugarresidencia = request.queryParams("lugarresidencia");
             String lugarnacimiento = request.queryParams("lugarnacimiento");
             SimpleDateFormat format = new SimpleDateFormat("yy-mm-dd");
-            Date date = format.parse(request.queryParams("date"));
+            java.util.Date date = format.parse(request.queryParams("date"));
             String lugarestudio = request.queryParams("lugarestudio");
             String lugartrabajo = request.queryParams("lugartrabajo");
 
@@ -395,12 +433,12 @@ public class RutasWeb {
             usuario.setUsername(map.get("username").value());
             usuario.setEmail(map.get("email").value());
             usuario.setPassword(map.get("password").value());
-            usuarioDao.getProfile(usuario.getId()).setNombre(map.get("nombre").value());
-            usuarioDao.getProfile(usuario.getId()).setApellido(map.get("apellido").value());
-            usuarioDao.getProfile(usuario.getId()).setCiudadactual(map.get("ciudad").value());
+            usuarioDao.getProfile(usuario).setNombre(map.get("nombre").value());
+            usuarioDao.getProfile(usuario).setApellido(map.get("apellido").value());
+            usuarioDao.getProfile(usuario).setCiudadactual(map.get("ciudad").value());
             java.util.Date fechanacimiento = format.parse(request.queryParams("fechanacimiento"));
-            usuarioDao.getProfile(usuario.getId()).setLugarestudio(map.get("lugarestudio").value());
-            usuarioDao.getProfile(usuario.getId()).setLugartrabajo(map.get("lugartrabajo").value());
+            usuarioDao.getProfile(usuario).setLugarestudio(map.get("lugarestudio").value());
+            usuarioDao.getProfile(usuario).setLugartrabajo(map.get("lugartrabajo").value());
           //  usuarioDao.getProfile(usuario.getId()).setSexo(map.get("sexo").value());
             if(request.queryParams("rol")!=null){
                 if(request.queryParams("rol").equals( "administrator")){
@@ -417,7 +455,7 @@ public class RutasWeb {
             if(userDao.searchByUsername(usuario.getUsername())==null){
 
                 userDao.add(usuario);
-                profileDao.add(userDao.getProfile(usuario.getId()));
+                profileDao.add(userDao.getProfile(usuario));
                 response.redirect("/");
 
                 return null;

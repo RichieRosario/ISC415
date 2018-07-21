@@ -112,7 +112,7 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
         }
 
         UserDaoImpl userDao = null;
-        Profile profile = userDao.getProfile(user.getId());
+        Profile profile = userDao.getProfile(user);
         String notification = "A " + profile.getNombre() + " " + profile.getApellido() + " le gusto tu publicacion";
         addNotification(user, notification, post);
 
@@ -192,7 +192,7 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
         }
 
         UserDaoImpl userDao = null;
-        Profile profile = userDao.getProfile(user.getId());
+        Profile profile = userDao.getProfile(user);
 
         String notification = profile.getNombre() + " " + profile.getApellido() + " comento en tu post";
         addNotification(user, notification, post);

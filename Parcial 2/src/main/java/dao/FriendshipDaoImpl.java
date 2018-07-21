@@ -71,43 +71,113 @@ public class FriendshipDaoImpl extends Repositorio<Friendship, Integer> implemen
 
     public List<Integer> getAllFriends(User user)
     {
+        List<Integer> list = new ArrayList<>();
         Session session = null;
         Transaction transaction = null;
         Query query = null;
-        query = session.createQuery("from Friendship where (fromUser = :userid or toUser = :userid) and isAccepted = true");
-        query.setInteger("userid", user.getId());
-        List<Friendship> friendList = (ArrayList<Friendship>) query.list();
-        List<Integer> friendIds = new ArrayList<Integer>();
 
-        for(Friendship f : friendList)
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+            query = session.createQuery("from Friendship where (fromUser = :userid or toUser = :userid) and isAccepted = true")
+                    .setParameter("userid", user.getId());
+
+            List<Friendship> friendList = query.getResultList();
+
+            for(Friendship f : friendList)
         {
             if(f.getFromUser() != user.getId())
             {
-                friendIds.add(f.getFromUser());
+                list.add(f.getFromUser());
             }
             if(f.getToUser() != user.getId())
             {
-                friendIds.add(f.getToUser());
+                list.add(f.getToUser());
             }
         }
 
-        return friendIds;
+            return list;
+
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
+        }
+//        query = session.createQuery("from Friendship where (fromUser = :userid or toUser = :userid) and isAccepted = true")
+//                .setParameter("userid", user.getId());
+//        List<Friendship> friendList = (ArrayList<Friendship>) query.list();
+//        List<Integer> friendIds = new ArrayList<Integer>();
+//
+//        for(Friendship f : friendList)
+//        {
+//            if(f.getFromUser() != user.getId())
+//            {
+//                friendIds.add(f.getFromUser());
+//            }
+//            if(f.getToUser() != user.getId())
+//            {
+//                friendIds.add(f.getToUser());
+//            }
+//        }
+//
+//        return friendIds;
     }
     public List<Integer> getFriendRequests(User user)
     {
-        Query q = getSession().createQuery("select fromUser from Friendship where toUser = :userid and isAccepted = false ");
-        q.setInteger("userid", user.getId());
-        List<Integer> friendRequests = (ArrayList<Integer>) q.list();
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+        List<Integer> list = new ArrayList<>();
 
-        return friendRequests;
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+            query = session.createQuery("select fromUser from Friendship where toUser = :userid and isAccepted = false ")
+                    .setParameter("userid", user.getId());
+            for (Object object : query.list()) {
+
+                list.add(Integer.parseInt(object.toString()));
+            }
+
+            return list;
+
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
+        }
+
     }
     public List<Integer> getPendingRequests(User user)
     {
-        Query q = getSession().createQuery("select toUser from Friendship where fromUser = :userid and isAccepted = false ");
-        q.setInteger("userid", user.getId());
-        List<Integer> pendingRequests = (ArrayList<Integer>) q.list();
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+        List<Integer> list = new ArrayList<>();
 
-        return pendingRequests;
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+            query = session.createQuery("select toUser from Friendship where fromUser = :userid and isAccepted = false ")
+                    .setParameter("userid", user.getId());
+            for (Object object : query.list()) {
+
+                list.add(Integer.parseInt(object.toString()));
+            }
+
+            return list;
+
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
+        }
     }
     public void sendFriendRequest(User user, int userId)
     {

@@ -88,7 +88,7 @@ public class CommentDaoImpl extends Repositorio<Comment, Integer> implements Com
         }
 
         UserDaoImpl userDao = null;
-        Profile profile = userDao.getProfile(user.getId());
+        Profile profile = userDao.getProfile(user);
         String notification = "A " + profile.getNombre() + " " + profile.getApellido() + " le gusto tu comentario";
         addNotification(user, notification, comment);
 

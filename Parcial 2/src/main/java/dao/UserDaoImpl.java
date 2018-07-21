@@ -69,11 +69,10 @@ public class UserDaoImpl extends Repositorio<User, Integer> implements UserDao {
         this.update(user);
     }
 
-    public Profile getProfile(int userId){
+    public Profile getProfile(User user){
 
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Query query = session.createQuery("from Profile where user = :userId");
-        query.setInteger("userId", userId);
+        Query query = session.createQuery("from Profile where user = :user").setParameter("user", user);
         Profile profile = (Profile) query.uniqueResult();
 
         return profile;
@@ -123,17 +122,30 @@ public class UserDaoImpl extends Repositorio<User, Integer> implements UserDao {
     public List<User> getUsersById(List<Integer> userIds)
     {
         List<User> users;
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
 
-        if(userIds.size() > 0)
-        {
-            Query q = getSession().createQuery("from User where id in (:userIds)");
-            q.setParameterList("userIds", userIds);
-            users = (List<User>) q.list();
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+            if(userIds.size() > 0) {
+                query = session.createQuery("from User where id in (:userIds)").setParameterList("userIds", userIds);
+
+                users = (List<User>) query.list();
+            }
+            else {
+                users = new ArrayList<User>();
+            }
+            return users;
+
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
         }
-        else
-            users = new ArrayList<User>();
-
-        return users;
     }
 
 }

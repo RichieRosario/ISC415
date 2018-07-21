@@ -166,9 +166,9 @@ public class User implements Serializable {
         List<User> posiblesConocidos = null;
 
         for (User desconocido : desconocidos) {
-            if(userDao.getProfile(desconocido.getId()).getCiudadactual() == userDao.getProfile(userDao.findOne(userId).getId()).getCiudadactual()
-                    || userDao.getProfile(desconocido.getId()).getLugarestudio() == userDao.getProfile(userDao.findOne(userId).getId()).getLugarestudio()
-                    || userDao.getProfile(desconocido.getId()).getLugartrabajo() == userDao.getProfile(userDao.findOne(userId).getId()).getLugartrabajo()){
+            if(userDao.getProfile(desconocido).getCiudadactual() == userDao.getProfile(userDao.findOne(userId)).getCiudadactual()
+                    || userDao.getProfile(desconocido).getLugarestudio() == userDao.getProfile(userDao.findOne(userId)).getLugarestudio()
+                    || userDao.getProfile(desconocido).getLugartrabajo() == userDao.getProfile(userDao.findOne(userId)).getLugartrabajo()){
 
                 posiblesConocidos.add(desconocido);
             }

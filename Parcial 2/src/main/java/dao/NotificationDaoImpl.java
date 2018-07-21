@@ -11,6 +11,7 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static hibernate.HibernateUtil.getSession;
@@ -69,10 +70,27 @@ public class NotificationDaoImpl extends Repositorio<Notification, Integer> impl
 
     public List<Notification> unseenNotifications(User user)
     {
-        Query q = getSession().createQuery("from Notification where toUser = :personid and isSeen = false");
-        q.setInteger("personid", user.getId());
-        List<Notification> notificationList = (List<Notification>) q.list();
-        return notificationList;
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+            query = session.createQuery("from Notification where toUser = :user and isSeen = false")
+            .setParameter("user", user);
+
+            List<Notification> list = query.list();
+
+            return list;
+
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
+        }
     }
     public void markAsRead(User user)
     {

@@ -3,6 +3,8 @@ package modelo;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+
+import org.hibernate.annotations.Loader;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
@@ -15,6 +17,10 @@ public class Profile implements Serializable {
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     private int id;
+
+    @Loader
+    @Column(name = "profilepic", columnDefinition = "BLOB")
+    private byte[] profilepic;
 
     @Column(name = "nombre")
     private String nombre;
@@ -140,6 +146,14 @@ public class Profile implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public byte[] getProfilepic() {
+        return profilepic;
+    }
+
+    public void setProfilepic(byte[] profilepic) {
+        this.profilepic = profilepic;
     }
 
     public boolean isDeleted() {
