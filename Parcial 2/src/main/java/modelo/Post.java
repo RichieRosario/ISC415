@@ -32,6 +32,10 @@ public class Post implements Serializable {
     @Column(name = "likes")
     private int likes;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "postValoraciones", joinColumns = {@JoinColumn(name = "post_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
+    private Set<LikeDislike> valoraciones;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "photo_id")
     private Photo photo;
@@ -45,7 +49,7 @@ public class Post implements Serializable {
     private Wall wall;
 
     @OneToMany(  mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    private Set<Comment> comments = new HashSet<>();
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
@@ -59,7 +63,23 @@ public class Post implements Serializable {
 
     private boolean deleted = false;
 
-
+    public Post(){
+        super();
+    }
+    public Post(Integer id, String texto, LocalDate fecha, Integer likes, Set<LikeDislike> valoraciones, Photo photo,
+                User user, Wall wall, Set<Comment> comments, Set<Tag> etiquetas)
+    {
+        this.id = id;
+        this.texto = texto;
+        this.fecha = fecha;
+        this.likes = likes;
+        this.valoraciones = valoraciones;
+        this.photo = photo;
+        this.user = user;
+        this.wall = wall;
+        this.comments = comments;
+        this.etiquetas = etiquetas;
+    }
     public int getId() {
         return id;
     }
@@ -93,11 +113,11 @@ public class Post implements Serializable {
         this.user = user;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
@@ -139,5 +159,13 @@ public class Post implements Serializable {
 
     public void setEtiquetas(Set<Tag> etiquetas) {
         this.etiquetas = etiquetas;
+    }
+
+    public Set<LikeDislike> getValoraciones() {
+        return valoraciones;
+    }
+
+    public void setValoraciones(Set<LikeDislike> valoraciones) {
+        this.valoraciones = valoraciones;
     }
 }

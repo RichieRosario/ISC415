@@ -32,6 +32,10 @@ public class LikeDislike implements Serializable {
     @MapsId
     private Comment comment;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private boolean deleted = false;
 
     public int getId() {
@@ -80,5 +84,13 @@ public class LikeDislike implements Serializable {
 
     public void setComment(Comment comment) {
         this.comment = comment;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

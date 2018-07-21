@@ -2,6 +2,7 @@ package Rutas;
 
 import dao.*;
 import hibernate.HibernateUtil;
+import javafx.geometry.Pos;
 import modelo.*;
 import spark.template.freemarker.FreeMarkerEngine;
 import spark.ModelAndView;
@@ -14,10 +15,11 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.Cookie;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
+
 import static spark.Spark.*;
 
 import static spark.Spark.get;
@@ -268,9 +270,83 @@ public class RutasWeb {
 
             return new ModelAndView(attributes, "gestionarUsuarios.ftl");
         }, freeMarkerEngine);
+        get("/usuarios/editar/:id", (request, response) -> {
+            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+            boolean admin=false;
+
+
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                User user = usuarioDao.searchByUsername(request.cookie("username"));
+
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
+                autenticado = true;
+                User user = usuarioDao.searchByUsername(request.session().attribute("username"));
+                admin = user.isAdministrator();
+            }
+
+            Integer idusuario = Integer.parseInt(request.params("id"));
+
+            User usuario = usuarioDao.findOne(idusuario);
+
+
+            Map<String, Object> attributes = new HashMap<>();
+
+            attributes.put("autenticado", autenticado);
+            attributes.put("admin", admin);
+            attributes.put("idusuario", idusuario.toString());
+            attributes.put("usuario", usuario);
+
+            return new ModelAndView(attributes, "modificarUsuario.ftl");
+        }, freeMarkerEngine);
+        post("/usuarios/editar/:id", (request, response) -> {
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            Integer idusuario = Integer.parseInt(request.params("id"));
+            String username = request.queryParams("username");
+            String nombre = request.queryParams("nombre");
+            String password = request.queryParams("password");
+            Boolean administrator = Boolean.parseBoolean(request.queryParams("administrator"));
+            String email = request.queryParams("email");
+            String apellido = request.queryParams("apellido");
+            String ciudadactual = request.queryParams("ciudadactua");
+            String lugartrabajo = request.queryParams("lugartrabajo");
+            java.util.Date fechanacimiento = format.parse(request.queryParams("fechanacimiento"));
+            String lugarestudio = request.queryParams("lugarestudio");
+            String lugarnacimiento = request.queryParams("lugarnacimiento");
+            Character sexo = request.queryParams("sexo").charAt(0);
+            User usuario = new User(idusuario, username, nombre, password, administrator, null, null, null);
+            Profile profile = usuarioDao.getProfile(idusuario);
+            profile = new Profile(profile.getId(), nombre, apellido,fechanacimiento, lugarnacimiento, ciudadactual, lugarestudio, lugartrabajo, sexo);
+            profileDao.update(profile);
+            usuarioDao.update(usuario);
+
+            response.redirect("/usuarios");
+
+            return null;
+        });
+        get("/usuarios/borrar/:id", (request, response) -> {
+
+
+            Integer idusuario = Integer.parseInt(request.params("id"));
+
+            User usuario = usuarioDao.findOne(idusuario);
+            if (usuario != null){
+                usuarioDao.deleteById(usuario);
+            }
+
+            response.redirect("/usuarios");
+
+            return null;
+
+        },freeMarkerEngine);
 
         //Rutas Registrarse
-        post("/registrarse", (request, response) -> {
+        post("/registrarse2", (request, response) -> {
 
             Map<String, Object> attributes = new HashMap<>();
 
@@ -309,5 +385,310 @@ public class RutasWeb {
 
             return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
+
+        post("/registrarse", (request, response) -> {
+
+            QueryParamsMap map = request.queryMap();
+            SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
+            User usuario = new User();
+            Profile profile = new Profile();
+            usuario.setUsername(map.get("username").value());
+            usuario.setEmail(map.get("email").value());
+            usuario.setPassword(map.get("password").value());
+            usuarioDao.getProfile(usuario.getId()).setNombre(map.get("nombre").value());
+            usuarioDao.getProfile(usuario.getId()).setApellido(map.get("apellido").value());
+            usuarioDao.getProfile(usuario.getId()).setCiudadactual(map.get("ciudad").value());
+            java.util.Date fechanacimiento = format.parse(request.queryParams("fechanacimiento"));
+            usuarioDao.getProfile(usuario.getId()).setLugarestudio(map.get("lugarestudio").value());
+            usuarioDao.getProfile(usuario.getId()).setLugartrabajo(map.get("lugartrabajo").value());
+          //  usuarioDao.getProfile(usuario.getId()).setSexo(map.get("sexo").value());
+            if(request.queryParams("rol")!=null){
+                if(request.queryParams("rol").equals( "administrator")){
+
+                    usuario.setAdministrator(true);
+                }
+
+            else{
+                usuario.setAdministrator(false);
+            }}
+
+            UserDaoImpl userDao = null;
+
+            if(userDao.searchByUsername(usuario.getUsername())==null){
+
+                userDao.add(usuario);
+                profileDao.add(userDao.getProfile(usuario.getId()));
+                response.redirect("/");
+
+                return null;
+            }
+            else {
+                return "Usuario ya existe!";
+            }
+
+        });
+
+        //Rutas Likes
+        post("/like/post/:id", (request, response) -> {
+            boolean autenticado=false;
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User usuario = new User();
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.cookie("username"));
+
+
+            }
+            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
+                autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
+
+            LikeDislike valoracion = new LikeDislike();
+            valoracion.setPost(postDao.findOne(id));
+            valoracion.setUser(usuario);
+            String value = request.queryParams("like");
+            if(value.equals("Me divierte")){
+                valoracion.setValoracion(true);
+            }
+            else if(value.equals("Me aborrece")){
+                valoracion.setValoracion(false);
+            }
+
+
+
+            PostDaoImpl postDao1 = null;
+            Post post = new Post();
+            post = postDao1.findOne(id);
+
+            boolean check = false;
+            for(LikeDislike val: post.getValoraciones()){
+                if(val.getUser().getId()==valoracion.getUser().getId()){
+                    val.setValoracion( valoracion.getValoracion());
+                    check=true;
+                    likeDislikeDao.update(val);
+                    postDao.update(post);
+                }
+
+            }
+
+
+            if(check==false){
+                post.getValoraciones().add(valoracion);
+                likeDislikeDao.add(valoracion);
+                postDao.update(post);
+            }
+
+            response.redirect("/home");
+
+            return "Ok";
+        });
+        post("/like/comentario/:id", (request, response) -> {
+            boolean autenticado=false;
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User usuario = new User();
+            Comment comentario = commentDao.findOne(id);
+            Integer postId=0;
+
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.cookie("username"));
+
+            }
+            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
+                autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
+
+            LikeDislike valoracion = new LikeDislike();
+            valoracion.setComment(comentario);
+            valoracion.setUser(usuario);
+            LikeDislikeDao valoracionDao = null;
+
+            String value = request.queryParams("like");
+            if(value.equals("Me divierte")){
+                valoracion.setValoracion(true);
+            }
+            else if(value.equals("Me aborrece")){
+                valoracion.setValoracion(false);
+            }
+
+            boolean check = false;
+            for(LikeDislike val: comentario.getValoraciones()){
+                if(val.getUser().getId()==valoracion.getUser().getId()){
+                    val.setValoracion( valoracion.getValoracion());
+                    check=true;
+                    valoracionDao.update(val);
+                    commentDao.update(comentario);
+                }
+
+            }
+
+
+            if(check==false){
+                comentario.getValoraciones().add(valoracion);
+                valoracionDao.add(valoracion);
+                commentDao.update(comentario);
+            }
+
+
+            for(Post post:postDao.getAll()){
+                for(Comment comen:post.getComments()){
+                    if(comen.getId() == comentario.getId()){
+                        postId=post.getId();
+                    }
+                }
+            }
+
+
+            response.redirect("/home");
+
+            return "Ok";
+        });
+
+        //Rutas Posts
+        post("/addPost", (request, response) -> {
+
+            QueryParamsMap map = request.queryMap();
+            boolean autenticado=false;
+            Integer id;
+            Post post = new Post();
+            User usuario = new User();
+
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.cookie("username"));
+
+
+            }
+            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
+                autenticado=true;
+                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
+
+            post.setFecha(LocalDate.now());
+            post.setLikes(0);
+            post.setTexto(map.get("texto").value());
+            post.setUser(usuario);
+            post.setWall(wallDao.findWallByUser(usuario.getId()));
+            String etiquetas = (map.get("etiqueta").value());
+
+            List<Tag> etiq = new ArrayList<Tag>();
+
+            String[] ets = etiquetas.split(",");
+
+            //   Long size2 = Long.parseLong(String.valueOf(size));
+
+            Set<Tag> etiqs = new HashSet<>();
+
+            for(String etiquet : etiquetas.split(",")){
+
+                Tag etiqueta = new Tag();
+                User user = usuarioDao.searchByUsername(etiquet);
+                etiqueta = tagDao.searchByTag(etiquet);
+                etiqs.add(new Tag(user));
+            }
+
+
+            post.setEtiquetas(etiqs);
+            postDao.add(post);
+            response.redirect("/home");
+
+            return "Ok";
+        });
+        get("/post/editar/:id", (request, response) -> {
+
+            Integer idpost = Integer.parseInt(request.params("id"));
+            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
+            boolean admin=false;
+
+            if(request.cookie("username")!=null)
+            {autenticado=true;
+                User user = usuarioDao.searchByUsername(request.cookie("username"));
+
+                admin = user.isAdministrator();
+
+            }
+            else if(request.session().attribute("username") != null && request.cookie("username")==null){
+
+                autenticado = true;
+                User user = usuarioDao.searchByUsername(request.session().attribute("username"));
+
+                admin = user.isAdministrator();
+            }
+
+            Post post = postDao.findOne(idpost);
+            String etiquetastemp="";
+            for(Tag et : post.getEtiquetas()){
+                etiquetastemp+=et.getToUser().getUsername()+',';
+            }
+            String etiquetasfini="";
+            for(int i=0;i<etiquetastemp.length()-1;i++){
+                etiquetasfini+=etiquetastemp.charAt(i);
+            }
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("idpost", post.getId());
+            attributes.put("autenticado", autenticado);
+            attributes.put("admin", admin);
+            attributes.put("posts", post);
+            attributes.put("etiquetas",etiquetasfini);
+
+            return new ModelAndView(attributes, "modificarPost.ftl");
+        }, freeMarkerEngine);
+        post("/post/editar/:id", (request, response) -> {
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            Integer idpost = Integer.parseInt(request.params("id"));
+            String texto = request.queryParams("texto");
+            LocalDate fecha = LocalDate.parse(request.queryParams("fecha"));
+            int likes = postDao.findOne(idpost).getLikes();
+            String etiquetas = request.queryParams("etiqueta");
+
+            List<Tag> etiq = new ArrayList<Tag>();
+
+            String[] ets = etiquetas.split(",");
+
+            Set<Tag> etiqs = new HashSet<>();
+
+            for(String etiquet : etiquetas.split(",")){
+
+                Tag etiqueta = new Tag();
+                etiqueta = tagDao.searchByTag(etiquet);
+                etiqs.add(new Tag(usuarioDao.searchByUsername(etiquet)));
+            }
+
+
+            Post post = new Post(idpost, texto, fecha, likes, null, null, postDao.findOne(idpost).getUser(),
+                    wallDao.findWallByUser(postDao.findOne(idpost).getUser().getId()), null, null);
+
+            post.setEtiquetas(etiqs);
+            post.setValoraciones(postDao.findOne(idpost).getValoraciones());
+
+            Set<Comment>comentariostemp= postDao.findOne(idpost).getComments();
+            post.setComments(comentariostemp);
+
+            postDao.update(post);
+
+            response.redirect("/home");
+
+            return null;
+        });
+        get("/post/borrar/:id", (request, response) -> {
+
+            Integer idpost = Integer.parseInt(request.params("id"));
+
+            Post post = postDao.findOne(idpost);
+
+            if (post != null){
+                postDao.deleteById(post);
+            }
+
+            response.redirect("/home");
+
+            return null;
+
+        },freeMarkerEngine);
+
+
     }
 }

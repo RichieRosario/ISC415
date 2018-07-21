@@ -249,6 +249,7 @@ public class RutasWeb {
 
             return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
+		
         get("/etiqueta/:etiqueta", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             boolean autenticado = false;
@@ -688,7 +689,7 @@ public class RutasWeb {
 
 
 
-        post("/articulos/nuevo", (request, response) -> {
+        post("/articulos/nuevo", (request, response) -> {-
 
             QueryParamsMap map = request.queryMap();
 

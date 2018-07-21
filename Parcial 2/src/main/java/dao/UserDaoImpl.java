@@ -107,8 +107,8 @@ public class UserDaoImpl extends Repositorio<User, Integer> implements UserDao {
         {
             Query q = getSession().createQuery("from User where username = :username1 and password = :password1");
 
-            q.setString("username1", username);
-            q.setString("password1", password);
+            q.setParameter("username1", username);
+            q.setParameter("password1", password);
             User user = (User) q.uniqueResult();
             System.out.println(user.getId());
 

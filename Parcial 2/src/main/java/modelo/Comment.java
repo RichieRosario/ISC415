@@ -5,6 +5,7 @@ import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity(name = "Comment")
 @Table(name = "comment")
@@ -23,6 +24,10 @@ public class Comment implements Serializable {
     @Column(name = "likes")
     private int likes;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "commentValoraciones", joinColumns = {@JoinColumn(name = "comment_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
+    private Set<LikeDislike> valoraciones;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "post_id",nullable = true, updatable = false)
     private Post post;
@@ -31,7 +36,7 @@ public class Comment implements Serializable {
     @JoinColumn(name = "photo_id",nullable = true, updatable = false)
     private Photo photo;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -91,5 +96,13 @@ public class Comment implements Serializable {
 
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public Set<LikeDislike> getValoraciones() {
+        return valoraciones;
+    }
+
+    public void setValoraciones(Set<LikeDislike> valoraciones) {
+        this.valoraciones = valoraciones;
     }
 }
