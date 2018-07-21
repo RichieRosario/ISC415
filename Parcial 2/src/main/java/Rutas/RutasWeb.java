@@ -7,6 +7,8 @@ import spark.template.freemarker.FreeMarkerEngine;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Session;
+import java.util.*;
+import java.text.*;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -57,22 +59,16 @@ public class RutasWeb {
             Map<String, Object> attributes = new HashMap<>();
 
             User user = new User();
-            user = usuarioDao.findOne(1); //prueba
+            if(request.cookie("username")!=null) {
+                user = usuarioDao.searchByUsername(request.cookie("username").toString());
 
-            List<Integer> friendlist = friendshipDao.getAllFriends(user);
-            List<User> amigos = usuarioDao.getUsersById(friendlist);
-            List<User> posiblesConocidos = user.usersMayKnow(user.getId());
-
-            List<Post> posts = postDao.getFriendPosts(user, friendlist);
-            List<Notification> notificationList = notificationDao.unseenNotifications(user);
-
-            attributes.put("user", user);
-            attributes.put("posts", posts);
-            attributes.put("amigos", amigos);
-            attributes.put("posiblesConocidos", posiblesConocidos);
-            attributes.put("numeroNotificaciones", notificationList.size());
-            attributes.put("notificaciones", notificationList);
-
+                attributes.put("usuario", user);
+                attributes.put("perfil", user.getUsername());
+                attributes.put("admin", user.isAdministrator());
+            }
+            else{
+                response.redirect("/");
+            }
             return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
@@ -206,107 +202,30 @@ public class RutasWeb {
 
 
             if(request.cookie("username")!=null){
-                autenticado=true;
+
                 user = usuarioDao.searchByUsername(request.cookie("username"));
-
-                administrator = user.isAdministrator();
-
-            }
-            else if(request.session().attribute("username") != null && request.cookie("username")==null){
-                user = usuarioDao.searchByUsername(request.session().attribute("username"));
-                autenticado = true;
-                administrator = user.isAdministrator();
-
-            }
+                response.redirect("/home");
 
 
-            if(autenticado == true) {
-                administrator = user.isAdministrator();
-                String nombre = usuarioDao.getProfile(user.getId()).getNombre() + " " + usuarioDao.getProfile(user.getId()).getApellido();
-                attributes.put("administrator", administrator);
-                attributes.put("nombreusuario", nombre);
-                attributes.put("autenticado", autenticado);
-            }
-
-
-            else {
-                attributes.put("usuariodentro", "Huesped");
-                attributes.put("admininistrator", false);
-                attributes.put("autenticado", false);
             }
 
 
             return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
 
-        //Rutas Login
-        get("/login", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            boolean autenticado = false;
-            boolean administrator = false;
-
-            if(request.cookie("username")!=null)
-            {
-                autenticado=true;
-                User user = usuarioDao.searchByUsername(request.cookie("username"));
-                administrator = user.isAdministrator();
-            }
-            else if(request.session().attribute("username") != null && request.cookie("username")==null){
-
-                autenticado = true;
-                User user = usuarioDao.searchByUsername(request.session().attribute("username"));
-
-                administrator = user.isAdministrator();
-            }
-
-
-            if(autenticado == true) {
-
-                response.redirect("/");}
-
-
-            else {
-                attributes.put("administrator", false);
-                attributes.put("autenticado", false);
-            }
-
-            return new ModelAndView(attributes, "login.ftl");
-        }, freeMarkerEngine);
 
         post("/login", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            String username = request.queryParams("username") != null ? request.queryParams("username") : "";
-            String password = request.queryParams("password") != null ? request.queryParams("password") : "";
-            String remember = request.queryParams("remember") != null ? request.queryParams("remember") : "";
+            String username = request.queryParams("userpost");
+            String password = request.queryParams("passpost");
             User user = usuarioDao.searchByUsername(username);
 
-            if( user.getUsername().equals(username) && user.getPassword().equals(password)){
-                QueryParamsMap map2 = request.queryMap();
-                Session session = request.session();
-                session.attribute("username", map2.get("username").value());
-                session.maxInactiveInterval(900);
-
-                if(remember.equals("remember")){
-                    response.cookie("username",map2.get("username").value(), 604800);
-                    request.cookie("username");
-
-                }
-                String nombre = usuarioDao.getProfile(user.getId()).getNombre() + " " + usuarioDao.getProfile(user.getId()).getApellido();
-
-                attributes.put("nombreusuario", nombre);
-                attributes.put("administrator", user.isAdministrator());
-                attributes.put("autenticado", true);
-
-                response.redirect("/");
+            if( user.getPassword().equals(password)) {
+                response.cookie("username", username, 604800);
             }
+                response.redirect("/");
 
-            else{
-                attributes.put("usuariodentro","Huesped");
-                attributes.put("autor", false);
-                attributes.put("administrator", false);
-                attributes.put("autenticado", false); }
-
-            return new ModelAndView(attributes, "login.ftl");
+            return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
 
         //Rutas Logout
@@ -332,89 +251,63 @@ public class RutasWeb {
             boolean administrator = false;
 
 
-            if(request.cookie("username")!=null)
-            {autenticado=true;
+            if(request.cookie("username")!=null) {
+                autenticado = true;
                 User user = usuarioDao.searchByUsername(request.cookie("username"));
 
                 administrator = user.isAdministrator();
 
+
+                attributes.put("usuarios", usuarioDao.getAll());
+                attributes.put("perfil", user.getUsername());
+                attributes.put("admin", administrator);
             }
-            else if(request.session().attribute("username") != null && request.cookie("username")==null){
-
-                autenticado = true;
-                User user = usuarioDao.searchByUsername(request.session().attribute("username"));
-
-                administrator = user.isAdministrator();
+            else{
+                response.redirect("/");
             }
 
-            attributes.put("usuarios", usuarioDao.getAll());
-            attributes.put("autenticado", autenticado);
-            attributes.put("administrator", administrator);
-
-
-            return new ModelAndView(attributes, "gestionarUsuario.ftl");
+            return new ModelAndView(attributes, "gestionarUsuarios.ftl");
         }, freeMarkerEngine);
 
         //Rutas Registrarse
-        get("/registrarse", (request, response) -> {
+        post("/registrarse", (request, response) -> {
 
             Map<String, Object> attributes = new HashMap<>();
 
-            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
-            boolean administrator = false;
+           String username = request.queryParams("username");
+            String password = request.queryParams("password");
+            String nombre = request.queryParams("nombre");
+            String apellido = request.queryParams("apellido");
+            String sexo = request.queryParams("sexo");
+            String email = request.queryParams("email");
+            String lugarresidencia = request.queryParams("lugarresidencia");
+            String lugarnacimiento = request.queryParams("lugarnacimiento");
+            SimpleDateFormat format = new SimpleDateFormat("yy-mm-dd");
+            Date date = format.parse(request.queryParams("date"));
+            String lugarestudio = request.queryParams("lugarestudio");
+            String lugartrabajo = request.queryParams("lugartrabajo");
 
-            if(request.cookie("username")!=null)
-            {autenticado = true;
-                User user = usuarioDao.searchByUsername(request.cookie("username"));
+            User newuser = new User();
+            newuser.setAdministrator(false);
+            newuser.setUsername(username);
+            newuser.setPassword(password);
+            newuser.setEmail(email);
+            usuarioDao.add(newuser);
+            Profile newprofile = new Profile();
+            newprofile.setNombre(nombre);
+            newprofile.setSexo(sexo.charAt(0));
+            newprofile.setApellido(apellido);
+            newprofile.setCiudadactual(lugarresidencia);
+            newprofile.setFechanacimiento(date);
+            newprofile.setLugarestudio(lugarestudio);
+            newprofile.setLugarnacimiento(lugarnacimiento);
+            newprofile.setLugartrabajo(lugartrabajo);
+            newprofile.setUser(newuser);
+            profileDao.add(newprofile);
 
-                administrator = user.isAdministrator();
+            response.redirect("/");
 
-            }
-            else if(request.session().attribute("username") != null && request.cookie("username")==null){
-
-                autenticado = true;
-                User user = usuarioDao.searchByUsername(request.session().attribute("username"));
-
-                administrator = user.isAdministrator();
-            }
-
-            attributes.put("administrator", administrator);
-            attributes.put("autenticado", autenticado);
-
-            return new ModelAndView(attributes, "crearUsuario.ftl");
+            return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
-//        post("/registrarse", (request, response) -> {
-//
-//            QueryParamsMap map = request.queryMap();
-//
-//            User usuario = new User();
-//            usuario.setUsername(map.get("username").value());
-//            usuario.setEmail(map.get("email").value());
-//            usuario.setPassword(map.get("password").value());
-//            if(request.queryParams("rol")!=null){
-//                if(request.queryParams("rol").equals( "administrator")){
-//
-//                    usuario.setAdministrator(true);
-//                }
-//
-//            else{
-//                usuario.setAdministrator(false);
-//            }}
-//
-//            UserDaoImpl userDao = null;
-//
-//            if(userDao.searchByUsername(usuario.getUsername())==null){
-//
-//                userDao.add(usuario);
-//
-//                response.redirect("/");
-//
-//                return null;
-//            }
-//            else {
-//                return "Usuario ya existe!";
-//            }
-//
-//        });
     }
 }

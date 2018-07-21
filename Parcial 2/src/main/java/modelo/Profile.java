@@ -1,7 +1,7 @@
 package modelo;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
@@ -16,15 +16,12 @@ public class Profile implements Serializable {
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     private int id;
 
-    @NotEmpty(message="El nombre no puede estar vacio")
     @Column(name = "nombre")
     private String nombre;
 
-    @NotEmpty(message="El apellido no puede estar vacio")
     @Column(name = "apellido")
     private String apellido;
 
-    @NotEmpty(message="La fecha de nacimiento no puede estar vacia")
     @Column(name = "fechanacimiento")
     private Date fechanacimiento;
 
@@ -48,6 +45,22 @@ public class Profile implements Serializable {
     private User user;
 
     private boolean deleted = false;
+
+    public Profile(){
+        super();
+    }
+    public Profile(int id, String nombre, String apellido, Date fechanacimiento, String lugarnacimiento,
+                   String ciudadactual, String lugarestudio, String lugartrabajo, Character sexo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fechanacimiento = fechanacimiento;
+        this.lugarnacimiento = lugarnacimiento;
+        this.ciudadactual = ciudadactual;
+        this.lugarestudio = lugarestudio;
+        this.lugartrabajo = lugartrabajo;
+        this.sexo = sexo;
+    }
 
     public int getId() {
         return id;

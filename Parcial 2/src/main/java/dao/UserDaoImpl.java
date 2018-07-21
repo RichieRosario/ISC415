@@ -81,18 +81,24 @@ public class UserDaoImpl extends Repositorio<User, Integer> implements UserDao {
 
     public User searchByUsername(String username){
 
-        User user = null;
-        try
-        {
-            Query q = getSession().createQuery("from User where username = :username");
-            q.setString("username", username);
-            user = (User) q.uniqueResult();
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+
+        try {
+            session = HibernateUtil.buildSessionFactory().openSession();
+            transaction = session.beginTransaction();
+
+            query = session.createQuery("from User where username = :username").setParameter("username", username);
+
+            return (User) query.uniqueResult();
+
+        } catch (HibernateException e) {
+            transaction.rollback();
+            return null;
+        } finally {
+            session.close();
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return user;
     }
 
     public User matchUsernameAndPassword(String username, String password)

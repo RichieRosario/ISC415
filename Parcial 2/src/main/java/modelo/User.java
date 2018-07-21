@@ -52,6 +52,21 @@ public class User implements Serializable {
 
     private boolean deleted = false;
 
+    public User(){
+        super();
+    }
+
+    public User(int id, String username, String password, String email, boolean admin, List<Post> post, List<Event> event, Comment com){
+        this.id=id;
+        this.username=username;
+        this.password=password;
+        this.email=email;
+        this.administrator=admin;
+        this.posts = post;
+        this.events = event;
+        this.comment = com;
+    }
+
 
     public int getId() {
         return id;
