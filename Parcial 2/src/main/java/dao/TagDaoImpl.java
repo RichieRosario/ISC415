@@ -63,4 +63,24 @@ public class TagDaoImpl extends Repositorio<Tag, Integer> implements TagDao {
         tag.setDeleted(true);
         this.update(tag);
     }
+
+    public Tag searchByTag(String etiqueta) {
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
+
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+
+            query = session.createQuery("from Tag where toUser = :etiqueta");
+
+            return (Tag) query.uniqueResult();
+        } catch (HibernateException e) {
+            transaction.rollback();
+            return null;
+        } finally {
+            session.close();
+        }
+    }
 }

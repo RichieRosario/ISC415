@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import dao.FriendshipDaoImpl;
 import dao.UserDaoImpl;
 import hibernate.HibernateUtil;
@@ -47,11 +48,26 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Event> events = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade =  CascadeType.ALL, mappedBy = "user")
-    private Comment comment;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     private boolean deleted = false;
 
+    public User(){
+
+        super();
+    }
+    public User(Integer id, String username, String password, String email, Boolean administrator, List<Post> posts, List<Event> events, List<Comment> comments)
+    {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.administrator = administrator;
+        this.posts = posts;
+        this.events = events;
+        this.comments = comments;
+    }
 
     public int getId() {
         return id;
@@ -117,12 +133,12 @@ public class User implements Serializable {
         this.events = events;
     }
 
-    public Comment getComment() {
-        return comment;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setComment(Comment comment) {
-        this.comment = comment;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public List<User> usersMayKnow(int userId){

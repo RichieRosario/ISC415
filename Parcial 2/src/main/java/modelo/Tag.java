@@ -21,10 +21,10 @@ public class Tag implements Serializable {
     private int id;
 
     @Column(name="fromUser")
-    private int fromUser;
+    private User fromUser;
 
     @Column(name="toUser")
-    private int toUser;
+    private User toUser;
 
     @ManyToMany(mappedBy = "etiquetas")
     private Set<Post> posts = new HashSet<>();
@@ -35,6 +35,13 @@ public class Tag implements Serializable {
 
 
     private boolean deleted = false;
+
+    public Tag(){
+        super();
+    }
+    public Tag(User toUser) {
+        this.toUser = toUser;
+    }
 
     public int getId() {
         return id;
@@ -53,19 +60,35 @@ public class Tag implements Serializable {
         this.deleted = deleted;
     }
 
-    public int getFromUser() {
+    public User getFromUser() {
         return fromUser;
     }
 
-    public void setFromUser(int fromUser) {
+    public void setFromUser(User fromUser) {
         this.fromUser = fromUser;
     }
 
-    public int getToUser() {
+    public User getToUser() {
         return toUser;
     }
 
-    public void setToUser(int toUser) {
+    public void setToUser(User toUser) {
         this.toUser = toUser;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public Set<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Set<Photo> photos) {
+        this.photos = photos;
     }
 }
