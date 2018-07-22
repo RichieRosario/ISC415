@@ -128,7 +128,7 @@
             <ul class="sidebar-menu" id="nav-accordion">
 
                 <p class="centered"><a href="profile/${user.getId()}">
-                    <h5 class="centered">${profile.getNombre()} ${profile.getApellido()}</h5></a></p>
+                    <h5 class="centered">John Doe</h5></a></p>
 
                 <li class="mt">
                     <a href="index">

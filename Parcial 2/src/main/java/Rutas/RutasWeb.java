@@ -80,7 +80,11 @@ public class RutasWeb {
             QueryParamsMap map = request.queryMap();
 
             User user = new User();
-            user = usuarioDao.findOne(2); //prueba
+            user = usuarioDao.findOne(1); //prueba
+            Friendship f = new Friendship();
+            f.setFromUser(1);
+            f.setToUser(2);
+            friendshipDao.add(f);
 
             List<Integer> friendlist = friendshipDao.getAllFriends(user);
             List<User> amigos = usuarioDao.getUsersById(friendlist);
@@ -214,19 +218,26 @@ public class RutasWeb {
             Map<String, Object> attributes = new HashMap<>();
 
             String username = request.params("username");
-            User user = usuarioDao.searchByUsername(username);
-            User usuarioLogueado = usuarioDao.findOne(1);
-            boolean isFriend = friendshipDao.checkIfFriend(usuarioLogueado, user.getId());
+            if(request.cookie("username")!=null) {
+                User user = usuarioDao.searchByUsername(request.cookie("username").toString());
 
-            List<Post> posts = postDao.getMyPosts(user.getId());
-            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+                User usuarioLogueado = usuarioDao.findOne(1);
+                boolean isFriend = friendshipDao.checkIfFriend(usuarioLogueado, user.getId());
+                attributes.put("usuario", user);
+                attributes.put("perfil", user.getUsername());
+                attributes.put("admin", user.isAdministrator());
+                // List<Post> posts = postDao.getMyPosts(user.getId());
+                // List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
-            attributes.put("user", user);
-            attributes.put("posts", posts);
-            attributes.put("usuarioLogueado", usuarioLogueado);
-            attributes.put("isFriend", isFriend);
-            attributes.put("numeroNotificaciones", notificationList.size());
-            attributes.put("notificaciones", notificationList);
+                attributes.put("user", user);
+                //attributes.put("posts", posts);
+                attributes.put("usuarioLogueado", usuarioLogueado);
+                attributes.put("isFriend", isFriend);
+                //attributes.put("numeroNotificaciones", notificationList.size());
+                //attributes.put("notificaciones", notificationList);
+            }
+
+
 
             return new ModelAndView(attributes, "profile.ftl");
         }, freeMarkerEngine);
