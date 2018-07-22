@@ -66,8 +66,8 @@
       <file leaf-file-name="RutasWeb.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="49">
-              <caret line="221" column="21" selection-start-line="221" selection-start-column="21" selection-end-line="221" selection-end-column="21" />
+            <state relative-caret-position="499">
+              <caret line="237" column="21" selection-start-line="237" selection-start-column="21" selection-end-line="237" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -93,11 +93,8 @@
       <file leaf-file-name="friends.ftl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/friends.ftl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="28" lean-forward="true" selection-start-line="3" selection-end-line="28" />
-              <folding>
-                <element signature="n#style#0;n#input#0;n#div#0;n#form#0;n#div#0;n#li#0;n#div#1;n#header#0;n#section#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="-33">
+              <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
             </state>
           </provider>
         </entry>
@@ -105,8 +102,8 @@
       <file leaf-file-name="profile.ftl" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/profile.ftl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="57" selection-start-line="5" selection-start-column="57" selection-end-line="5" selection-end-column="57" />
+            <state relative-caret-position="150">
+              <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#img#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -818,7 +815,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="190762000" />
+    <option name="totallyTimeSpent" value="191486000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1218,25 +1215,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="49">
-          <caret line="221" column="21" selection-start-line="221" selection-start-column="21" selection-end-line="221" selection-end-column="21" />
+        <state relative-caret-position="499">
+          <caret line="237" column="21" selection-start-line="237" selection-start-column="21" selection-end-line="237" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/friends.ftl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="28" lean-forward="true" selection-start-line="3" selection-end-line="28" />
-          <folding>
-            <element signature="n#style#0;n#input#0;n#div#0;n#form#0;n#div#0;n#li#0;n#div#1;n#header#0;n#section#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+        <state relative-caret-position="-33">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/profile.ftl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="57" selection-start-line="5" selection-start-column="57" selection-end-line="5" selection-end-column="57" />
+        <state relative-caret-position="150">
+          <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#img#0;n#body#0;n#html#0;n#!!top" expanded="true" />

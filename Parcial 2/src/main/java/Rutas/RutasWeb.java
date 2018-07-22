@@ -8,6 +8,10 @@ import spark.template.freemarker.FreeMarkerEngine;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Session;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.*;
 import java.text.*;
 
@@ -217,7 +221,19 @@ public class RutasWeb {
         get("/profile/:username", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
 
+//            File file = new File("resources\\grinch.jpg");
+//            byte[] bFile = new byte[(int) file.length()];
+//            try {
+//                FileInputStream fileInputStream = new FileInputStream(file);
+//                fileInputStream.read(bFile);
+//                fileInputStream.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+
             String username = request.params("username");
+
             if(request.cookie("username")!=null) {
                 User user = usuarioDao.searchByUsername(request.cookie("username").toString());
 
@@ -233,13 +249,25 @@ public class RutasWeb {
                 //attributes.put("posts", posts);
                 attributes.put("usuarioLogueado", usuarioLogueado);
                 attributes.put("isFriend", isFriend);
+                    List<Post> posts = postDao.getMyPosts(user);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            List<Integer> friendsids = friendshipDao.getAllFriends(usuarioLogueado);
+            List<User> friends = usuarioDao.getUsersById(friendsids);
+            friends = friends.subList(Math.max(friends.size() - 5, 0), friends.size());
+            List<Profile> friendsProfiles = new ArrayList<>();
+
+            for(User user1 : friends){
+                friendsProfiles.add(usuarioDao.getProfile(user1));
+            }
+
+            attributes.put("totalFriends", friendsids.size());
+            attributes.put("friendsProfiles", friendsProfiles);
                 //attributes.put("numeroNotificaciones", notificationList.size());
                 //attributes.put("notificaciones", notificationList);
             }
 
-
-
-            return new ModelAndView(attributes, "profile.ftl");
+            return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
         //Rutas index
