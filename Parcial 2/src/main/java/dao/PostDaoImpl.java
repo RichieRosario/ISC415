@@ -80,13 +80,26 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
         friends = friendList;
         return postList;
     }
-    public List<Post> getMyPosts(int userId)
+    public List<Post> getMyPosts(User user)
     {
-        Query q = getSession().createQuery("from Post where user = :userId");
-        q.setInteger("userId", userId);
-        List<Post> postList = (ArrayList<Post>) q.list();
+        Session session = null;
+        Transaction transaction = null;
+        Query query = null;
 
-        return postList;
+        try {
+            session = HibernateUtil.openSession();
+            transaction = session.beginTransaction();
+            query = session.createQuery("from Post where user = :user").setParameter("user", user).setParameter("user", user);
+
+            return query.list();
+        } catch (HibernateException e) {
+            transaction.rollback();
+            logger.debug("Error al ejecutar un select el objeto en la base de datos.", e);
+            return null;
+        } finally {
+            session.close();
+        }
+
     }
     public int addLike(int postId, User user)
     {

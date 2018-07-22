@@ -8,6 +8,10 @@ import spark.template.freemarker.FreeMarkerEngine;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Session;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.*;
 import java.text.*;
 
@@ -213,12 +217,23 @@ public class RutasWeb {
         get("/profile/:username", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
 
+            File file = new File("resources\\grinch.jpg");
+            byte[] bFile = new byte[(int) file.length()];
+            try {
+                FileInputStream fileInputStream = new FileInputStream(file);
+                fileInputStream.read(bFile);
+                fileInputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
             String username = request.params("username");
             User user = usuarioDao.searchByUsername(username);
-            User usuarioLogueado = usuarioDao.findOne(1);
+            User usuarioLogueado = usuarioDao.findOne(2);
             boolean isFriend = friendshipDao.checkIfFriend(usuarioLogueado, user.getId());
 
-            List<Post> posts = postDao.getMyPosts(user.getId());
+            List<Post> posts = postDao.getMyPosts(user);
             List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
             attributes.put("user", user);
@@ -228,7 +243,16 @@ public class RutasWeb {
             attributes.put("numeroNotificaciones", notificationList.size());
             attributes.put("notificaciones", notificationList);
 
-            return new ModelAndView(attributes, "profile.ftl");
+            usuarioDao.getProfile(usuarioLogueado).setProfilepic(bFile);
+            try{
+                FileOutputStream fos = new FileOutputStream("resources\\grinch.jpg");
+                fos.write(usuarioDao.getProfile(usuarioLogueado).getProfilepic());
+                fos.close();
+                attributes.put("fotoperfil", fos);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
         //Rutas index
