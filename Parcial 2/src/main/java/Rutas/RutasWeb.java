@@ -217,15 +217,15 @@ public class RutasWeb {
         get("/profile/:username", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
 
-            File file = new File("resources\\grinch.jpg");
-            byte[] bFile = new byte[(int) file.length()];
-            try {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                fileInputStream.read(bFile);
-                fileInputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            File file = new File("resources\\grinch.jpg");
+//            byte[] bFile = new byte[(int) file.length()];
+//            try {
+//                FileInputStream fileInputStream = new FileInputStream(file);
+//                fileInputStream.read(bFile);
+//                fileInputStream.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
 
             String username = request.params("username");
@@ -236,6 +236,17 @@ public class RutasWeb {
             List<Post> posts = postDao.getMyPosts(user);
             List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
+            List<Integer> friendsids = friendshipDao.getAllFriends(usuarioLogueado);
+            List<User> friends = usuarioDao.getUsersById(friendsids);
+            friends = friends.subList(Math.max(friends.size() - 5, 0), friends.size());
+            List<Profile> friendsProfiles = new ArrayList<>();
+
+            for(User user1 : friends){
+                friendsProfiles.add(usuarioDao.getProfile(user1));
+            }
+
+            attributes.put("totalFriends", friendsids.size());
+            attributes.put("friendsProfiles", friendsProfiles);
             attributes.put("user", user);
             attributes.put("posts", posts);
             attributes.put("usuarioLogueado", usuarioLogueado);
@@ -243,15 +254,15 @@ public class RutasWeb {
             attributes.put("numeroNotificaciones", notificationList.size());
             attributes.put("notificaciones", notificationList);
 
-            usuarioDao.getProfile(usuarioLogueado).setProfilepic(bFile);
-            try{
-                FileOutputStream fos = new FileOutputStream("resources\\grinch.jpg");
-                fos.write(usuarioDao.getProfile(usuarioLogueado).getProfilepic());
-                fos.close();
-                attributes.put("fotoperfil", fos);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+//            usuarioDao.getProfile(usuarioLogueado).setProfilepic(bFile);
+//            try{
+//                FileOutputStream fos = new FileOutputStream("resources\\grinch.jpg");
+//                fos.write(usuarioDao.getProfile(usuarioLogueado).getProfilepic());
+//                fos.close();
+//                attributes.put("fotoperfil", fos);
+//            }catch(Exception e){
+//                e.printStackTrace();
+//            }
             return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
