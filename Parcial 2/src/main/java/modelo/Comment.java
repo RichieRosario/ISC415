@@ -2,6 +2,9 @@ package modelo;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 import java.util.Optional;
@@ -26,6 +29,7 @@ public class Comment implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "commentValoraciones", joinColumns = {@JoinColumn(name = "comment_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<LikeDislike> valoraciones;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)

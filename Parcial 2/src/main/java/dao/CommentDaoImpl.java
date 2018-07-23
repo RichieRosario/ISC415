@@ -97,7 +97,7 @@ public class CommentDaoImpl extends Repositorio<Comment, Integer> implements Com
         Wall wall = null;
 
         Event event = new Event();
-        wall =  wallDao.findWallByUser(user.getId());
+        wall =  wallDao.findWallByUser(user);
         event.setUser(user);
         event.setEvento(notification);
         event.setWall(wall);

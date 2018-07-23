@@ -2,6 +2,9 @@ package modelo;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 import java.sql.Blob;
@@ -20,14 +23,16 @@ public class Wall implements Serializable {
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user")
     private User user;
 
-    @OneToMany(  mappedBy = "wall", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany( mappedBy = "wall", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(  mappedBy = "wall", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany( mappedBy = "wall", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Event> events = new ArrayList<>();
 
     private boolean deleted = false;

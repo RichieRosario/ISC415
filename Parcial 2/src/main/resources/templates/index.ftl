@@ -106,11 +106,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <input type="text" name="lugarnacimiento" id="lugarnacimiento" class="form-control" style="width:92.5%" placeholder="Lugar de Nacimiento"/>
-                        </div>
-                    </div>
+
 
                     <div class="form-group row">
                         <div class="col-md-6">

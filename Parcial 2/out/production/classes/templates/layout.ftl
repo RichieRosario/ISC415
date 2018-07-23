@@ -5,7 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> </head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script></head>
     <body>
 
 
@@ -17,14 +18,14 @@
             <#if admin == false>
             <ul class="nav navbar-nav" style="text-decoration:none">
                 <li class="navbar-item"><a href="/" class="nav-link"  >Inicio</a></li>
-                <li class="navbar-item"><a href="/" class="nav-link"  >Perfil</a></li>
+                <li class="navbar-item"><a href="/profile/${usuario.getUsername()}" class="nav-link"  >Perfil</a></li>
                 <li class="navbar-item"><a href="/logout" class="nav-link">Cerrar Sesión</a></li>
             </ul>
             <#else>
 
                 <ul class="nav navbar-nav" style="text-decoration:none">
                 <li class="navbar-item"><a href="/" class="nav-link" >Inicio</a></li>
-                <li class="navbar-item"><a href="/profile/${perfil}" class="nav-link" >Perfil</a></li>
+                <li class="navbar-item"><a href="/profile/${usuario.getUsername()}" class="nav-link" >Perfil</a></li>
                     <li class="navbar-item"><a href="/usuarios" class="nav-link" >Gestionar Usuarios</a></li>
                 <li class="navbar-item"><a href="/logout" class="nav-link">Cerrar Sesión</a></li>
             </ul>

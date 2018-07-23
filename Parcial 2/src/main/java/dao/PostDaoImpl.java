@@ -134,7 +134,7 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
         Wall wall = null;
 
         Event event = new Event();
-        wall =  wallDao.findWallByUser(user.getId());
+        wall =  wallDao.findWallByUser(user);
         event.setUser(user);
         event.setEvento(notification);
         event.setWall(wall);

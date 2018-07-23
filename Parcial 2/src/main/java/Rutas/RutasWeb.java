@@ -1,5 +1,6 @@
 package Rutas;
 
+import com.sun.tools.doclets.standard.Standard;
 import dao.*;
 import hibernate.HibernateUtil;
 import javafx.geometry.Pos;
@@ -8,17 +9,24 @@ import spark.template.freemarker.FreeMarkerEngine;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Session;
+import spark.utils.IOUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.text.*;
 
+import javax.imageio.ImageIO;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Path;
 import javax.persistence.metamodel.Metamodel;
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.Part;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -58,6 +66,8 @@ public class RutasWeb {
         eventDao = new EventDaoImpl(Event.class);
         likeDislikeDao = new LikeDislikeDaoImpl(LikeDislike.class);
 
+        File uploadDir = new File("upload");
+        uploadDir.mkdir(); //
 
 
         //Rutas Inicio
@@ -176,13 +186,13 @@ public class RutasWeb {
             return new ModelAndView(attributes, "pendingRequests.ftl");
         }, freeMarkerEngine);
 
-        post("/sendRequest", (request, response) -> {
+        post("/sendRequest/:userId", (request, response) -> {
 
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
 
             User user = new User();
-            user = usuarioDao.findOne(1); //prueba
+            user = usuarioDao.searchByUsername(request.cookie("username")); //prueba
 
            String userId = request.params("userId");
            friendshipDao.sendFriendRequest(user, Integer.parseInt(userId));
@@ -220,36 +230,30 @@ public class RutasWeb {
         //Rutas profile
         get("/profile/:username", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-
-//            File file = new File("resources\\grinch.jpg");
-//            byte[] bFile = new byte[(int) file.length()];
-//            try {
-//                FileInputStream fileInputStream = new FileInputStream(file);
-//                fileInputStream.read(bFile);
-//                fileInputStream.close();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
+            boolean owner = false;
 
             String username = request.params("username");
 
             if(request.cookie("username")!=null) {
-                User user = usuarioDao.searchByUsername(request.cookie("username").toString());
-
-                User usuarioLogueado = usuarioDao.findOne(1);
+                User user = usuarioDao.searchByUsername(username);
+                boolean isPending = false;
+                User usuarioLogueado = usuarioDao.searchByUsername(request.cookie("username"));
                 boolean isFriend = friendshipDao.checkIfFriend(usuarioLogueado, user.getId());
-                attributes.put("usuario", user);
-                attributes.put("perfil", user.getUsername());
-                attributes.put("admin", user.isAdministrator());
-                // List<Post> posts = postDao.getMyPosts(user.getId());
+                if(usuarioLogueado.getUsername().equals(user.getUsername())) owner=true;
+                if(friendshipDao.getFriendRequests(user).contains(usuarioLogueado.getId()) ){
+                    isPending=true;
+                }
+                attributes.put("owner",owner);
+                attributes.put("isPending",isPending);
+                attributes.put("usuario", usuarioLogueado);
+                attributes.put("perfil", usuarioDao.getProfile(user));
+                attributes.put("admin", usuarioLogueado.isAdministrator());
+                List<Post> posts = postDao.getMyPosts(user);
                 // List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
                 attributes.put("user", user);
-                //attributes.put("posts", posts);
-                attributes.put("usuarioLogueado", usuarioLogueado);
+                attributes.put("posts", posts);
                 attributes.put("isFriend", isFriend);
-                    List<Post> posts = postDao.getMyPosts(user);
             List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
             List<Integer> friendsids = friendshipDao.getAllFriends(usuarioLogueado);
@@ -261,14 +265,74 @@ public class RutasWeb {
                 friendsProfiles.add(usuarioDao.getProfile(user1));
             }
 
+            Wall muro = user.getWall();
+            attributes.put("muroeventos", muro.getEvents());
+            attributes.put("muroentradas", muro.getPosts());
             attributes.put("totalFriends", friendsids.size());
             attributes.put("friendsProfiles", friendsProfiles);
                 //attributes.put("numeroNotificaciones", notificationList.size());
                 //attributes.put("notificaciones", notificationList);
             }
 
-            return new ModelAndView(attributes, "home.ftl");
+            return new ModelAndView(attributes, "profile.ftl");
         }, freeMarkerEngine);
+
+        post("/subirfoto","multipart/form-data",  (request, response) -> {
+
+
+            request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+            java.nio.file.Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+            long maxFileSize = 100000000;
+            long maxRequestSize = 100000000;
+            int fileSizeThreshold = 1024;
+
+            MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+                    uploadDir.getAbsolutePath(), maxFileSize, maxRequestSize, fileSizeThreshold);
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig",
+                    multipartConfigElement);
+
+
+
+            Part uploadedFile = request.raw().getPart("uploaded_file");
+
+            String fName = request.raw().getPart("uploaded_file").getSubmittedFileName();
+
+                    java.nio.file.Path out = Paths.get(uploadDir.getCanonicalPath() +"/" +fName);
+                    InputStream in = uploadedFile.getInputStream();
+                        Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
+                        uploadedFile.delete();
+
+                    multipartConfigElement = null;
+                    uploadedFile = null;
+
+            BufferedImage imagen = null;
+            File here = new File(".");
+
+            String path = uploadDir.getCanonicalPath() +"/" +fName;
+            System.out.println(path);
+
+            try {
+                imagen = ImageIO.read(new File((path)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ByteArrayOutputStream imagenb = new ByteArrayOutputStream();
+            try {
+                ImageIO.write(imagen, "jpg",imagenb);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            User usuario = usuarioDao.searchByUsername(request.cookie("username"));
+
+            Profile profile = usuarioDao.getProfile(usuario);
+            profile.setProfilepic(imagenb.toByteArray());
+            profileDao.update(profile);
+
+
+            response.redirect("/profile/"+usuario.getUsername());
+            return null;
+        });
 
         //Rutas index
         get("/", (request, response) -> {
@@ -336,6 +400,8 @@ public class RutasWeb {
 
                 administrator = user.isAdministrator();
 
+                    attributes.put("usuario", user);
+
 
                 attributes.put("usuarios", usuarioDao.getAll());
                 attributes.put("perfil", user.getUsername());
@@ -347,6 +413,7 @@ public class RutasWeb {
 
             return new ModelAndView(attributes, "gestionarUsuarios.ftl");
         }, freeMarkerEngine);
+
         get("/usuarios/editar/:id", (request, response) -> {
             boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
             boolean admin=false;
@@ -423,7 +490,7 @@ public class RutasWeb {
         },freeMarkerEngine);
 
         //Rutas Registrarse
-        post("/registrarse2", (request, response) -> {
+        post("/registrarse", (request, response) -> {
 
             Map<String, Object> attributes = new HashMap<>();
 
@@ -456,54 +523,41 @@ public class RutasWeb {
             newprofile.setLugarnacimiento(lugarnacimiento);
             newprofile.setLugartrabajo(lugartrabajo);
             newprofile.setUser(newuser);
+            File here = new File(".");
+            BufferedImage imagen = null;
+
+            String path = here.getCanonicalPath()+"/src/main/resources/public/img/profile-default.png";
+
+            try {
+                imagen = ImageIO.read(new File((path)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ByteArrayOutputStream imagenb = new ByteArrayOutputStream();
+            try {
+                ImageIO.write(imagen, "jpg",imagenb);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+           newprofile.setProfilepic(imagenb.toByteArray());
             profileDao.add(newprofile);
+            Wall newmuro = new Wall();
+            newmuro.setUser(newuser);
+            wallDao.add(newmuro);
+
+            Event evento = new Event();
+            evento.setWall(newmuro);
+            evento.setUser(newuser);
+            evento.setFecha(LocalDate.now());
+            evento.setEvento(newprofile.getNombre()+" "+newprofile.getApellido()+" se ha unido a Una Red Social");
+            eventDao.add(evento);
 
             response.redirect("/");
 
             return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
-
-        post("/registrarse", (request, response) -> {
-
-            QueryParamsMap map = request.queryMap();
-            SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
-            User usuario = new User();
-            Profile profile = new Profile();
-            usuario.setUsername(map.get("username").value());
-            usuario.setEmail(map.get("email").value());
-            usuario.setPassword(map.get("password").value());
-            usuarioDao.getProfile(usuario).setNombre(map.get("nombre").value());
-            usuarioDao.getProfile(usuario).setApellido(map.get("apellido").value());
-            usuarioDao.getProfile(usuario).setCiudadactual(map.get("ciudad").value());
-            java.util.Date fechanacimiento = format.parse(request.queryParams("fechanacimiento"));
-            usuarioDao.getProfile(usuario).setLugarestudio(map.get("lugarestudio").value());
-            usuarioDao.getProfile(usuario).setLugartrabajo(map.get("lugartrabajo").value());
-          //  usuarioDao.getProfile(usuario.getId()).setSexo(map.get("sexo").value());
-            if(request.queryParams("rol")!=null){
-                if(request.queryParams("rol").equals( "administrator")){
-
-                    usuario.setAdministrator(true);
-                }
-
-            else{
-                usuario.setAdministrator(false);
-            }}
-
-            UserDaoImpl userDao = null;
-
-            if(userDao.searchByUsername(usuario.getUsername())==null){
-
-                userDao.add(usuario);
-                profileDao.add(userDao.getProfile(usuario));
-                response.redirect("/");
-
-                return null;
-            }
-            else {
-                return "Usuario ya existe!";
-            }
-
-        });
 
         //Rutas Likes
         post("/like/post/:id", (request, response) -> {
@@ -646,7 +700,7 @@ public class RutasWeb {
             post.setLikes(0);
             post.setTexto(map.get("texto").value());
             post.setUser(usuario);
-            post.setWall(wallDao.findWallByUser(usuario.getId()));
+            post.setWall(wallDao.findWallByUser(usuario));
             String etiquetas = (map.get("etiqueta").value());
 
             List<Tag> etiq = new ArrayList<Tag>();
@@ -736,7 +790,7 @@ public class RutasWeb {
 
 
             Post post = new Post(idpost, texto, fecha, likes, null, null, postDao.findOne(idpost).getUser(),
-                    wallDao.findWallByUser(postDao.findOne(idpost).getUser().getId()), null, null);
+                    wallDao.findWallByUser(postDao.findOne(idpost).getUser()), null, null);
 
             post.setEtiquetas(etiqs);
             post.setValoraciones(postDao.findOne(idpost).getValoraciones());

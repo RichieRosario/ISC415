@@ -2,6 +2,9 @@ package modelo;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 import java.sql.Blob;
@@ -34,6 +37,7 @@ public class Post implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "postValoraciones", joinColumns = {@JoinColumn(name = "post_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<LikeDislike> valoraciones;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -49,6 +53,7 @@ public class Post implements Serializable {
     private Wall wall;
 
     @OneToMany(  mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToMany(cascade = {

@@ -1,9 +1,17 @@
 package modelo;
 
 import java.io.Serializable;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.Base64;
 import java.util.Date;
 import javax.persistence.*;
 
+import javafx.util.converter.LocalDateTimeStringConverter;
+import org.h2.util.DateTimeUtils;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Loader;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
@@ -15,6 +23,7 @@ import org.hibernate.annotations.Where;
 public class Profile implements Serializable {
 
     @Id
+    @GeneratedValue
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     private int id;
 
@@ -46,8 +55,8 @@ public class Profile implements Serializable {
     @Column(name = "sexo")
     private Character sexo;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user")
     private User user;
 
     private boolean deleted = false;
@@ -132,8 +141,16 @@ public class Profile implements Serializable {
         this.lugartrabajo = lugartrabajo;
     }
 
-    public Character getSexo() {
-        return sexo;
+    public String getSexo() {
+        String temp="";
+        if(sexo=='M'){
+            temp="Masculino";
+        }
+        else{
+            temp="Femenino";
+        }
+
+        return temp;
     }
 
     public void setSexo(Character sexo) {
@@ -144,12 +161,18 @@ public class Profile implements Serializable {
         return user;
     }
 
+    public int getUserId(){
+        return user.getId();
+    }
+
     public void setUser(User user) {
         this.user = user;
     }
 
-    public byte[] getProfilepic() {
-        return profilepic;
+    public String getProfilepic() {
+
+
+        return Base64.getEncoder().encodeToString(profilepic);
     }
 
     public void setProfilepic(byte[] profilepic) {
@@ -158,6 +181,13 @@ public class Profile implements Serializable {
 
     public boolean isDeleted() {
         return deleted;
+    }
+
+    public int getEdad(){
+
+        LocalDate then = LocalDate.ofYearDay(fechanacimiento.getYear(),fechanacimiento.getDay());
+        LocalDate now = LocalDate.now();
+        return Period.between(then,now).getYears();
     }
 
     public void setDeleted(boolean deleted) {

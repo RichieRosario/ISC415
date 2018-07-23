@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
@@ -27,9 +30,11 @@ public class Tag implements Serializable {
     private User toUser;
 
     @ManyToMany(mappedBy = "etiquetas")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Post> posts = new HashSet<>();
 
     @ManyToMany(mappedBy = "etiquetas")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Photo> photos = new HashSet<>();
 
 

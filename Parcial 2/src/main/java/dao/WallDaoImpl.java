@@ -67,20 +67,13 @@ public class WallDaoImpl extends Repositorio<Wall, Integer> implements WallDao{
         this.update(wall);
     }
 
-    public Wall findWallByUser(int userId){
+    public Wall findWallByUser(User user){
 
-        Wall wall = null;
-        try
-        {
-            Query q = getSession().createQuery("from Wall where user = :userId");
-            q.setInteger("userId", userId);
-            wall = (Wall) q.uniqueResult();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Query q = getSession().createQuery("from Wall where user = :user").setParameter("user", user);
+        Wall wall = (Wall) q.uniqueResult();
+
         return wall;
-
     }
 }

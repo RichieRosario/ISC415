@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
@@ -32,6 +35,7 @@ public class Photo implements Serializable {
     private Post post;
 
     @OneToMany( mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(cascade = {
@@ -42,9 +46,11 @@ public class Photo implements Serializable {
             joinColumns = @JoinColumn(name = "photo_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Tag> etiquetas = new HashSet<>();
 
     @ManyToMany(mappedBy = "photos")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Album> albums = new HashSet<>();
 
     private boolean deleted = false;

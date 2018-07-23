@@ -27,11 +27,11 @@ public class Event implements Serializable {
     @Column(name = "evento")
     private String evento;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "wall_id", nullable = true, updatable = false)
     private Wall wall;
 

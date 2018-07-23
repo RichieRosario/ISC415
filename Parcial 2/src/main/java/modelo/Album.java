@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
@@ -39,6 +42,7 @@ public class Album implements Serializable {
             joinColumns = @JoinColumn(name = "photo_id"),
             inverseJoinColumns = @JoinColumn(name = "album_id")
     )
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Photo> photos = new HashSet<>();
 
     private boolean deleted = false;

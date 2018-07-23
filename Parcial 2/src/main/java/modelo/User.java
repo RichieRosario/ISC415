@@ -12,6 +12,8 @@ import hibernate.HibernateUtil;
 import javafx.geometry.Pos;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.query.Query;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
@@ -43,13 +45,22 @@ public class User implements Serializable {
     private boolean administrator;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Event> events = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    private Profile profile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    private Wall wall;
 
     private boolean deleted = false;
 
@@ -131,6 +142,10 @@ public class User implements Serializable {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public Wall getWall(){
+        return wall;
     }
 
     public List<Comment> getComments() {
