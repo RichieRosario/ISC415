@@ -2,13 +2,18 @@ package modelo;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 import java.sql.Blob;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "Event")
 @Table(name = "event")
@@ -31,6 +36,17 @@ public class Event implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(  mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<Comment> comments = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "eventValoraciones", joinColumns = {@JoinColumn(name = "event_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<LikeDislike> valoraciones;
+
+
+
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "wall_id", nullable = true, updatable = false)
     private Wall wall;
@@ -39,6 +55,10 @@ public class Event implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public Set<Comment> getComments(){
+        return comments;
     }
 
     public void setId(int id) {

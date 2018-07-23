@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-
-<html>
-<head>
-
-    <title>Friends</title>
-</head>
+<#include "layout.ftl">
 
 <body>
         <div>
@@ -25,8 +19,6 @@
         </div>
 
         <div>
-            <p><a href="profile/${user.getId()}">
-                <h5>${profile.getNombre()} ${profile.getApellido()}</h5></a></p>
 
             <li>
                 <a href="home">
@@ -63,4 +55,3 @@
                 </div>
 
 </body>
-</html>

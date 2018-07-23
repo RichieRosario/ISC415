@@ -96,7 +96,7 @@ public class Main {
             wallDao.add(wall);
 
             Event evento = new Event();
-            evento.setEvento(perfil.getNombre()+" "+perfil.getApellido()+"se ha unido a Una Red Social");
+            evento.setEvento(perfil.getNombre()+" "+perfil.getApellido()+" se ha unido a Una Red Social");
             evento.setUser(usuarioPorDefecto);
             evento.setFecha(LocalDate.now());
             evento.setWall(wall);

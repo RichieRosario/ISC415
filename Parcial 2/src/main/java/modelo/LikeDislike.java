@@ -33,6 +33,10 @@ public class LikeDislike implements Serializable {
     private Comment comment;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    private Event event;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

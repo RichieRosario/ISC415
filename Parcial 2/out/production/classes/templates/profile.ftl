@@ -21,7 +21,7 @@
            <form method='post' enctype='multipart/form-data' action="/subirfoto">
 
 
-    <input type='file' id="uploaded_file" name='uploaded_file'>
+    <input type='file' id="uploaded_file" name='uploaded_file' style="opacity:0;">
 
     <button id="submit" type="submit" class="btn btn-default btn-xs">Cambiar Foto de Perfil</button>
 
@@ -65,9 +65,9 @@
                         <p class="text-white">Publicación</p>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="/post/${user.getUsername()}">
+                        <form method="post" action="/addPost/${user.getUsername()}">
                         <div class="form-control">
-                        <textarea id="muro" name="muro" placeholder="Escribele algo a ${perfil.getNombre()}..." rows="5" cols="93" style="border:none"></textarea>
+                        <textarea id="muro" name="muro" placeholder="Escribele algo a ${perfil.getNombre()}..." rows="5" cols="97" style="border:none"></textarea>
                         </div>
 
                     </div>
@@ -81,18 +81,31 @@
 
 
             <br>
-            <div class="card mx-auto" style="width:75%">
-                <div class="card-header bg-dark">
-                    <p class="text-white">Publicaciones</p>
-                </div>
-                <div class="card-body">
-                    <#list muroeventos as post>
-                            ${post.getEvento()}
-                    </#list>
-                </div>
 
-            </div>
-        </div>
+                    <h1>Publicaciones</h1>
+
+                   <#list muroeventos as post>
+                        <div class="card">
+                           <h1 class="card-header"> ${post.getEvento()} </h1>
+                        <form action="/like/evento/${post.getId()}" method="post">
+                            <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me gusta" style="border:none">Me gusta</button></i>(0)
+                            <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="No me gusta"style="border:none">No me gusta</button></i>(0)
+                        </form>
+                            <#list post.getComments() as comentarioevento>
+                                ${comentario.getComentario()}
+                            <#else>
+                            No hay comentarios en esta entrada.
+                            </#list>
+                        <form method="post" action="/comentario/evento/${post.getId()}">
+                            <div class="form-control">
+                                <textarea id="muro" name="muro" placeholder="Haz un comentario..." rows="5" cols="93" style="border:none"></textarea>
+                            </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-info btn-xs ml-5">Publicar</button>
+                        </form>
+                        </div>
+                        </div>
+                    </#list>
         <div id="menu1" class="container tab-pane fade"><br>
             <div class="card mx-auto" style="width:75%; ">
                 <div class="card-header bg-dark">

@@ -56,6 +56,9 @@
                       </form:form>
                   </div>
               </div>
+
+                <#else>
+                <p>No hay solicitudes pendientes.</p>
                 </#list>
                 </div>
 </body>

@@ -1,6 +1,5 @@
 package Rutas;
 
-import com.sun.tools.doclets.standard.Standard;
 import dao.*;
 import hibernate.HibernateUtil;
 import javafx.geometry.Pos;
@@ -115,7 +114,10 @@ public class RutasWeb {
 
             List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
-            attributes.put("user", user);
+
+            attributes.put("usuario", user);
+            attributes.put("perfil", user.getUsername());
+            attributes.put("admin", user.isAdministrator());
             attributes.put("profile", usuarioDao.getProfile(user));
             attributes.put("amigos", amigos);
             attributes.put("perfiles", profilesList);
@@ -163,9 +165,9 @@ public class RutasWeb {
             QueryParamsMap map = request.queryMap();
 
             User user = new User();
-            user = usuarioDao.findOne(2); //prueba
-
-            List<Integer> pendingRequests = friendshipDao.getPendingRequests(user);
+            user = usuarioDao.searchByUsername(request.cookie("username"));
+            List<Integer> pendingRequests = new ArrayList<>();
+            pendingRequests = friendshipDao.getPendingRequests(user);
             for (Integer integer: pendingRequests) {
                 System.out.println(integer);
             }
@@ -178,11 +180,11 @@ public class RutasWeb {
             attributes.put("numeroNotificaciones", notificationList.size());
             attributes.put("notificaciones", notificationList);
 
-            if(pendingRequests.size() > 0)
-            {
-                List<User> personList = usuarioDao.getUsersById(pendingRequests);
+
+                List<User> personList = new ArrayList<User>();
+                personList = usuarioDao.getUsersById(pendingRequests);
                 attributes.put("personList", personList);
-            }
+
             return new ModelAndView(attributes, "pendingRequests.ftl");
         }, freeMarkerEngine);
 
@@ -268,6 +270,7 @@ public class RutasWeb {
             Wall muro = user.getWall();
             attributes.put("muroeventos", muro.getEvents());
             attributes.put("muroentradas", muro.getPosts());
+            attributes.put("eventoscomentarios", muro.getEvents());
             attributes.put("totalFriends", friendsids.size());
             attributes.put("friendsProfiles", friendsProfiles);
                 //attributes.put("numeroNotificaciones", notificationList.size());
@@ -678,49 +681,30 @@ public class RutasWeb {
         });
 
         //Rutas Posts
-        post("/addPost", (request, response) -> {
+        post("/addPost/:user", (request, response) -> {
 
             QueryParamsMap map = request.queryMap();
             boolean autenticado=false;
             Integer id;
             Post post = new Post();
             User usuario = new User();
-
-            if(request.cookie("username")!=null)
-            {autenticado=true;
-                usuario = usuarioDao.searchByUsername(request.cookie("username"));
-
-
-            }
-            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
-                autenticado=true;
-                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
+            String user = request.params("user");
+            usuario= usuarioDao.searchByUsername(user);
+            User log = usuarioDao.searchByUsername(request.cookie("username"));
 
             post.setFecha(LocalDate.now());
             post.setLikes(0);
-            post.setTexto(map.get("texto").value());
-            post.setUser(usuario);
-            post.setWall(wallDao.findWallByUser(usuario));
+            post.setTexto(map.get("muro").value());
+            post.setUser(log);
+            post.setWall(usuario.getWall());
             String etiquetas = (map.get("etiqueta").value());
 
             List<Tag> etiq = new ArrayList<Tag>();
 
-            String[] ets = etiquetas.split(",");
 
             //   Long size2 = Long.parseLong(String.valueOf(size));
 
-            Set<Tag> etiqs = new HashSet<>();
-
-            for(String etiquet : etiquetas.split(",")){
-
-                Tag etiqueta = new Tag();
-                User user = usuarioDao.searchByUsername(etiquet);
-                etiqueta = tagDao.searchByTag(etiquet);
-                etiqs.add(new Tag(user));
-            }
-
-
-            post.setEtiquetas(etiqs);
+            post.setEtiquetas(null);
             postDao.add(post);
             response.redirect("/home");
 

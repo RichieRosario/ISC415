@@ -37,6 +37,10 @@ public class Comment implements Serializable {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "event_id",nullable = true, updatable = false)
+    private Event event;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "photo_id",nullable = true, updatable = false)
     private Photo photo;
 
