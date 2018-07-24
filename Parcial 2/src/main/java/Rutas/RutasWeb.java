@@ -4,6 +4,7 @@ import dao.*;
 import hibernate.HibernateUtil;
 import javafx.geometry.Pos;
 import modelo.*;
+import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
@@ -640,6 +641,7 @@ public class RutasWeb {
 
             return "Ok";
         });
+
         post("/like/comentario/:id", (request, response) -> {
             boolean autenticado=false;
             QueryParamsMap map = request.queryMap();
@@ -655,7 +657,6 @@ public class RutasWeb {
             LikeDislike valoracion = new LikeDislike();
             valoracion.setComment(comentario);
             valoracion.setUser(usuario);
-            LikeDislikeDao valoracionDao = null;
 
             String value = request.queryParams("like");
             if(value.equals("Me gusta")){
@@ -670,7 +671,7 @@ public class RutasWeb {
                 if(val.getUser().getId()==valoracion.getUser().getId()){
                     val.setValoracion( valoracion.getValoracion());
                     check=true;
-                    valoracionDao.update(val);
+                    likeDislikeDao.update(val);
                     commentDao.update(comentario);
                 }
 
@@ -679,18 +680,11 @@ public class RutasWeb {
 
             if(check==false){
                 comentario.getValoraciones().add(valoracion);
-                valoracionDao.add(valoracion);
+                likeDislikeDao.add(valoracion);
                 commentDao.update(comentario);
             }
 
 
-            for(Post post:postDao.getAll()){
-                for(Comment comen:post.getComments()){
-                    if(comen.getId() == comentario.getId()){
-                        postId=post.getId();
-                    }
-                }
-            }
 
 
             response.redirect("/home");
@@ -747,7 +741,44 @@ public class RutasWeb {
             return "Ok";
         });
 
-        //Rutas Posts
+
+                post("/comentario/evento/:id", (request, response) -> {
+
+                    QueryParamsMap map = request.queryMap();
+                    boolean autenticado=false;
+                    Integer id = Integer.parseInt(request.params("id"));
+                    Comment comment = new Comment();
+                    User usuario = new User();
+                    User log = usuarioDao.searchByUsername(request.cookie("username"));
+                    Event evento = eventDao.findOne(id);
+                    comment.setComentario(request.queryParams("muro"));
+                    comment.setUser(log);
+                    comment.setEvent(eventDao.findOne(id));
+                    commentDao.add(comment);
+                    response.redirect("/home");
+
+                    return "Ok";
+                });
+
+
+        post("/comentario/post/:id", (request, response) -> {
+
+            QueryParamsMap map = request.queryMap();
+            boolean autenticado=false;
+            Integer id = Integer.parseInt(request.params("id"));
+            Comment comment = new Comment();
+            User usuario = new User();
+            User log = usuarioDao.searchByUsername(request.cookie("username"));
+            Post evento = postDao.findOne(id);
+            comment.setComentario(request.queryParams("muro"));
+            comment.setUser(log);
+            comment.setPost(evento);
+            commentDao.add(comment);
+            response.redirect("/home");
+
+            return "Ok";
+        });
+
         post("/addPost/:user", (request, response) -> {
 
             QueryParamsMap map = request.queryMap();

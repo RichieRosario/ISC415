@@ -45,8 +45,8 @@
       <file leaf-file-name="RutasWeb.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="300" column="71" selection-start-line="300" selection-start-column="71" selection-end-line="300" selection-end-column="71" />
+            <state relative-caret-position="172">
+              <caret line="674" column="34" selection-start-line="674" selection-start-column="34" selection-end-line="674" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#6832#6838#0" expanded="true" />
@@ -92,8 +92,8 @@
       <file leaf-file-name="profile.ftl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/profile.ftl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="235" column="137" selection-start-line="235" selection-start-column="137" selection-end-line="235" selection-end-column="137" />
+            <state relative-caret-position="-637">
+              <caret line="103" column="40" selection-start-line="103" selection-start-column="40" selection-end-line="103" selection-end-column="40" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#src#0;n#img#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -138,6 +138,15 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="Comment.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/modelo/Comment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="321">
+              <caret line="46" column="38" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -149,9 +158,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>sait</find>
-      <find>IRepos</find>
-      <find>user</find>
       <find>logout</find>
       <find>home</find>
       <find>login</find>
@@ -179,6 +185,9 @@
       <find>accept</find>
       <find>/pending</find>
       <find>/send</find>
+      <find>/comentario/</find>
+      <find>/comentario</find>
+      <find>/com</find>
     </findStrings>
     <dirStrings>
       <dir>C:\Users\EmilioFerreiras\Documents\GitHub\ISC415\Parcial 2\src\main\java\Dao</dir>
@@ -585,7 +594,6 @@
         <option value="$PROJECT_DIR$/src/main/java/modelo/Album.java" />
         <option value="$PROJECT_DIR$/src/main/java/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/modelo/Post.java" />
-        <option value="$PROJECT_DIR$/src/main/java/modelo/Comment.java" />
         <option value="$PROJECT_DIR$/src/main/java/modelo/Photo.java" />
         <option value="$PROJECT_DIR$/src/main/java/modelo/LikeDislike.java" />
         <option value="$PROJECT_DIR$/src/main/java/modelo/Event.java" />
@@ -599,6 +607,7 @@
         <option value="$PROJECT_DIR$/src/main/resources/templates/pendingRequests.ftl" />
         <option value="$PROJECT_DIR$/src/main/resources/templates/findfriends.ftl" />
         <option value="$PROJECT_DIR$/src/main/java/dao/FriendshipDaoImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/java/modelo/Comment.java" />
         <option value="$PROJECT_DIR$/src/main/resources/templates/profile.ftl" />
         <option value="$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java" />
       </list>
@@ -831,12 +840,12 @@
       <workItem from="1531966740301" duration="19109000" />
       <workItem from="1532278811354" duration="45705000" />
       <workItem from="1532370629785" duration="10759000" />
-      <workItem from="1532400705121" duration="20745000" />
+      <workItem from="1532400705121" duration="24429000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="272570000" />
+    <option name="totallyTimeSpent" value="276254000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1143,13 +1152,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/modelo/Comment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="122" column="5" selection-start-line="122" selection-start-column="5" selection-end-line="122" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/modelo/Photo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1162">
@@ -1297,10 +1299,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/modelo/Comment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="321">
+          <caret line="46" column="38" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/profile.ftl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="235" column="137" selection-start-line="235" selection-start-column="137" selection-end-line="235" selection-end-column="137" />
+        <state relative-caret-position="-637">
+          <caret line="103" column="40" selection-start-line="103" selection-start-column="40" selection-end-line="103" selection-end-column="40" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#src#0;n#img#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -1316,8 +1325,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="300" column="71" selection-start-line="300" selection-start-column="71" selection-end-line="300" selection-end-column="71" />
+        <state relative-caret-position="172">
+          <caret line="674" column="34" selection-start-line="674" selection-start-column="34" selection-end-line="674" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#6832#6838#0" expanded="true" />

@@ -32,19 +32,19 @@ public class Comment implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<LikeDislike> valoraciones;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "post_id",nullable = true, updatable = false)
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "event_id",nullable = true, updatable = false)
     private Event event;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "photo_id",nullable = true, updatable = false)
     private Photo photo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -80,6 +80,14 @@ public class Comment implements Serializable {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public Photo getPhoto() {
