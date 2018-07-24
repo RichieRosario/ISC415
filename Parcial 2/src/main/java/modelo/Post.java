@@ -35,7 +35,7 @@ public class Post implements Serializable {
     @Column(name = "likes")
     private int likes;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany( cascade = CascadeType.ALL)
     @JoinTable(name = "postValoraciones", joinColumns = {@JoinColumn(name = "post_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<LikeDislike> valoraciones;
@@ -168,6 +168,22 @@ public class Post implements Serializable {
 
     public Set<LikeDislike> getValoraciones() {
         return valoraciones;
+    }
+
+    public int getcantlikes(){
+        int conta=0;
+        for(LikeDislike val : valoraciones){
+                if(val.getValoracion())conta++;
+        }
+        return conta;
+    }
+
+    public int getcantdislikes(){
+        int conta=0;
+        for(LikeDislike val : valoraciones){
+            if(!val.getValoracion())conta++;
+        }
+        return conta;
     }
 
     public void setValoraciones(Set<LikeDislike> valoraciones) {

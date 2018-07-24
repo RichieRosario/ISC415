@@ -568,32 +568,26 @@ public class RutasWeb {
             QueryParamsMap map = request.queryMap();
             Integer id = Integer.parseInt(request.params("id"));
             User usuario = new User();
-            if(request.cookie("username")!=null)
-            {autenticado=true;
+
                 usuario = usuarioDao.searchByUsername(request.cookie("username"));
 
-
-            }
-            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
-                autenticado=true;
-                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
 
             LikeDislike valoracion = new LikeDislike();
             valoracion.setPost(postDao.findOne(id));
             valoracion.setUser(usuario);
             String value = request.queryParams("like");
-            if(value.equals("Me divierte")){
+            if(value.equals("Me gusta")){
                 valoracion.setValoracion(true);
+                System.out.println("entre");
             }
-            else if(value.equals("Me aborrece")){
+            else if(value.equals("No me gusta")){
                 valoracion.setValoracion(false);
             }
 
 
 
-            PostDaoImpl postDao1 = null;
             Post post = new Post();
-            post = postDao1.findOne(id);
+            post = postDao.findOne(id);
 
             boolean check = false;
             for(LikeDislike val: post.getValoraciones()){
@@ -622,17 +616,12 @@ public class RutasWeb {
             QueryParamsMap map = request.queryMap();
             Integer id = Integer.parseInt(request.params("id"));
             User usuario = new User();
-            Comment comentario = commentDao.findOne(id);
+            Comment comentario = new Comment();
+            comentario = commentDao.findOne(id);
             Integer postId=0;
 
-            if(request.cookie("username")!=null)
-            {autenticado=true;
-                usuario = usuarioDao.searchByUsername(request.cookie("username"));
+             usuario = usuarioDao.searchByUsername(request.cookie("username"));
 
-            }
-            else if(usuarioDao.searchByUsername(request.session().attribute("username"))!=null && request.cookie("username")==null){
-                autenticado=true;
-                usuario = usuarioDao.searchByUsername(request.session().attribute("username"));}
 
             LikeDislike valoracion = new LikeDislike();
             valoracion.setComment(comentario);
@@ -640,10 +629,10 @@ public class RutasWeb {
             LikeDislikeDao valoracionDao = null;
 
             String value = request.queryParams("like");
-            if(value.equals("Me divierte")){
+            if(value.equals("Me gusta")){
                 valoracion.setValoracion(true);
             }
-            else if(value.equals("Me aborrece")){
+            else if(value.equals("No me gusta")){
                 valoracion.setValoracion(false);
             }
 
@@ -674,6 +663,55 @@ public class RutasWeb {
                 }
             }
 
+
+            response.redirect("/home");
+
+            return "Ok";
+        });
+
+        post("/like/evento/:id", (request, response) -> {
+            boolean autenticado=false;
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User usuario = new User();
+
+            usuario = usuarioDao.searchByUsername(request.cookie("username"));
+
+
+            LikeDislike valoracion = new LikeDislike();
+            valoracion.setEvent(eventDao.findOne(id));
+            valoracion.setUser(usuario);
+            String value = request.queryParams("like");
+            if(value.equals("Me gusta")){
+                valoracion.setValoracion(true);
+                System.out.println("entre");
+            }
+            else if(value.equals("No me gusta")){
+                valoracion.setValoracion(false);
+            }
+
+
+
+            Event event = new Event();
+            event = eventDao.findOne(id);
+
+            boolean check = false;
+            for(LikeDislike val: event.getValoraciones()){
+                if(val.getUser().getId()==valoracion.getUser().getId()){
+                    val.setValoracion( valoracion.getValoracion());
+                    check=true;
+                    likeDislikeDao.update(val);
+                    eventDao.update(event);
+                }
+
+            }
+
+
+            if(check==false){
+                event.getValoraciones().add(valoracion);
+                likeDislikeDao.add(valoracion);
+                eventDao.update(event);
+            }
 
             response.redirect("/home");
 

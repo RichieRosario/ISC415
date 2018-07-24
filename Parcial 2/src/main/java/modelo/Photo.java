@@ -28,8 +28,8 @@ public class Photo implements Serializable {
     @Column(name = "caption")
     private String caption;
 
-    @Column(name = "foto")
-    private Blob foto;
+    @Column(name = "foto",columnDefinition = "BLOB")
+    private byte[] foto;
 
     @OneToOne(fetch = FetchType.LAZY, cascade =  CascadeType.ALL, mappedBy = "photo")
     private Post post;
@@ -52,6 +52,12 @@ public class Photo implements Serializable {
     @ManyToMany(mappedBy = "photos")
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Album> albums = new HashSet<>();
+
+    @OneToMany( cascade = CascadeType.ALL)
+    @JoinTable(name = "photoValoraciones", joinColumns = {@JoinColumn(name = "photo_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<LikeDislike> valoraciones;
+
 
     private boolean deleted = false;
 
@@ -100,6 +106,22 @@ public class Photo implements Serializable {
         return etiquetas;
     }
 
+    public int getcantlikes(){
+        int conta=0;
+        for(LikeDislike val : valoraciones){
+            if(val.getValoracion())conta++;
+        }
+        return conta;
+    }
+
+    public int getcantdislikes(){
+        int conta=0;
+        for(LikeDislike val : valoraciones){
+            if(!val.getValoracion())conta++;
+        }
+        return conta;
+    }
+
     public void setEtiquetas(Set<Tag> etiquetas) {
         this.etiquetas = etiquetas;
     }
@@ -112,11 +134,11 @@ public class Photo implements Serializable {
         this.albums = albums;
     }
 
-    public Blob getFoto() {
+    public byte[] getFoto() {
         return foto;
     }
 
-    public void setFoto(Blob foto) {
+    public void setFoto(byte[] foto) {
         this.foto = foto;
     }
 }

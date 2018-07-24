@@ -148,6 +148,10 @@ public class User implements Serializable {
         return wall;
     }
 
+    public Profile getProfile(){
+        return profile;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }

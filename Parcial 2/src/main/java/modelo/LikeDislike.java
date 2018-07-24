@@ -20,23 +20,23 @@ public class LikeDislike implements Serializable {
     @Column(name = "valoracion")
     private Boolean valoracion;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "photo_id")
     private Photo photo;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "event_id")
     private Event event;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -72,6 +72,10 @@ public class LikeDislike implements Serializable {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public Photo getPhoto() {

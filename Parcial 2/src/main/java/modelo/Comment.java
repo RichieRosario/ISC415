@@ -28,7 +28,7 @@ public class Comment implements Serializable {
     private int likes;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "commentValoraciones", joinColumns = {@JoinColumn(name = "comment_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
+    @JoinTable(name = "commentValoraciones", joinColumns = {@JoinColumn(name = "comment_id",  nullable = true)}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<LikeDislike> valoraciones;
 
@@ -104,6 +104,22 @@ public class Comment implements Serializable {
 
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public int getcantlikes(){
+        int conta=0;
+        for(LikeDislike val : valoraciones){
+            if(val.getValoracion())conta++;
+        }
+        return conta;
+    }
+
+    public int getcantdislikes(){
+        int conta=0;
+        for(LikeDislike val : valoraciones){
+            if(!val.getValoracion())conta++;
+        }
+        return conta;
     }
 
     public Set<LikeDislike> getValoraciones() {

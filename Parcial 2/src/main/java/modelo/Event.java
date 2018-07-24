@@ -97,6 +97,30 @@ public class Event implements Serializable {
         this.deleted = deleted;
     }
 
+    public Set<LikeDislike> getValoraciones() {
+        return valoraciones;
+    }
+
+    public int getcantlikes(){
+        int conta=0;
+        for(LikeDislike val : valoraciones){
+            if(val.getValoracion())conta++;
+        }
+        return conta;
+    }
+
+    public int getcantdislikes(){
+        int conta=0;
+        for(LikeDislike val : valoraciones){
+            if(!val.getValoracion())conta++;
+        }
+        return conta;
+    }
+
+    public void setValoraciones(Set<LikeDislike> valoraciones) {
+        this.valoraciones = valoraciones;
+    }
+
     public String getEvento() {
         return evento;
     }

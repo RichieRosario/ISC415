@@ -66,14 +66,13 @@
                     </div>
                     <div class="card-body">
                         <form method="post" action="/addPost/${user.getUsername()}">
-                        <div class="form-control">
-                        <textarea id="muro" name="muro" placeholder="Escribele algo a ${perfil.getNombre()}..." rows="5" cols="97" style="border:none"></textarea>
-                        </div>
+                        <textarea id="muro" name="muro" class="mx-auto" placeholder="Escribele algo a ${perfil.getNombre()}..." rows="5" cols="95" style="border-color:lightgray"></textarea>
+
 
                     </div>
-                    <div class="card-footer">
+                    <div class="modal-footer">
 
-                        <button type="submit" class="btn btn-info btn-xs ml-5">Publicar</button>
+                        <button type="submit" class="btn btn-info btn-xs">Publicar</button>
                         </form>
                     </div>
 
@@ -82,29 +81,88 @@
 
             <br>
 
-                    <h1>Publicaciones</h1>
-
-                   <#list muroeventos as post>
-                        <div class="card">
-                           <h1 class="card-header"> ${post.getEvento()} </h1>
-                        <form action="/like/evento/${post.getId()}" method="post">
-                            <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me gusta" style="border:none">Me gusta</button></i>(0)
-                            <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="No me gusta"style="border:none">No me gusta</button></i>(0)
-                        </form>
-                            <#list post.getComments() as comentarioevento>
+                    <#list muroentradas as entradas>
+                            <div class="card mx-auto" style="width:75%">
+                                <div class="card-header bg-dark"><p class="text-white">Publicaciones</p></div>
+                                <div class="card-title ml-4"><h1>${entradas.getUser().getProfile().getNombre()} ${entradas.getUser().getProfile().getApellido()} ha publicado: ${entradas.getTexto()} </h1></div>
+                                <div class="card-body">
+                                <form action="/like/post/${entradas.getId()}" method="post">
+                                    <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me gusta" style="border:none">Me gusta</button></i>(${entradas.getcantlikes()})
+                                    <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="No me gusta"style="border:none">No me gusta</button></i>(${entradas.getcantdislikes()})
+                                </form>
+                            <#list entradas.getComments() as comentarioevento>
+                            <div class="card mx-auto" style="width:75%">
+                                <div class="card-header">${comentario.getUser()}</div>
+                                <div class="card-body">
                                 ${comentario.getComentario()}
+                                    </div>
+                             <div class="card-footer">
+                                <form action="/like/comentario/${comentario.getId()}" method="post">
+                                 <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me gusta" style="border:none">Me gusta</button></i>(${comentario.getcantlikes()})
+                                 <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="No me gusta"style="border:none">No me gusta</button></i>(${comentario.getcantdislikes()})
+                             </form>
+                                 </div>
+                                </div>
+                            <br>
                             <#else>
                             No hay comentarios en esta entrada.
+                            <br>
                             </#list>
-                        <form method="post" action="/comentario/evento/${post.getId()}">
-                            <div class="form-control">
-                                <textarea id="muro" name="muro" placeholder="Haz un comentario..." rows="5" cols="93" style="border:none"></textarea>
+
+                                <form method="post" action="/comentario/post/${entradas.getId()}">
+                                        <textarea id="muro"  name="muro" placeholder="Haz un comentario..." rows="5" cols="95" style="border-color:lightgray"></textarea>
+
+                                    <div class="modal-footer ">
+                                        <button type="submit" class="btn btn-info btn-xs">Publicar</button>
+                                    </div>
+
+                                </form>
                             </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-info btn-xs ml-5">Publicar</button>
+
+                    </div>
+                    <br>
+                    </#list>
+
+                   <#list muroeventos as post>
+                        <div class="card mx-auto" style="width:75%">
+                            <div class="card-header bg-dark"><p class="text-white">Eventos</p></div>
+                           <h1 class="card-title"> ${post.getEvento()} </h1>
+                            <div class="card-body">
+                        <form action="/like/evento/${post.getId()}" method="post">
+                            <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me gusta" style="border:none">Me gusta</button></i>(${post.getcantlikes()})
+                            <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="No me gusta"style="border:none">No me gusta</button></i>(${post.getcantdislikes()})
                         </form>
+                            <#list post.getComments() as comentarioevento>
+                                <div class="card mx-auto" style="width:75%">
+                                    <div class="card-header">${comentario.getUser()}</div>
+                                    <div class="card-body">
+                                        ${comentario.getComentario()}
+                                    </div>
+                                    <div class="card-footer">
+                                        <form action="/like/comentario/${comentario.getId()}" method="post">
+                                            <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me gusta" style="border:none">Me gusta</button></i>(${comentario.getcantlikes()})
+                                            <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="No me gusta"style="border:none">No me gusta</button></i>(${comentario.getcantdislikes()})
+                                        </form>
+                                    </div>
+                                </div>
+                            <br>
+                            <#else>
+                            No hay comentarios de este evento.
+                            <br>
+                            </#list>
+
+                        <form method="post" action="/comentario/evento/${post.getId()}">
+
+                                <textarea id="muro" name="muro" class="mx-auto" placeholder="Haz un comentario..." rows="5" cols="95" style="border-color:lightgray"></textarea>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info btn-xs">Publicar</button>
+                    </div>
+                        </form>
+                            </div>
+
                         </div>
-                        </div>
+                   <br>
                     </#list>
         <div id="menu1" class="container tab-pane fade"><br>
             <div class="card mx-auto" style="width:75%; ">
