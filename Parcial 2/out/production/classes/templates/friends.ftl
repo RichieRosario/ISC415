@@ -1,57 +1,40 @@
 <#include "layout.ftl">
 
 <body>
-        <div>
-                <li>
-                    <ul>
-                        <li>
-                            <p>You have ${numeroNotificaciones} pending notifications</p>
-                        </li>
-                        <#list notificaciones as notification>
-                            <li>
-                                    <div>
-                                        <div>${notification.getNotificacion()}</div>
+
+<ul class="nav nav-tabs nav-justified">
+    <li class="nav-item"><a  class="nav-link active" href="/friends">Tus amigos</a></li>
+    <li class="nav-item"><a  class="nav-link" href="/findFriends">Buscar amigos</a></li>
+    <li class="nav-item"><a  class="nav-link" href="/friendRequests">Solicitudes de amistad</a></li>
+    <li class="nav-item"><a  class="nav-link" href="/pendingRequests">Solicitudes Pendientes</a></li>
+</ul>
+<br>
+<br>
+
+<div class="card mx-auto"style="width:50%">
+    <div class="card-header bg-dark" >
+        <p class="text-white">Amigos</p></div>
+    <br>
+    <div class="card-body">
+                        <#list perfiles as person>
+                            <div class="card mx-auto" style="width:50%">
+                                <div class="card-body">
+                                    <img src="data:image/jpeg;base64, ${person.getProfilepic()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
+                                    <a href="profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
+                                    <div class="form-inline" style="margin-left:25%">
+
+                                        <form method="POST" action="/unFriend">
+                                            <button type="submit" class="btn btn-danger" name="submitDecline">Eliminar de amigos</button>
+                                            <input type="hidden" name="decline" value="${person.getUser().getId()}" />
+                                        </form>
                                     </div>
-                            </li>
-                        </#list>
-                    </ul>
-                </li>
-        </div>
-
-        <div>
-
-            <li>
-                <a href="home">
-                    <span>Home</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="/friends" >
-                    <span>Friends</span>
-                </a>
-                <ul>
-                    <li><a href="/friends">Your Friends</a></li>
-                    <li><a href="/friendRequests">Friend Requests</a></li>
-                    <li><a href="/pendingRequests">Pending Requests</a></li>
-                </ul>
-            </li>
-        </div>
-
-                    <#list perfiles as person>
-                        <div>
-                            <div>
-                                <form:form method="POST" action="unFriend">
-                                    <a href="profile/${person.getId()}"><h3>
-                                    ${person.getNombre()} ${person.getApellido()}</a>
-                                    <button type="submit">UnFriend</button>
-                                    <input type="hidden" name="personId" value="${person.getId()}" />
-                                </form:form>
-
+                                </div>
                             </div>
-                        </div>
-                    </#list>
-                </div>
-                </div>
+                            <br>
+                        <#else>
+                            <p>No tienes amigos.</p>
+                        </#list>
+    </div>
+</div>
 
 </body>

@@ -1,55 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-    <title>Friend Requests</title>
-
-</head>
-
+<#include "layout.ftl">
 <body>
 
-        <div>
-            <p>You have ${numeroNotificaciones} pending notifications</p>
-        </div>
-     <div>
-                <p><a href="profile/${user.getId()}">
-                    <h5>${profile.getNombre()} ${profile.getApellido()}</h5></a></p>
 
-                <li>
-                    <a href="home">
-                        <span>Home</span>
-                    </a>
-                </li>
+<ul class="nav nav-tabs nav-justified">
+    <li class="nav-item"><a  class="nav-link" href="/friends">Tus amigos</a></li>
+    <li class="nav-item"><a  class="nav-link" href="/findFriends">Buscar amigos</a></li>
+    <li class="nav-item"><a  class="nav-link active" href="/friendRequests">Solicitudes de amistad</a></li>
+    <li class="nav-item"><a  class="nav-link" href="/pendingRequests">Solicitudes Pendientes</a></li>
+</ul>
+<br>
 
-                <li>
-                    <a href="/friends" >
-                        <span>Friends</span>
-                    </a>
-                    <ul>
-                        <li><a href="/friends">Your Friends</a></li>
-                        <li><a href="/friendRequests">Friend Requests</a></li>
-                        <li><a href="/pendingRequests">Pending Requests</a></li>
-                    </ul>
-                </li>
-        </div>
-            <div>
+<br>
+                <div class="card mx-auto"style="width:50%">
+            <div class="card-header bg-dark" >
+                <p class="text-white">Solicitudes de amistad</p></div>
+                <br>
+                    <div class="card-body">
                         <#list profilesList as person>
-                        <div>
-                            <div>
-                                <form:form method="POST" action="acceptRequest">
-                                    <a href="profile/${person.getId()}">
-                                    ${person.getNombre()} ${person.getApellido()}</a>
-                                    <button type="submit" name="submitAccept" >Accept</button>
-                                    <input type="hidden" name="personId" value="${person.getId()}" />
-                                </form:form>
-                                <form:form method="POST" action="unFriend">
-                                    <button type="submit" name="submitDecline">Decline</button></h3>
-                                    <input type="hidden" name="personId" value="${person.getId()}" />
-                                </form:form>
-                            </div>
-                        </div>
-                        </#list>
-            </div>
+                            <div class="card mx-auto" style="width:50%">
+                                   <div class="card-body">
+                                    <img src="data:image/jpeg;base64, ${person.getProfilepic()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
+                                       <a href="profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
+                                       <div class="form-inline" style="margin-left:25%">
 
+                                <form method="POST" action="/unFriend">
+                                    <button type="submit" class="btn btn-danger" name="submitDecline">Rechazar</button>
+                                    <input type="hidden" name="decline" value="${person.getUser().getId()}" />
+                                </form>
+                                           <form method="POST" action="/acceptRequest">
+                                               <button type="submit" class="btn btn-success" name="submitAccept" >Aceptar</button>
+                                               <input type="hidden" name="accept" value="${person.getUser().getId()}" />
+                                           </form>
+                                       </div>
+                                   </div>
+                            </div>
+                            <br>
+                            <#else>
+                            <p>No tienes solicitudes de amistad.</p>
+                        </#list>
+                    </div>
+            </div>
 </body>
-</html>

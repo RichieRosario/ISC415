@@ -203,12 +203,12 @@ public class FriendshipDaoImpl extends Repositorio<Friendship, Integer> implemen
     }
     public void acceptRequest(User user, int personId)
     {
-        Query q = getSession().createQuery("from Friendship where fromUser = :personId and toUser = :userId");
-        q.setInteger("personId", personId);
-        q.setInteger("userId", user.getId());
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Query q = session.createQuery("from Friendship where fromUser = :personId and toUser = :userId");
+        q.setParameter("personId", personId);
+        q.setParameter("userId", user.getId());
         Friendship friend = (Friendship) q.uniqueResult();
         friend.setAccepted(true);
-        Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         session.update(friend);
         transaction.commit();
@@ -238,6 +238,26 @@ public class FriendshipDaoImpl extends Repositorio<Friendship, Integer> implemen
     public boolean checkIfFriend(User user, int userId)
     {
         List<Integer> friendIds = getAllFriends(user);
+        for(int f : friendIds)
+        {
+            if(userId == f)
+                return true;
+        }
+
+        return false;
+    }
+
+
+    public boolean checkIfFriend2(User user, int userId)
+    {
+        List<Friendship> friendships = getAll();
+
+        List<Integer> friendIds = new ArrayList<>();
+
+        for(Friendship fr : friendships){
+            friendIds.add(fr.getFromUser());
+        }
+
         for(int f : friendIds)
         {
             if(userId == f)

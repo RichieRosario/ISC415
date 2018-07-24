@@ -20,7 +20,7 @@
             <ul class="nav navbar-nav" style="text-decoration:none">
                 <li class="navbar-item mt-1"><a href="/" class="nav-link fa fa-bell" ></a></li>
                 <li class="navbar-item"><a href="/" class="nav-link"  >Inicio</a></li>
-                <li class="navbar-item"><a href="/friends" class="nav-link"></a>Amigos</li>
+                <li class="navbar-item"><a href="/friends" class="nav-link">Amigos</a></li>
                 <li class="navbar-item"><a href="/profile/${usuario.getUsername()}" class="nav-link"  >Perfil</a></li>
                 <li class="navbar-item"><a href="/logout" class="nav-link">Cerrar Sesión</a></li>
             </ul>
@@ -43,9 +43,8 @@
 
 
     <footer class="main-footer bg-dark text-white" style="position:fixed;height:32px;width:100%;bottom:0;z-index:9;">
-        <div class="container">
 
             <p>Una Red Social - Ricardo y Emilio &copy; 2018 </p>
-        </div>
+
     </footer>
 </html>

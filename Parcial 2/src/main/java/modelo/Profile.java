@@ -2,6 +2,7 @@ package modelo;
 
 import java.io.Serializable;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -101,8 +102,13 @@ public class Profile implements Serializable {
         this.apellido = apellido;
     }
 
-    public Date getFechanacimiento() {
-        return fechanacimiento;
+    public String getFechanacimiento() {
+        String fini="";
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+        fini+= format.format(fechanacimiento);
+
+        return fini;
     }
 
     public void setFechanacimiento(Date fechanacimiento) {

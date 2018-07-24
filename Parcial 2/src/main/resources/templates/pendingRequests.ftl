@@ -1,65 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Friends</title>
-</head>
-
+<#include "layout.ftl">
 <body>
-        <div>
-            <li>
-                <ul>
-                    <li>
-                        <p>You have ${numeroNotificaciones} pending notifications</p>
-                    </li>
-                        <#list notificaciones as notification>
-                            <li>
-                                <div>
-                                    <div>${notification.getNotificacion()}</div>
+
+
+<ul class="nav nav-tabs nav-justified">
+    <li class="nav-item"><a  class="nav-link" href="/friends">Tus amigos</a></li>
+    <li class="nav-item"><a  class="nav-link" href="/findFriends">Buscar amigos</a></li>
+    <li class="nav-item"><a  class="nav-link" href="/friendRequests">Solicitudes de amistad</a></li>
+    <li class="nav-item"><a  class="nav-link active" href="/pendingRequests">Solicitudes Pendientes</a></li>
+</ul>
+<br>
+
+<br>
+<div class="card mx-auto"style="width:50%">
+    <div class="card-header bg-dark" >
+        <p class="text-white">Solicitudes de amistad</p></div>
+    <br>
+    <div class="card-body">
+                        <#list profilesList as person>
+                            <div class="card mx-auto" style="width:50%">
+                                <div class="card-body">
+                                    <img src="data:image/jpeg;base64, ${person.getProfilepic()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
+                                    <a href="profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
+                                    <div class="form-inline" style="margin-left:25%">
+
+
+                                            <button type="submit" class="btn btn-info disabled" name="submitDecline">Solicitud de amistad enviada</button>
+                                            <input type="hidden" name="personId" value="${person.getId()}" />
+
+                                    </div>
                                 </div>
-                            </li>
+                            </div>
+                            <br>
+                        <#else>
+                            <p>No tienes solicitudes pendientes.</p>
                         </#list>
-                </ul>
-            </li>
-        </div>
-        <div>
-            <ul>
-                <p><a href="profile/${user.getId()}">
-                    <h5>${profile.getNombre()} ${profile.getApellido()}</h5></a></p>
-
-                <li>
-                    <a href="home">
-                        <span>Home</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/friends" >
-                        <span>Friends</span>
-                    </a>
-                    <ul>
-                        <li><a href="/friends">Your Friends</a></li>
-                        <li><a href="/friendRequests">Friend Requests</a></li>
-                        <li><a href="/pendingRequests">Pending Requests</a></li>
-                    </ul>
-                </li>
-            </ul>
-             </div>
-            <div>
-                <div>
-          	<#list personList as person>
-              <div>
-                  <div>
-                      <form:form method="GET" action="profile">
-                          <h3>${profile.getNombre()} ${profile.getApellido()}
-                              <button type="submit" disabled class="pull-right btn btn-danger btn-sm">Friend Request Sent</button></h3>
-                          <input type="hidden" name="personId" value="${user.getId()}" />
-                      </form:form>
-                  </div>
-              </div>
-
-                <#else>
-                <p>No hay solicitudes pendientes.</p>
-                </#list>
-                </div>
+    </div>
+</div>
 </body>
-</html>

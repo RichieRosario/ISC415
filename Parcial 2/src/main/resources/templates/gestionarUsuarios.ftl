@@ -38,6 +38,7 @@
             <#else>
                 <a href="/usuarios/borrar/${usuario.getId()}"><button type="button" class="btn btn-default btn-xs" style="border-color: lightgray">Eliminar</button></a>
                 <a href="/usuarios/editar/${usuario.getId()}" ><button type="button" class="btn btn-default btn-xs" style="border-color: lightgray">Modificar</button></a>
+
             </#if>
                     </div>
                 </td>
