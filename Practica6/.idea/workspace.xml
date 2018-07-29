@@ -16,9 +16,9 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Practica4$Main.ic" NAME="Main Coverage Results" MODIFIED="1530124755888" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/Practica6$Main.ic" NAME="Main Coverage Results" MODIFIED="1531515303763" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/Practica3$Main.ic" NAME="Main Coverage Results" MODIFIED="1528987356927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Practica4$Main.ic" NAME="Main Coverage Results" MODIFIED="1530124755888" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -61,7 +61,7 @@
       <file leaf-file-name="ServidorMensajesWebSocketHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/websocket/ServidorMensajesWebSocketHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
+            <state relative-caret-position="405">
               <caret line="27" selection-start-line="27" selection-end-line="27" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -73,7 +73,7 @@
       <file leaf-file-name="index.ftl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/index.ftl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3655">
+            <state relative-caret-position="3225">
               <caret line="215" selection-start-line="215" selection-end-line="215" />
             </state>
           </provider>
@@ -82,7 +82,7 @@
       <file leaf-file-name="Sql2oArticuloDao.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oArticuloDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3230">
+            <state relative-caret-position="3165">
               <caret line="213" selection-start-line="213" selection-end-line="213" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -94,7 +94,7 @@
       <file leaf-file-name="post.ftl" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/post.ftl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4879">
+            <state relative-caret-position="4305">
               <caret line="287" selection-start-line="287" selection-end-line="287" />
             </state>
           </provider>
@@ -103,8 +103,8 @@
       <file leaf-file-name="RutasWeb.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="324" selection-start-line="324" selection-end-line="324" />
+            <state relative-caret-position="164">
+              <caret line="391" column="12" selection-start-line="391" selection-start-column="12" selection-end-line="392" selection-end-column="76" />
             </state>
           </provider>
         </entry>
@@ -121,7 +121,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>/articulos</find>
       <find>/etiqueta</find>
       <find>nuevo</find>
       <find>System</find>
@@ -151,6 +150,7 @@
       <find>msg_container_base</find>
       <find>inyectarHtml</find>
       <find>etiquetas</find>
+      <find>session</find>
     </findStrings>
     <replaceStrings>
       <replace>basechat</replace>
@@ -334,9 +334,9 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="4593454481364" />
+        <entry key="$PROJECT_DIR$" value="4592993605000" />
         <entry key="$PROJECT_DIR$/.gradle" value="0" />
-        <entry key="$PROJECT_DIR$/build.gradle" value="3654582989" />
+        <entry key="$PROJECT_DIR$/build.gradle" value="3488855608" />
         <entry key="$PROJECT_DIR$/settings.gradle" value="711825233" />
       </map>
     </option>
@@ -460,9 +460,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -568,6 +565,9 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -750,11 +750,13 @@
       <workItem from="1531511634078" duration="6603000" />
       <workItem from="1531518720622" duration="661000" />
       <workItem from="1531661693254" duration="19000" />
+      <workItem from="1532889105693" duration="55000" />
+      <workItem from="1532889168658" duration="248000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="340872000" />
+    <option name="totallyTimeSpent" value="341175000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -771,36 +773,36 @@
     <layout>
       <window_info anchor="right" id="Palette" order="5" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3292683" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49356222" weight="0.3298153" />
       <window_info anchor="right" id="Palette&#9;" order="10" />
-      <window_info id="Image Layers" order="6" />
-      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="bottom" id="Java Enterprise" order="13" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.509299" side_tool="true" weight="0.323219" />
       <window_info anchor="right" id="Maven Projects" order="8" weight="0.32969153" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
+      <window_info anchor="right" id="CDI" order="0" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.490701" weight="0.323219" />
+      <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info id="Capture Tool" order="5" />
       <window_info id="Persistence" order="7" side_tool="true" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.41811594" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.42989987" />
       <window_info anchor="right" id="Database" order="2" weight="0.32904148" />
       <window_info anchor="right" id="Gradle" order="7" weight="0.25679544" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="3" weight="0.24935733" />
       <window_info id="UI Designer" order="3" />
-      <window_info anchor="right" id="Theme Preview" order="9" />
-      <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39972898" />
-      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49356222" weight="0.3298153" />
+      <window_info id="Favorites" order="4" side_tool="true" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
+      <window_info id="Image Layers" order="6" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="bottom" id="Build" order="10" weight="0.32717678" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="right" id="CDI" order="0" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Theme Preview" order="9" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Java Enterprise" order="13" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32849604" />
       <window_info anchor="right" id="Coverage" order="11" side_tool="true" weight="0.32904148" />
     </layout>
@@ -1121,7 +1123,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/websocket/ServidorMensajesWebSocketHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
+        <state relative-caret-position="405">
           <caret line="27" selection-start-line="27" selection-end-line="27" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1136,7 +1138,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/listadodeadmins.ftl" />
     <entry file="file://$PROJECT_DIR$/src/main/java/dao/Sql2oArticuloDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3230">
+        <state relative-caret-position="3165">
           <caret line="213" selection-start-line="213" selection-end-line="213" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1146,7 +1148,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/post.ftl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4879">
+        <state relative-caret-position="4305">
           <caret line="287" selection-start-line="287" selection-end-line="287" />
         </state>
       </provider>
@@ -1156,15 +1158,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/chatservidor.ftl" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/index.ftl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3655">
+        <state relative-caret-position="3225">
           <caret line="215" selection-start-line="215" selection-end-line="215" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Rutas/RutasWeb.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="324" selection-start-line="324" selection-end-line="324" />
+        <state relative-caret-position="164">
+          <caret line="391" column="12" selection-start-line="391" selection-start-column="12" selection-end-line="392" selection-end-column="76" />
         </state>
       </provider>
     </entry>

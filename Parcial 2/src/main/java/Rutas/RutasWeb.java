@@ -496,6 +496,8 @@ public class RutasWeb {
             User user = usuarioDao.searchByUsername(username);
 
             if( user.getPassword().equals(password)) {
+                Session session = request.session();
+                session.attribute("username", username);
                 response.cookie("username", username, 604800);
             }
                 response.redirect("/");

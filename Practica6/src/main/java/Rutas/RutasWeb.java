@@ -689,7 +689,7 @@ public class RutasWeb {
 
 
 
-        post("/articulos/nuevo", (request, response) -> {-
+        post("/articulos/nuevo", (request, response) -> {
 
             QueryParamsMap map = request.queryMap();
 
