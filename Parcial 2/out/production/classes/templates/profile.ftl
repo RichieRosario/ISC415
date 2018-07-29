@@ -1,4 +1,4 @@
-<html>
+
     <#include "layout.ftl">
     <body class="bg-light" style="position:relative" >
     <div class="container">
@@ -167,13 +167,10 @@
                                     </div>
                                    </div>
                 <br>
-                <#else>
-                No hay entradas.
             </#list>
-                    </div>
 
 
-</div>
+
 
 
 
@@ -181,8 +178,7 @@
                     <br>
 
 
-                        <div class="card mx-auto" style="width:75%">
-                            <div class="card-header bg-dark"><p class="text-white">Eventos</p></div>
+                        <div class="card">
                             <div class="card-body">
 
                    <#list muroeventos as post>
@@ -220,7 +216,7 @@
 
                         <form method="post" action="/comentario/evento/${post.getId()}">
 
-                                <textarea id="muro" name="muro"  placeholder="Haz un comentario..." rows="5" cols="95" style="border-color:lightgray"></textarea>
+                                <textarea id="muro" name="muro"  placeholder="Haz un comentario..." rows="5" cols="95" class="form-control"></textarea>
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-info btn-xs">Publicar</button>
@@ -230,8 +226,12 @@
 
                         </div>
                    <br>
-                    </#list>
+
     </div>
+    </div>
+    </div>
+                   </#list>
+
         <div id="menu1" class="container tab-pane fade"><br>
             <div class="card mx-auto" style="width:75%; ">
                 <div class="card-header bg-dark">
@@ -248,7 +248,7 @@
                     <p>Sexo: ${perfil.getSexo()}</p>
                     <p>Lugar de Nacimiento: ${perfil.getLugarnacimiento()}</p>
                     <p> Lugar de Residencia: ${perfil.getCiudadactual()}</p>
-                    <p> Edad: ${perfil.getEdad()}</p>
+                    <p> Fecha de nacimiento: ${perfil.getFechanacimiento()}</p>
                 </div>
 
             </div>
@@ -266,7 +266,7 @@
                             <div class="card mx-auto" style="width:50%">
                                 <div class="card-body">
                                     <img src="data:image/jpeg;base64, ${person.getProfilepic()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
-                                    <a href="profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
+                                    <a href="/profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
                                     <div class="form-inline" style="margin-left:25%">
 
                                         <form method="POST" action="/unFriend">
@@ -293,7 +293,7 @@
                             <div class="card mx-auto" style="width:50%">
                                 <div class="card-body">
                                     <img src="data:image/jpeg;base64, ${person.getProfilepic()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
-                                    <a href="profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
+                                    <a href="/profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
                                 </div>
                             </div>
                             <br>
@@ -336,29 +336,35 @@
 
 <div class="card mx-auto"style="width:50%">
     <div class="card-header bg-dark" >
-        <p class="text-white">Amigos</p></div>
+        <p class="text-white">Fotos</p></div>
     <br>
     <div class="card-body">
-                        <#list perfiles as person>
+                        <#list albums as album>
                             <div class="card mx-auto" style="width:50%">
                                 <div class="card-body">
-                                    <img src="data:image/jpeg;base64, ${person.getProfilepic()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
-                                    <a href="profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
+                                    <a href="/album/${album.getId()}">${album.getNombre()}</a>
+                                    <#if (album.getCover())??>
+                                    <img src="data:image/jpeg;base64, ${album.getCover().getFoto()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
+                                    </#if>
+
                                 </div>
                             </div>
                             <br>
                         <#else>
                             <p>Este usuario no tiene fotos.</p>
                         </#list>
+
     </div>
 </div>
+
                   </#if>
-        </div>
+
             </#if>
-
+    </div>
         <br>
 
         <br>
+
 </body>
 
     <script>

@@ -105,7 +105,7 @@ public class Profile implements Serializable {
     public String getFechanacimiento() {
         String fini="";
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
         fini+= format.format(fechanacimiento);
 
         return fini;
@@ -191,7 +191,7 @@ public class Profile implements Serializable {
 
     public int getEdad(){
 
-        LocalDate then = LocalDate.ofYearDay(fechanacimiento.getYear(),fechanacimiento.getDay());
+        LocalDate then = LocalDate.of(fechanacimiento.getYear(),fechanacimiento.getMonth(),fechanacimiento.getDay());
         LocalDate now = LocalDate.now();
         return Period.between(then,now).getYears();
     }
