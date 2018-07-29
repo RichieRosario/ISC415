@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.*;
+import java.util.logging.Level;
+
 import dao.*;
 import modelo.*;
 import servicios.*;
@@ -37,6 +39,7 @@ public class Main {
         ProfileDaoImpl profileadmin = new ProfileDaoImpl(Profile.class);
         WallDaoImpl wallDao = new WallDaoImpl(Wall.class);
         EventDaoImpl eventoDao = new EventDaoImpl(Event.class);
+        PostDaoImpl postDao = new PostDaoImpl(Post.class);
 
 
         try{
@@ -51,8 +54,6 @@ public class Main {
         configuration.setClassForTemplateLoading(Main.class, "/templates");
 
         staticFileLocation("/public");
-
-
 
         HibernateUtil.buildSessionFactory().openSession().close();
         User temp = usuarioadmin.searchByUsername("admin");
@@ -101,6 +102,7 @@ public class Main {
             evento.setFecha(LocalDate.now());
             evento.setWall(wall);
             eventoDao.add(evento);
+
 
 
         }

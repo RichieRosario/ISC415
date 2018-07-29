@@ -101,77 +101,77 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
         }
 
     }
-    public int addLike(int postId, User user)
-    {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Query query = session.createQuery("from Post where id = :postId");
-        query.setInteger("postId", postId);
-        Post post = (Post) query.uniqueResult();
-        int likes = post.getLikes() + 1;
-        try
-        {
-            Transaction transaction = session.beginTransaction();
-            post.setLikes(likes);
-            session.update(post);
-            transaction.commit();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            session.close();
-        }
-
-        UserDaoImpl userDao = null;
-        Profile profile = userDao.getProfile(user);
-        String notification = "A " + profile.getNombre() + " " + profile.getApellido() + " le gusto tu publicacion";
-        addNotification(user, notification, post);
-
-        EventDaoImpl eventDao = null;
-        WallDaoImpl wallDao = null;
-        Wall wall = null;
-
-        Event event = new Event();
-        wall =  wallDao.findWallByUser(user);
-        event.setUser(user);
-        event.setEvento(notification);
-        event.setWall(wall);
-        event.setFecha(LocalDate.now());
-        eventDao.add(event);
-
-        return likes;
-    }
-
-    public void addNotification(User user, String notification, Post post)
-    {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try
-        {
-            Notification n = new Notification();
-            n.setUser(user);
-            n.setToUser(post.getUser());
-            n.setNotificacion(notification);
-            n.setSeen(false);
-//            n.set(post);
-//            post.getNotifications().add(n);
-
-            Transaction transaction = session.beginTransaction();
-            session.save(n);
-            transaction.commit();
-
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            session.close();
-        }
-
-    }
+//    public int addLike(int postId, User user)
+//    {
+//        Session session = HibernateUtil.getSessionFactory().openSession();
+//        Query query = session.createQuery("from Post where id = :postId");
+//        query.setInteger("postId", postId);
+//        Post post = (Post) query.uniqueResult();
+//        int likes = post.getLikes() + 1;
+//        try
+//        {
+//            Transaction transaction = session.beginTransaction();
+//            post.setLikes(likes);
+//            session.update(post);
+//            transaction.commit();
+//        }
+//        catch(Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        finally
+//        {
+//            session.close();
+//        }
+//
+//        UserDaoImpl userDao = null;
+//        Profile profile = userDao.getProfile(user);
+//        String notification = "A " + profile.getNombre() + " " + profile.getApellido() + " le gusto tu publicacion";
+//        addNotification(user, notification, post);
+//
+//        EventDaoImpl eventDao = null;
+//        WallDaoImpl wallDao = null;
+//        Wall wall = null;
+//
+//        Event event = new Event();
+//        wall =  wallDao.findWallByUser(user);
+//        event.setUser(user);
+//        event.setEvento(notification);
+//        event.setWall(wall);
+//        event.setFecha(LocalDate.now());
+//        eventDao.add(event);
+//
+//        return likes;
+//    }
+//
+//    public void addNotification(User user, String notification, Post post)
+//    {
+//        Session session = HibernateUtil.getSessionFactory().openSession();
+//        try
+//        {
+//            Notification n = new Notification();
+//            n.setUser(user);
+//            n.setToUser(post.getUser());
+//            n.setNotificacion(notification);
+//            n.setSeen(false);
+////            n.set(post);
+////            post.getNotifications().add(n);
+//
+//            Transaction transaction = session.beginTransaction();
+//            session.save(n);
+//            transaction.commit();
+//
+//        }
+//        catch(Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        finally
+//        {
+//            session.close();
+//        }
+//
+//    }
     public String addComments(int postId, String comment, User user)
     {
        // String safe_comment = StringEscapeUtils.escapeHtml(comment);
@@ -207,8 +207,8 @@ public class PostDaoImpl extends Repositorio<Post, Integer> implements PostDao {
         UserDaoImpl userDao = null;
         Profile profile = userDao.getProfile(user);
 
-        String notification = profile.getNombre() + " " + profile.getApellido() + " comento en tu post";
-        addNotification(user, notification, post);
+//        String notification = profile.getNombre() + " " + profile.getApellido() + " comento en tu post";
+//        addNotification(user, notification, post);
 //
 //        String html = "<a href='profile.html'><img src='" + user.getPerson().getProfilePicPath() + "' width=20px class='img-circle pull-left' />" +
 //                "<h5>&nbsp; " + user.getPerson().getFirstName() + " " + user.getPerson().getLastName() + "</a></h5>" +

@@ -25,13 +25,9 @@ public class Notification implements Serializable {
     @Column(name = "isSeen")
     private Boolean isSeen;
 
-    @OneToOne
-    @JoinColumn(name = "fromUser")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "toUser")
-    private User toUser;
 
     private boolean deleted = false;
 
@@ -75,13 +71,6 @@ public class Notification implements Serializable {
         this.user = user;
     }
 
-    public User getToUser() {
-        return toUser;
-    }
-
-    public void setToUser(User toUser) {
-        this.toUser = toUser;
-    }
 
 
 }

@@ -5,15 +5,11 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.annotations.Loader;
 import org.hibernate.annotations.Where;
-import java.sql.Blob;
-import java.sql.Date;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity(name = "Post")
 @Table(name = "post")
@@ -40,50 +36,44 @@ public class Post implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<LikeDislike> valoraciones;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne( fetch = FetchType.EAGER)
     @JoinColumn(name = "photo_id")
     private Photo photo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "wall_id", nullable = true, updatable = false)
     private Wall wall;
 
     @OneToMany(  mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<Comment> comments = new HashSet<>();
+    private Set<Comment> comments = new HashSet<>();;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "post_tag",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<Tag> etiquetas = new HashSet<>();
+    @OneToOne( fetch = FetchType.EAGER)
+    @JoinColumn(name ="tag_id")
+    private Tag tag;
 
     private boolean deleted = false;
 
     public Post(){
         super();
     }
-    public Post(Integer id, String texto, LocalDate fecha, Integer likes, Set<LikeDislike> valoraciones, Photo photo,
-                User user, Wall wall, Set<Comment> comments, Set<Tag> etiquetas)
+    public Post(Integer id, String texto, LocalDate fecha, Integer likes, Set<LikeDislike> valoraciones,
+                User user, Wall wall, Set<Comment> comments, Tag tag,Photo photo)
     {
         this.id = id;
         this.texto = texto;
         this.fecha = fecha;
         this.likes = likes;
         this.valoraciones = valoraciones;
-        this.photo = photo;
         this.user = user;
         this.wall = wall;
         this.comments = comments;
-        this.etiquetas = etiquetas;
+        this.tag = tag;
+        this.photo = photo;
     }
     public int getId() {
         return id;
@@ -123,11 +113,12 @@ public class Post implements Serializable {
     }
 
     public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
 
+            this.comments = comments;
+
+    }
     public Photo getPhoto() {
-        return photo;
+    return photo;
     }
 
     public void setPhoto(Photo photo) {
@@ -158,12 +149,12 @@ public class Post implements Serializable {
         this.likes = likes;
     }
 
-    public Set<Tag> getEtiquetas() {
-        return etiquetas;
+    public Tag getEtiqueta() {
+        return tag;
     }
 
-    public void setEtiquetas(Set<Tag> etiquetas) {
-        this.etiquetas = etiquetas;
+    public void setEtiqueta(Tag etiqueta) {
+        this.tag = etiqueta;
     }
 
     public Set<LikeDislike> getValoraciones() {

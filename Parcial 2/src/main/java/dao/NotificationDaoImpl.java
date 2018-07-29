@@ -77,7 +77,7 @@ public class NotificationDaoImpl extends Repositorio<Notification, Integer> impl
         try {
             session = HibernateUtil.openSession();
             transaction = session.beginTransaction();
-            query = session.createQuery("from Notification where toUser = :user and isSeen = false")
+            query = session.createQuery("from Notification where user_id = :user and isSeen = false")
             .setParameter("user", user);
 
             List<Notification> list = query.list();

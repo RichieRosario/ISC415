@@ -24,17 +24,17 @@
             </div>
              </div>
             <#else>
+            <div class="container">
            <form method='post' enctype='multipart/form-data' action="/subirfoto">
 
-
-    <input type='file' id="uploaded_file" name='uploaded_file' style="opacity:0;">
-
-    <button id="submit" type="submit" class="btn btn-default btn-xs">Cambiar Foto de Perfil</button>
+    <input type='file' id="uploaded_file" name='uploaded_file' accept=".jpg, .jpeg, .png" required>
+    <button id="submit" type="hidden" class="btn btn-default btn-xs">Cambiar Foto de Perfil</button>
 
             </form>
 
         </div>
         </div>
+            </div>
             </#if>
 
 
@@ -75,10 +75,15 @@
                         <p class="text-white">Publicación</p>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="/addPost/${user.getUsername()}">
+                        <form method="post"  enctype='multipart/form-data' action="/addPost/${user.getUsername()}">
                         <textarea id="muro" name="muro" class="mx-auto" placeholder="Escribele algo a ${perfil.getNombre()}..." rows="5" cols="95" style="border-color:lightgray"></textarea>
 
-
+                            <input type='file' id="uf" name='uf' accept=".jpg, .jpeg, .png">
+                            <select class="js-example-basic form-control" id="amigos" name="amigos[]" multiple="">
+                 <#list amigos as amigo>
+                     <option value="${amigo.getUsername()}">${amigo.getProfile().getNombre()} ${amigo.getProfile().getApellido()}</option>
+                 </#list>
+                            </select>
                     </div>
                     <div class="modal-footer">
 
@@ -91,22 +96,45 @@
 
             <br>
 
-                    <#list muroentradas as entradas>
+
                             <div class="card mx-auto" style="width:75%">
                                 <div class="card-header bg-dark"><p class="text-white">Publicaciones</p></div>
-                                <div class="card-body">
-                                    <div class="card-title"><h1>${entradas.getUser().getProfile().getNombre()} ${entradas.getUser().getProfile().getApellido()} ha publicado: ${entradas.getTexto()} </h1></div>
+                                   <div class="card-body">
+            <#list muroentradas as entradas>
+                                    <div class="card">
+                                    <div class="card-header">${entradas.getUser().getProfile().getNombre()} ${entradas.getUser().getProfile().getApellido()}
+                                    <#if owner==true>
 
+                                         <a href="/post/borrar/${entradas.getId()}"><button type="button" class="close"> &times;</button></a>
+                                    </#if>
+                                    </div>
+                                        <div class="card-body">
+                                           <p> Personas en esta entrada:
+                                            <#if entradas.getEtiqueta()??>
+                                                <a href="/profile/${entradas.getEtiqueta().getUsers().getUsername()}">${entradas.getEtiqueta().getUsers().getProfile().getNombre()} ${entradas.getEtiqueta().getUsers().getProfile().getApellido()}</a>
+                                            <#else>
+                                            Nadie.
+                                            </#if></p>
+                                            <p>${entradas.getTexto()}</p>
+
+                                        <#if entradas.getPhoto()??>
+                                        <img src="data:image/jpeg;base64, ${entradas.getPhoto().getFoto()}" class="img-thumbnail" style="height:200px;width:auto; max-width:200px;">
+                                    </#if>
                                     <form action="/like/post/${entradas.getId()}" method="post">
                                     <i class="fa fa-thumbs-up text-green" style="color:green"><button name="like" id="like" value="Me gusta" style="border:none">Me gusta</button></i>(${entradas.getcantlikes()})
                                     <i class="fa fa-thumbs-down text-red" style="color:red"><button name="like" id="like" value="No me gusta"style="border:none">No me gusta</button></i>(${entradas.getcantdislikes()})
                                 </form>
+
                                     <hr>
                             <#list entradas.getComments() as comentario>
                             <div class="card-title">Comentarios</div>
 
                             <div class="card mx-auto" style="width:75%">
-                                <div class="card-header">${comentario.getUser().getProfile().getNombre()} ${comentario.getUser().getProfile().getApellido()}</div>
+                                <div class="card-header">${comentario.getUser().getProfile().getNombre()} ${comentario.getUser().getProfile().getApellido()}
+                                 <#if owner==true>
+
+                                         <a href="/comentario/borrar/${comentario.getId()}"><button type="button" class="close"> &times;</button></a>
+                                 </#if></div>
                                 <div class="card-body">
                                 ${comentario.getComentario()}
                                     </div>
@@ -117,30 +145,47 @@
                              </form>
                                  </div>
                                 </div>
+
                             <br>
                             <#else>
                             No hay comentarios en esta entrada.
                             <br>
                             </#list>
 
+
+
+
                                 <form method="post" action="/comentario/post/${entradas.getId()}">
-                                        <textarea id="muro"  name="muro" placeholder="Haz un comentario..." rows="5" cols="95" style="border-color:lightgray"></textarea>
+                                        <textarea id="muro"  name="muro" placeholder="Haz un comentario..." rows="5" cols="50" class="form-control"></textarea>
 
                                     <div class="modal-footer ">
                                         <button type="submit" class="btn btn-info btn-xs">Publicar</button>
                                     </div>
 
                                 </form>
-                            </div>
 
+                                    </div>
+                                   </div>
+                <br>
+                <#else>
+                No hay entradas.
+            </#list>
                     </div>
-                    <br>
-                    </#list>
 
-                   <#list muroeventos as post>
+
+</div>
+
+
+
+
+                    <br>
+
+
                         <div class="card mx-auto" style="width:75%">
                             <div class="card-header bg-dark"><p class="text-white">Eventos</p></div>
                             <div class="card-body">
+
+                   <#list muroeventos as post>
                                 <h1 class="card-title"> ${post.getEvento()} </h1>
 
                                 <form action="/like/evento/${post.getId()}" method="post">
@@ -152,7 +197,11 @@
                             <div class="card-title">Comentarios</div>
 
                                 <div class="card mx-auto" style="width:75%">
-                                    <div class="card-header">${comentarioevento.getUser().getProfile().getNombre()} ${comentarioevento.getUser().getProfile().getApellido()}</div>
+                                    <div class="card-header">${comentarioevento.getUser().getProfile().getNombre()} ${comentarioevento.getUser().getProfile().getApellido()}
+                                      <#if owner==true>
+
+                                         <a href="/comentario/borrar/${comentario.getId()}"><button type="button" class="close"> &times;</button></a>
+                                      </#if></div>
                                     <div class="card-body">
                                         ${comentarioevento.getComentario()}
                                     </div>
@@ -186,7 +235,12 @@
         <div id="menu1" class="container tab-pane fade"><br>
             <div class="card mx-auto" style="width:75%; ">
                 <div class="card-header bg-dark">
+                    <div class="form-inline">
                     <p class="text-white">Acerca de mi</p>
+                    <#if owner == true>
+                        <p style="margin-left:70%"><a  href="/usuarios/editar/${perfil.getUser().getId()}">Editar</a></p>
+                    </#if>
+                        </div>
                 </div>
                 <div class="card-body">
                     <p>Nombre: ${perfil.getNombre()}</p>
@@ -252,8 +306,53 @@
 
               </div>
         <div id="menu3" class="container tab-pane fade"><br>
-            <h3>Menu 2</h3>
-            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                  <#if owner == true>
+
+<div class="card mx-auto"style="width:50%">
+    <div class="card-header bg-dark" >
+        <p class="text-white">Fotos</p></div>
+    <br>
+    <div class="card-body">
+                        <#list albums as album>
+                            <div class="card mx-auto" style="width:50%">
+                                <div class="card-body">
+                                    <a href="/album/${album.getId()}">${album.getNombre()}</a>
+                                    <#if (album.getCover())??>
+                                    <img src="data:image/jpeg;base64, ${album.getCover().getFoto()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
+                                    </#if>
+
+                                </div>
+                            </div>
+                            <br>
+                        <#else>
+                            <p>No tienes fotos.</p>
+                        </#list>
+        <div class="modal-footer">
+        <a href="/crearAlbum">     <button class="btn btn-info">Crea un album</button></a>
+        </div>
+    </div>
+</div>
+                  <#elseif isFriend == true>
+
+<div class="card mx-auto"style="width:50%">
+    <div class="card-header bg-dark" >
+        <p class="text-white">Amigos</p></div>
+    <br>
+    <div class="card-body">
+                        <#list perfiles as person>
+                            <div class="card mx-auto" style="width:50%">
+                                <div class="card-body">
+                                    <img src="data:image/jpeg;base64, ${person.getProfilepic()}" class="img-thumbnail" style="height:70px;width:auto; max-width:70px;">
+                                    <a href="profile/${person.getUser().getUsername()}">${person.getNombre()} ${person.getApellido()}</a>
+                                </div>
+                            </div>
+                            <br>
+                        <#else>
+                            <p>Este usuario no tiene fotos.</p>
+                        </#list>
+    </div>
+</div>
+                  </#if>
         </div>
             </#if>
 
@@ -267,7 +366,25 @@
             $(".nav-tabs a").click(function(){
                 $(this).tab('show');
             });
-        });
-    </script>
 
-</html>
+
+        });
+
+</script>
+
+
+<script>
+    $(document).ready(function() {
+
+         $('.js-example-basic').select2({
+            placeholder: 'Personas en esta entrada',
+             tokenSeparators: [','],
+             maximumSelectionLength: 1,
+             data: [],
+             separator: ','
+        });
+
+    });
+
+
+</script>

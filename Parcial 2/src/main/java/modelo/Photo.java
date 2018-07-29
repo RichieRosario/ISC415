@@ -2,15 +2,14 @@ package modelo;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 import javax.persistence.*;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Loader;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.annotations.Where;
 
@@ -28,30 +27,25 @@ public class Photo implements Serializable {
     @Column(name = "caption")
     private String caption;
 
+    @Loader
     @Column(name = "foto",columnDefinition = "BLOB")
     private byte[] foto;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade =  CascadeType.ALL, mappedBy = "photo")
+    @OneToOne( mappedBy = "photo", fetch = FetchType.EAGER, cascade =  CascadeType.ALL)
     private Post post;
 
     @OneToMany( mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Comment> comments = new ArrayList<>();
+    private Set<Comment> comments = new HashSet<>();
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "photo_tag",
-            joinColumns = @JoinColumn(name = "photo_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<Tag> etiquetas = new HashSet<>();
+    @OneToOne( fetch = FetchType.EAGER)
+    @JoinColumn(name ="tag_id")
+    private Tag tag;
 
-    @ManyToMany(mappedBy = "photos")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<Album> albums = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "album_id",nullable = true, updatable = false)
+    private Album album;
 
     @OneToMany( cascade = CascadeType.ALL)
     @JoinTable(name = "photoValoraciones", joinColumns = {@JoinColumn(name = "photo_id")}, inverseJoinColumns = {@JoinColumn(name = "likeDislike_id")})
@@ -62,6 +56,16 @@ public class Photo implements Serializable {
     private boolean deleted = false;
 
 
+    public Photo() {super();}
+    public Photo(Integer id, String caption, Set<LikeDislike> valoraciones,Set<Comment> comments, Tag tag, Album album, Post post){
+        this.id = id;
+        this.caption = caption;
+        this.post = post;
+        this.valoraciones = valoraciones;
+        this.album = album;
+        this.comments = comments;
+        this.tag = tag;
+    }
     public int getId() {
         return id;
     }
@@ -86,11 +90,11 @@ public class Photo implements Serializable {
         this.deleted = deleted;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
@@ -102,8 +106,8 @@ public class Photo implements Serializable {
         this.post = post;
     }
 
-    public Set<Tag> getEtiquetas() {
-        return etiquetas;
+    public Tag getEtiqueta() {
+        return tag;
     }
 
     public int getcantlikes(){
@@ -122,20 +126,28 @@ public class Photo implements Serializable {
         return conta;
     }
 
-    public void setEtiquetas(Set<Tag> etiquetas) {
-        this.etiquetas = etiquetas;
+    public Set<LikeDislike> getValoraciones() {
+        return valoraciones;
     }
 
-    public Set<Album> getAlbums() {
-        return albums;
+    public void setValoraciones(Set<LikeDislike> valoraciones) {
+        this.valoraciones = valoraciones;
     }
 
-    public void setAlbums(Set<Album> albums) {
-        this.albums = albums;
+    public void setEtiqueta(Tag etiqueta) {
+        this.tag = etiqueta;
     }
 
-    public byte[] getFoto() {
-        return foto;
+    public Album getAlbums() {
+        return album;
+    }
+
+    public void setAlbums(Album albums) {
+        this.album = albums;
+    }
+
+    public String getFoto() {
+        return Base64.getEncoder().encodeToString(foto);
     }
 
     public void setFoto(byte[] foto) {

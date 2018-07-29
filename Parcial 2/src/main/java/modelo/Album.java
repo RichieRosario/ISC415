@@ -24,7 +24,6 @@ public class Album implements Serializable {
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     private int id;
 
-    @NotEmpty(message="El nombre del album no puede estar vacio")
     @Column(name = "nombre")
     private String nombre;
 
@@ -34,19 +33,22 @@ public class Album implements Serializable {
     @Column(name = "descripcion")
     private String nombredescripcion;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "photo_album",
-            joinColumns = @JoinColumn(name = "photo_id"),
-            inverseJoinColumns = @JoinColumn(name = "album_id")
-    )
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "user_id",nullable = true, updatable = false)
+    private User user;
+
+
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<Photo> photos = new HashSet<>();
+    private List<Photo> photos;
+
+    @OneToOne( fetch = FetchType.EAGER)
+    @JoinColumn(name ="tag_id")
+    private Tag tag;
 
     private boolean deleted = false;
 
+    public Album(){super();}
     public int getId() {
         return id;
     }
@@ -87,11 +89,28 @@ public class Album implements Serializable {
         this.deleted = deleted;
     }
 
-    public Set<Photo> getPhotos() {
+    public List<Photo> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(Set<Photo> photos) {
+    public Photo getCover() {
+        if(photos.size()>0) return photos.get(0);
+        else return null;
+    }
+
+    public User getUser(){ return user;}
+
+    public Tag getEtiqueta() {
+        return tag;
+    }
+
+    public void setEtiqueta(Tag etiqueta) {
+        this.tag = etiqueta;
+    }
+
+    public void setUser(User user){  this.user=user;}
+
+    public void setPhotos(List<Photo> photos) {
         this.photos = photos;
     }
 }

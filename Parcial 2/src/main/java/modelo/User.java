@@ -2,7 +2,9 @@ package modelo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
@@ -56,11 +58,21 @@ public class User implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Album> albums = new ArrayList<>();
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private Profile profile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private Wall wall;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<Tag> tag= new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<Notification> notifications= new HashSet<>();
 
     private boolean deleted = false;
 
@@ -152,6 +164,10 @@ public class User implements Serializable {
         return profile;
     }
 
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -193,5 +209,23 @@ public class User implements Serializable {
             }
         }
         return posiblesConocidos;
+    }
+
+
+    public Set<Tag> getTags() {
+        return tag;
+    }
+
+    public void setTags(Set<Tag> tag) {
+        this.tag = tag;
+    }
+
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> tag) {
+        this.notifications = tag;
     }
 }

@@ -23,19 +23,22 @@ public class Tag implements Serializable {
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     private int id;
 
-    @Column(name="fromUser")
-    private User fromUser;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="user_id",nullable = true, updatable = false)
+    private User user;
 
-    @Column(name="toUser")
-    private User toUser;
 
-    @ManyToMany(mappedBy = "etiquetas")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<Post> posts = new HashSet<>();
 
-    @ManyToMany(mappedBy = "etiquetas")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<Photo> photos = new HashSet<>();
+    @OneToOne(mappedBy = "tag", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Post post;
+
+
+    @OneToOne(mappedBy = "tag", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Photo photo;
+
+    @OneToOne(mappedBy = "tag", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Album album;
+
 
 
 
@@ -43,9 +46,6 @@ public class Tag implements Serializable {
 
     public Tag(){
         super();
-    }
-    public Tag(User toUser) {
-        this.toUser = toUser;
     }
 
     public int getId() {
@@ -65,35 +65,38 @@ public class Tag implements Serializable {
         this.deleted = deleted;
     }
 
-    public User getFromUser() {
-        return fromUser;
+    public User getUsers() {
+        return user;
     }
 
-    public void setFromUser(User fromUser) {
-        this.fromUser = fromUser;
+    public void setUsers(User user) {
+        this.user = user;
     }
 
-    public User getToUser() {
-        return toUser;
+    public Post getPost() {
+        return post;
     }
 
-    public void setToUser(User toUser) {
-        this.toUser = toUser;
+    public void setPosts(Post post) {
+        this.post = post;
     }
 
-    public Set<Post> getPosts() {
-        return posts;
+    public Photo getPhoto() {
+        return photo;
     }
 
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
-    public Set<Photo> getPhotos() {
-        return photos;
+
+    public Album getAlbum() {
+        return album;
     }
 
-    public void setPhotos(Set<Photo> photos) {
-        this.photos = photos;
+    public void setAlbum(Album album) {
+        this.album = album;
     }
+
+
 }

@@ -1,6 +1,5 @@
 package hibernate;
 
-import java.util.logging.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -21,7 +20,7 @@ public class HibernateUtil
         SessionFactory sessionFactory = null;
         try {
             Configuration configuration = new Configuration();
-            configuration.configure("/public/hibernate.cfg.xml");
+            configuration.configure("hibernate.cfg.xml");
             sessionFactory = configuration.buildSessionFactory();
         } catch (ServiceException e) {
             }

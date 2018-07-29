@@ -72,6 +72,7 @@ public class RutasWeb {
 
         //Rutas Inicio
         get("/home", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
 
             User user = new User();
@@ -81,6 +82,23 @@ public class RutasWeb {
                 attributes.put("usuario", user);
                 attributes.put("perfil", user.getUsername());
                 attributes.put("admin", user.isAdministrator());
+                List<Integer> friendsids = friendshipDao.getAllFriends(user);
+                List<User> friends = usuarioDao.getUsersById(friendsids);
+                List<Profile> friendsProfiles = new ArrayList<>();
+                Wall muro = new Wall();
+
+                for(User user1 : friends){
+                    muro.getEvents().addAll(user1.getWall().getEvents());
+
+                    muro.getPosts().addAll(user1.getWall().getPosts());
+
+                }
+
+                List<Notification> notificationList = notificationDao.unseenNotifications(user);
+                attributes.put("unseen",notificationList.size());
+
+                attributes.put("muroeventos", muro.getEvents());
+                attributes.put("muroentradas", muro.getPosts());
             }
             else{
                 response.redirect("/");
@@ -88,8 +106,52 @@ public class RutasWeb {
             return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
+        get("/notifications", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            Map<String, Object> attributes = new HashMap<>();
+
+            User user = new User();
+            if(request.cookie("username")!=null) {
+                user = usuarioDao.searchByUsername(request.cookie("username"));
+
+                attributes.put("usuario", user);
+                attributes.put("perfil", user.getUsername());
+                attributes.put("admin", user.isAdministrator());
+                List<Integer> friendsids = friendshipDao.getAllFriends(user);
+                List<User> friends = usuarioDao.getUsersById(friendsids);
+                List<Profile> friendsProfiles = new ArrayList<>();
+                Wall muro = new Wall();
+
+                for(User user1 : friends){
+                    muro.getEvents().addAll(user1.getWall().getEvents());
+
+                    muro.getPosts().addAll(user1.getWall().getPosts());
+
+                }
+
+                List<Notification> notificationList = notificationDao.unseenNotifications(user);
+                for(Notification no : notificationList){
+                 no.setSeen(true);
+                 notificationDao.update(no);
+                }
+                attributes.put("unseen",notificationList.size());
+                attributes.put("notifications", notificationList);
+
+
+                attributes.put("muroeventos", muro.getEvents());
+                attributes.put("muroentradas", muro.getPosts());
+            }
+            else{
+                response.redirect("/");
+            }
+            return new ModelAndView(attributes, "notifications.ftl");
+        }, freeMarkerEngine);
+
+
         //Rutas amigos
         get("/friends", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
 
@@ -104,20 +166,22 @@ public class RutasWeb {
                     profilesList.add(profile);
                 }
 
-            List<Notification> notificationList = notificationDao.unseenNotifications(user);
             attributes.put("usuario", user);
             attributes.put("perfil", user.getUsername());
             attributes.put("admin", user.isAdministrator());
             attributes.put("profile", usuarioDao.getProfile(user));
             attributes.put("amigos", amigos);
             attributes.put("perfiles", profilesList);
-            attributes.put("numeroNotificaciones", notificationList.size());
-            attributes.put("notificaciones", notificationList);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
 
             return new ModelAndView(attributes, "friends.ftl");
         }, freeMarkerEngine);
 
         get("/friendRequests", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
             User user = new User();
@@ -127,15 +191,13 @@ public class RutasWeb {
             List<User> solicitudes = usuarioDao.getUsersById(friendRequests);
 
             ArrayList<Profile> profilesList = new ArrayList<>();
-
-            List<Notification> notificationList = notificationDao.unseenNotifications(user);
             attributes.put("usuario", user);
             attributes.put("profile", usuarioDao.getProfile(user));
             attributes.put("perfil", user.getUsername());
             attributes.put("admin", user.isAdministrator());
             attributes.put("solicitudes", solicitudes);
-            attributes.put("numeroNotificaciones", notificationList.size());
-            attributes.put("notificaciones", notificationList);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+            attributes.put("unseen",notificationList.size());
 
                 List<User> personList = usuarioDao.getUsersById(friendRequests);
 
@@ -151,6 +213,8 @@ public class RutasWeb {
         }, freeMarkerEngine);
 
         get("/findFriends", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
             User user = new User();
@@ -159,19 +223,18 @@ public class RutasWeb {
 
             ArrayList<Profile> profilesList = new ArrayList<>();
 
-            List<Notification> notificationList = notificationDao.unseenNotifications(user);
             attributes.put("usuario", user);
             attributes.put("profile", usuarioDao.getProfile(user));
             attributes.put("perfil", user.getUsername());
             attributes.put("admin", user.isAdministrator());
-            attributes.put("numeroNotificaciones", notificationList.size());
-            attributes.put("notificaciones", notificationList);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
+            attributes.put("unseen",notificationList.size());
             List<User> personlist = new ArrayList<>();
 
 
                 for(Profile user2: profileDao.getAll()){
-                    Boolean friends = friendshipDao.checkIfFriend2(user,user2.getUser().getId());
+                    boolean friends = friendshipDao.checkIfFriend2(user,user2.getUser().getId());
                     if((user2.getUser().getUsername() != user.getUsername()) && friends==false) {
                         if (user.getProfile().getLugarestudio().equals(user2.getLugarestudio())) {
                             profilesList.add(user2);
@@ -183,7 +246,9 @@ public class RutasWeb {
                             profilesList.add(user2);
                         }
 
-                    }            }
+                    }
+
+                }
 
             attributes.put("perfiles", profilesList);
 
@@ -193,6 +258,8 @@ public class RutasWeb {
         }, freeMarkerEngine);
 
         get("/pendingRequests", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
 
@@ -206,14 +273,14 @@ public class RutasWeb {
             List<User> solicitudesPendientes = usuarioDao.getUsersById(pendingRequests);
             ArrayList<Profile> profilesList = new ArrayList<>();
 
-            List<Notification> notificationList = notificationDao.unseenNotifications(user);
             attributes.put("usuario", user);
             attributes.put("profile", user.getProfile());
             attributes.put("perfil", user.getUsername());
             attributes.put("admin", user.isAdministrator());
             attributes.put("solicitudesPendientes", solicitudesPendientes);
-            attributes.put("numeroNotificaciones", notificationList.size());
-            attributes.put("notificaciones", notificationList);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
 
 
                 List<User> personList = new ArrayList<User>();
@@ -230,20 +297,28 @@ public class RutasWeb {
 
         post("/sendRequest/:userId", (request, response) -> {
 
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
 
             User user = new User();
             user = usuarioDao.searchByUsername(request.cookie("username")); //prueba
 
-           String userId = request.params("userId");
-           friendshipDao.sendFriendRequest(user, Integer.parseInt(userId));
+            String userId = request.params("userId");
+            friendshipDao.sendFriendRequest(user, Integer.parseInt(userId));
+
+            Notification n = new Notification();
+            n.setSeen(false);
+             n.setNotificacion(user.getUsername()+" Te ha enviado una solicitud de amistad");
+            n.setUser(usuarioDao.findOne(Integer.parseInt(userId)));
+            notificationDao.add(n);
 
            response.redirect("/");
            return null;
         });
         post("/acceptRequest", (request, response) -> {
 
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
 
@@ -258,6 +333,7 @@ public class RutasWeb {
         });
         post("/unFriend", (request, response) -> {
 
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             QueryParamsMap map = request.queryMap();
 
@@ -272,6 +348,8 @@ public class RutasWeb {
 
         //Rutas profile
         get("/profile/:username", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             boolean owner = false;
 
@@ -292,12 +370,11 @@ public class RutasWeb {
                 attributes.put("perfil", usuarioDao.getProfile(user));
                 attributes.put("admin", usuarioLogueado.isAdministrator());
                 List<Post> posts = postDao.getMyPosts(user);
-                // List<Notification> notificationList = notificationDao.unseenNotifications(user);
-
+                List<Notification> notificationList = notificationDao.unseenNotifications(usuarioLogueado);
+                attributes.put("unseen",notificationList.size());
                 attributes.put("user", user);
                 attributes.put("posts", posts);
                 attributes.put("isFriend", isFriend);
-            List<Notification> notificationList = notificationDao.unseenNotifications(user);
 
             List<Integer> friendsids = friendshipDao.getAllFriends(user);
             List<User> friends = usuarioDao.getUsersById(friendsids);
@@ -311,10 +388,19 @@ public class RutasWeb {
             attributes.put("muroeventos", muro.getEvents());
             attributes.put("muroentradas", muro.getPosts());
             attributes.put("eventoscomentarios", muro.getEvents());
+            attributes.put("albums", user.getAlbums());
             attributes.put("totalFriends", friendsids.size());
             attributes.put("perfiles", friendsProfiles);
-                //attributes.put("numeroNotificaciones", notificationList.size());
-                //attributes.put("notificaciones", notificationList);
+                List<Integer> friendlist = friendshipDao.getAllFriends(usuarioLogueado);
+                List<User> amigos = usuarioDao.getUsersById(friendlist);
+                ArrayList<Profile> profilesList = new ArrayList<>();
+
+                for(User user1 : amigos) {
+                    Profile profile = user1.getProfile();
+                    profilesList.add(profile);
+                }
+
+                attributes.put("amigos",amigos);
             }
 
             return new ModelAndView(attributes, "profile.ftl");
@@ -322,6 +408,7 @@ public class RutasWeb {
 
         post("/subirfoto","multipart/form-data",  (request, response) -> {
 
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
 
             request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
             java.nio.file.Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
@@ -377,6 +464,8 @@ public class RutasWeb {
             return null;
         });
 
+
+
         //Rutas index
         get("/", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -401,7 +490,7 @@ public class RutasWeb {
 
 
         post("/login", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
+             Map<String, Object> attributes = new HashMap<>();
             String username = request.queryParams("userpost");
             String password = request.queryParams("passpost");
             User user = usuarioDao.searchByUsername(username);
@@ -432,6 +521,7 @@ public class RutasWeb {
 
         //Rutas Usuarios
         get("/usuarios", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
             boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
             boolean administrator = false;
@@ -449,6 +539,9 @@ public class RutasWeb {
                 attributes.put("usuarios", usuarioDao.getAll());
                 attributes.put("perfil", user.getUsername());
                 attributes.put("admin", administrator);
+                List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+                attributes.put("unseen",notificationList.size());
             }
             else{
                 response.redirect("/");
@@ -459,6 +552,7 @@ public class RutasWeb {
 
         get("/usuarios/editar/:id", (request, response) -> {
 
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
 
             User user = usuarioDao.searchByUsername(request.cookie("username"));
             Integer idusuario = Integer.parseInt(request.params("id"));
@@ -473,11 +567,15 @@ public class RutasWeb {
             attributes.put("admin", user.isAdministrator());
             attributes.put("idusuario", idusuario.toString());
             attributes.put("user", usuario);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
 
             return new ModelAndView(attributes, "modificarUsuario.ftl");
         }, freeMarkerEngine);
         post("/usuarios/editar/:id", (request, response) -> {
 
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             SimpleDateFormat format = new SimpleDateFormat("yy-mm-dd");
             Integer idusuario = Integer.parseInt(request.params("id"));
             String username = request.queryParams("username");
@@ -502,12 +600,13 @@ public class RutasWeb {
             profileDao.update(profile);
             usuarioDao.update(usuario);
 
-            response.redirect("/usuarios");
+            response.redirect("/home");
 
             return null;
         });
         get("/usuarios/borrar/:id", (request, response) -> {
 
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
 
             Integer idusuario = Integer.parseInt(request.params("id"));
 
@@ -525,6 +624,7 @@ public class RutasWeb {
         //Rutas Registrarse
         post("/registrarse", (request, response) -> {
 
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             Map<String, Object> attributes = new HashMap<>();
 
            String username = request.queryParams("username");
@@ -592,8 +692,384 @@ public class RutasWeb {
             return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
 
+        get("/album/:id", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            Map<String, Object> attributes = new HashMap<>();
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User user = new User();
+            user = usuarioDao.searchByUsername(request.cookie("username")); //prueba
+            List<Integer> friendlist = friendshipDao.getAllFriends(user);
+            List<User> amigos = usuarioDao.getUsersById(friendlist);
+            ArrayList<Profile> profilesList = new ArrayList<>();
+            Album album = albumDao.findOne(id);
+            boolean owner = false;
+            if(user.getUsername().equals(album.getUser().getUsername())) owner=true;
+
+            attributes.put("usuario", user);
+            attributes.put("perfil", user.getUsername());
+            attributes.put("admin", user.isAdministrator());
+            attributes.put("owner", owner);
+            attributes.put("profile", usuarioDao.getProfile(user));
+            attributes.put("amigos", amigos);
+            attributes.put("perfiles", profilesList);
+            attributes.put("album", album);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
+            return new ModelAndView(attributes, "verAlbum.ftl");
+
+        }, freeMarkerEngine);
+
+        get("/photo/:id", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            Map<String, Object> attributes = new HashMap<>();
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User user = new User();
+            user = usuarioDao.searchByUsername(request.cookie("username")); //prueba
+            List<Integer> friendlist = friendshipDao.getAllFriends(user);
+            List<User> amigos = usuarioDao.getUsersById(friendlist);
+            ArrayList<Profile> profilesList = new ArrayList<>();
+            Photo album = photoDao.findOne(id);
+            boolean owner = false;
+            if(user.getUsername().equals(album.getAlbums().getUser().getUsername())) owner=true;
+
+            attributes.put("usuario", user);
+            attributes.put("perfil", user.getUsername());
+            attributes.put("admin", user.isAdministrator());
+            attributes.put("owner", owner);
+            attributes.put("profile", usuarioDao.getProfile(user));
+            attributes.put("amigos", amigos);
+            attributes.put("perfiles", profilesList);
+            attributes.put("foto", album);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
+
+            return new ModelAndView(attributes, "verFoto.ftl");
+
+        }, freeMarkerEngine);
+
+        get("/editarFoto/:id", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            Map<String, Object> attributes = new HashMap<>();
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User user = new User();
+            user = usuarioDao.searchByUsername(request.cookie("username")); //prueba
+            List<Integer> friendlist = friendshipDao.getAllFriends(user);
+            List<User> amigos = usuarioDao.getUsersById(friendlist);
+            ArrayList<Profile> profilesList = new ArrayList<>();
+            Photo album = photoDao.findOne(id);
+            boolean owner = false;
+            if(user.getUsername().equals(album.getAlbums().getUser().getUsername())) owner=true;
+
+            attributes.put("usuario", user);
+            attributes.put("perfil", user.getUsername());
+            attributes.put("admin", user.isAdministrator());
+            attributes.put("owner", owner);
+            attributes.put("profile", usuarioDao.getProfile(user));
+            attributes.put("amigos", amigos);
+            attributes.put("perfiles", profilesList);
+            attributes.put("foto", album);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
+
+            return new ModelAndView(attributes, "editarFoto.ftl");
+
+        }, freeMarkerEngine);
+
+        post("/editarFoto/:id", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            Map<String, Object> attributes = new HashMap<>();
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User user = new User();
+            user = usuarioDao.searchByUsername(request.cookie("username")); //prueba
+            List<Integer> friendlist = friendshipDao.getAllFriends(user);
+            List<User> amigos = usuarioDao.getUsersById(friendlist);
+            ArrayList<Profile> profilesList = new ArrayList<>();
+            Photo album = photoDao.findOne(id);
+            boolean owner = false;
+            if(user.getUsername().equals(album.getAlbums().getUser().getUsername())) owner=true;
+            album.setCaption(request.queryParams("caption"));
+            String useret = request.queryParams("amigos[]");
+            Tag t = new Tag();
+            User usuarioetiquetado = usuarioDao.searchByUsername(useret);
+            t.setUsers(usuarioetiquetado);
+            album.setEtiqueta(t);
+            tagDao.add(t);
+            photoDao.update(album);
+            Notification n = new Notification();
+            n.setSeen(false);
+            n.setNotificacion(user+ " Te ha etiquetado en una foto");
+            n.setUser(usuarioetiquetado);
+            notificationDao.add(n);
+
+
+
+            attributes.put("usuario", user);
+            attributes.put("perfil", user.getUsername());
+            attributes.put("admin", user.isAdministrator());
+            attributes.put("owner", owner);
+            attributes.put("profile", usuarioDao.getProfile(user));
+            attributes.put("amigos", amigos);
+            attributes.put("perfiles", profilesList);
+            attributes.put("foto", album);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
+
+            response.redirect("/photo/"+id);
+
+            return new ModelAndView(attributes, "editarFoto.ftl");
+
+        }, freeMarkerEngine);
+
+        get("/editarAlbum/:id", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            Map<String, Object> attributes = new HashMap<>();
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User user = new User();
+            user = usuarioDao.searchByUsername(request.cookie("username")); //prueba
+            List<Integer> friendlist = friendshipDao.getAllFriends(user);
+            List<User> amigos = usuarioDao.getUsersById(friendlist);
+            ArrayList<Profile> profilesList = new ArrayList<>();
+            Album album = albumDao.findOne(id);
+            boolean owner = false;
+            if(user.getUsername().equals(album.getUser().getUsername())) owner=true;
+
+            attributes.put("usuario", user);
+            attributes.put("perfil", user.getUsername());
+            attributes.put("admin", user.isAdministrator());
+            attributes.put("owner", owner);
+            attributes.put("profile", usuarioDao.getProfile(user));
+            attributes.put("amigos", amigos);
+            attributes.put("perfiles", profilesList);
+            attributes.put("album", album);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
+            return new ModelAndView(attributes, "editarAlbum.ftl");
+
+        }, freeMarkerEngine);
+
+        get("/crearAlbum", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            Map<String, Object> attributes = new HashMap<>();
+            QueryParamsMap map = request.queryMap();
+
+            User user = new User();
+            user = usuarioDao.searchByUsername(request.cookie("username")); //prueba
+            List<Integer> friendlist = friendshipDao.getAllFriends(user);
+            List<User> amigos = usuarioDao.getUsersById(friendlist);
+            ArrayList<Profile> profilesList = new ArrayList<>();
+
+            for(User user1 : amigos) {
+                Profile profile = user1.getProfile();
+                profilesList.add(profile);
+            }
+
+            attributes.put("usuario", user);
+            attributes.put("perfil", user.getUsername());
+            attributes.put("admin", user.isAdministrator());
+            attributes.put("profile", usuarioDao.getProfile(user));
+            attributes.put("amigos", amigos);
+            attributes.put("perfiles", profilesList);
+            List<Notification> notificationList = notificationDao.unseenNotifications(user);
+
+            attributes.put("unseen",notificationList.size());
+
+
+            return new ModelAndView(attributes, "crearAlbum.ftl");
+
+        }, freeMarkerEngine);
+
+
+        post("/crearAlbum", "multipart/form-data", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+            java.nio.file.Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+            long maxFileSize = 100000000;
+            long maxRequestSize = 100000000;
+            int fileSizeThreshold = 1024;
+
+            MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+                    uploadDir.getAbsolutePath(), maxFileSize, maxRequestSize, fileSizeThreshold);
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig",
+                    multipartConfigElement);
+
+
+            Part name = request.raw().getPart("nombre");
+            Part uploadedFile = request.raw().getPart("uf");
+
+            Part descr = request.raw().getPart("descripcion");
+            System.out.println(uploadedFile.getSubmittedFileName());
+            if(!uploadedFile.getSubmittedFileName().isEmpty()) {
+                String fName = request.raw().getPart("uf").getSubmittedFileName();
+                System.out.println("entre");
+                java.nio.file.Path out = Paths.get(uploadDir.getCanonicalPath() + "/" + fName);
+                InputStream in = uploadedFile.getInputStream();
+                Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
+                uploadedFile.delete();
+
+                multipartConfigElement = null;
+                uploadedFile = null;
+
+                BufferedImage imagen = null;
+                File here = new File(".");
+
+                String path = uploadDir.getCanonicalPath() + "/" + fName;
+                System.out.println(path);
+
+                try {
+                    imagen = ImageIO.read(new File((path)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ByteArrayOutputStream imagenb = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(imagen, "jpg", imagenb);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                boolean autenticado=false;
+                Photo fpost = new Photo();
+
+
+                String s = request.queryParams("amigos[]");
+                System.out.println(s);
+               Album album = new Album();
+
+                User log = usuarioDao.searchByUsername(request.cookie("username"));
+                Tag t = new Tag();
+                User usuarioetiquetado = usuarioDao.searchByUsername(s);
+                t.setUsers(usuarioetiquetado);
+                album.setEtiqueta(t);
+                tagDao.add(t);
+                Notification n = new Notification();
+                n.setSeen(false);
+                n.setNotificacion(log.getUsername()+ " Te ha etiquetado en un albúm");
+                n.setUser(usuarioetiquetado);
+                notificationDao.add(n);
+               album.setNombre(IOUtils.toString(name.getInputStream()));
+                album.setUser(log);
+                album.setNombredescripcion(IOUtils.toString(descr.getInputStream()));
+
+                albumDao.add(album);
+
+                fpost.setFoto(imagenb.toByteArray());
+                fpost.setAlbums(album);
+
+                photoDao.add(fpost);
+
+
+                response.redirect("/profile/" + log.getUsername());
+
+            }
+            return "Ok";
+        });
+
+
+        post("/editarAlbum/:id", "multipart/form-data", (request, response) -> {
+
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            int id = Integer.parseInt(request.params("id"));
+            request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+            java.nio.file.Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+            long maxFileSize = 100000000;
+            long maxRequestSize = 100000000;
+            int fileSizeThreshold = 1024;
+
+            MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+                    uploadDir.getAbsolutePath(), maxFileSize, maxRequestSize, fileSizeThreshold);
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig",
+                    multipartConfigElement);
+
+
+            Part name = request.raw().getPart("nombre");
+            Part uploadedFile = request.raw().getPart("uf");
+
+            Part descr = request.raw().getPart("descripcion");
+
+             if(!uploadedFile.getSubmittedFileName().isEmpty()) {
+                String fName = request.raw().getPart("uf").getSubmittedFileName();
+                System.out.println("entre");
+                java.nio.file.Path out = Paths.get(uploadDir.getCanonicalPath() + "/" + fName);
+                InputStream in = uploadedFile.getInputStream();
+                Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
+                uploadedFile.delete();
+
+                multipartConfigElement = null;
+                uploadedFile = null;
+
+                BufferedImage imagen = null;
+                File here = new File(".");
+
+                String path = uploadDir.getCanonicalPath() + "/" + fName;
+                System.out.println(path);
+
+                try {
+                    imagen = ImageIO.read(new File((path)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ByteArrayOutputStream imagenb = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(imagen, "jpg", imagenb);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                boolean autenticado=false;
+                Photo fpost = new Photo();
+
+
+                String s = request.queryParams("amigos[]");
+                Album album = albumDao.findOne(id);
+
+                User log = usuarioDao.searchByUsername(request.cookie("username"));
+                 Tag t = new Tag();
+                 User usuarioetiquetado = usuarioDao.searchByUsername(s);
+                 t.setUsers(usuarioetiquetado);
+                 album.setEtiqueta(t);
+                 tagDao.add(t);
+                 Notification n = new Notification();
+                 n.setSeen(false);
+                 n.setNotificacion(log.getUsername()+ " Te ha etiquetado en un albúm");
+                 n.setUser(usuarioetiquetado);
+                 notificationDao.add(n);
+                 album.setNombre(IOUtils.toString(name.getInputStream()));
+                 album.setNombredescripcion(IOUtils.toString(descr.getInputStream()));
+
+
+
+                 fpost.setFoto(imagenb.toByteArray());
+                 fpost.setAlbums(album);
+
+                 photoDao.add(fpost);
+                 albumDao.update(album);
+
+
+                response.redirect("/album/" + id);
+
+            }
+            return "Ok";
+        });
+
+
         //Rutas Likes
         post("/like/post/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             boolean autenticado=false;
             QueryParamsMap map = request.queryMap();
             Integer id = Integer.parseInt(request.params("id"));
@@ -643,6 +1119,7 @@ public class RutasWeb {
         });
 
         post("/like/comentario/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             boolean autenticado=false;
             QueryParamsMap map = request.queryMap();
             Integer id = Integer.parseInt(request.params("id"));
@@ -693,6 +1170,7 @@ public class RutasWeb {
         });
 
         post("/like/evento/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
             boolean autenticado=false;
             QueryParamsMap map = request.queryMap();
             Integer id = Integer.parseInt(request.params("id"));
@@ -742,7 +1220,59 @@ public class RutasWeb {
         });
 
 
+        post("/like/foto/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            boolean autenticado=false;
+            QueryParamsMap map = request.queryMap();
+            Integer id = Integer.parseInt(request.params("id"));
+            User usuario = new User();
+
+            usuario = usuarioDao.searchByUsername(request.cookie("username"));
+
+
+            LikeDislike valoracion = new LikeDislike();
+            valoracion.setPhoto(photoDao.findOne(id));
+            valoracion.setUser(usuario);
+            String value = request.queryParams("like");
+            if(value.equals("Me gusta")){
+                valoracion.setValoracion(true);
+                System.out.println("entre");
+            }
+            else if(value.equals("No me gusta")){
+                valoracion.setValoracion(false);
+            }
+
+
+
+            Photo event = new Photo();
+            event = photoDao.findOne(id);
+
+            boolean check = false;
+            for(LikeDislike val: event.getValoraciones()){
+                if(val.getUser().getId()==valoracion.getUser().getId()){
+                    val.setValoracion( valoracion.getValoracion());
+                    check=true;
+                    likeDislikeDao.update(val);
+                    photoDao.update(event);
+                }
+
+            }
+
+
+            if(check==false){
+                event.getValoraciones().add(valoracion);
+                likeDislikeDao.add(valoracion);
+                photoDao.update(event);
+            }
+
+            response.redirect("/home");
+
+            return "Ok";
+        });
+
+
                 post("/comentario/evento/:id", (request, response) -> {
+                    if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
 
                     QueryParamsMap map = request.queryMap();
                     boolean autenticado=false;
@@ -760,8 +1290,27 @@ public class RutasWeb {
                     return "Ok";
                 });
 
+        post("/comentario/foto/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+
+            QueryParamsMap map = request.queryMap();
+            boolean autenticado=false;
+            Integer id = Integer.parseInt(request.params("id"));
+            Comment comment = new Comment();
+            User usuario = new User();
+            User log = usuarioDao.searchByUsername(request.cookie("username"));
+            Photo foto = photoDao.findOne(id);
+            comment.setComentario(request.queryParams("muro"));
+            comment.setUser(log);
+            comment.setPhoto(foto);
+            commentDao.add(comment);
+            response.redirect("/home");
+
+            return "Ok";
+        });
 
         post("/comentario/post/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
 
             QueryParamsMap map = request.queryMap();
             boolean autenticado=false;
@@ -779,124 +1328,199 @@ public class RutasWeb {
             return "Ok";
         });
 
-        post("/addPost/:user", (request, response) -> {
+        post("/addPost/:user", "multipart/form-data", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+            request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+            java.nio.file.Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+            long maxFileSize = 100000000;
+            long maxRequestSize = 100000000;
+            int fileSizeThreshold = 1024;
 
-            QueryParamsMap map = request.queryMap();
-            boolean autenticado=false;
-            Integer id;
-            Post post = new Post();
-            User usuario = new User();
-            String user = request.params("user");
-            usuario= usuarioDao.searchByUsername(user);
-            User log = usuarioDao.searchByUsername(request.cookie("username"));
+            MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+                    uploadDir.getAbsolutePath(), maxFileSize, maxRequestSize, fileSizeThreshold);
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig",
+                    multipartConfigElement);
 
-            post.setFecha(LocalDate.now());
-            post.setLikes(0);
-            post.setTexto(map.get("muro").value());
-            post.setUser(log);
-            post.setWall(usuario.getWall());
-            String etiquetas = (map.get("etiqueta").value());
+            Part amigoste = request.raw().getPart("amigos[]");
+            Part text = request.raw().getPart("muro");
+            Part uploadedFile = request.raw().getPart("uf");
+            if(!uploadedFile.getSubmittedFileName().isEmpty()) {
+                String fName = request.raw().getPart("uf").getSubmittedFileName();
 
-            List<Tag> etiq = new ArrayList<Tag>();
+                java.nio.file.Path out = Paths.get(uploadDir.getCanonicalPath() + "/" + fName);
+                InputStream in = uploadedFile.getInputStream();
+                Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
+                uploadedFile.delete();
+
+                multipartConfigElement = null;
+                uploadedFile = null;
+
+                BufferedImage imagen = null;
+                File here = new File(".");
+
+                String path = uploadDir.getCanonicalPath() + "/" + fName;
+                System.out.println(path);
+
+                try {
+                    imagen = ImageIO.read(new File((path)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ByteArrayOutputStream imagenb = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(imagen, "jpg", imagenb);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                boolean autenticado=false;
+                Photo fpost = new Photo();
+                fpost.setFoto(imagenb.toByteArray());
+                Integer id;
+                Post post = new Post();
+                post.setPhoto(fpost);
+                User usuario = new User();
+                String user = request.params("user");
+                usuario= usuarioDao.searchByUsername(user);
+                User log = usuarioDao.searchByUsername(request.cookie("username"));
+                String s = request.queryParams("amigos[]");
+                Tag t = new Tag();
+                User u = usuarioDao.searchByUsername(s);
+                t.setUsers(u);
+                Notification n = new Notification();
+                n.setSeen(false);
+                if(log.getUsername() == usuario.getUsername())
+                    n.setNotificacion(log.getUsername()+" Te ha mencionado en una entrada suya");
+                else n.setNotificacion(log.getUsername()+" Te ha mencionado en una entrada de "+usuario.getUsername());
+                n.setUser(u);
+                notificationDao.add(n);
+
+                post.setFecha(LocalDate.now());
+                post.setLikes(0);
+                post.setTexto(IOUtils.toString(text.getInputStream()));
+                post.setUser(log);
+                post.setWall(usuario.getWall());
+                post.setEtiqueta(t);
+
+                tagDao.add(t);
+////
+//
+                  photoDao.add(fpost);
+                postDao.add(post);
+
+                response.redirect("/profile/" + user);
+
+            }
+            else {
 
 
-            //   Long size2 = Long.parseLong(String.valueOf(size));
+                QueryParamsMap map = request.queryMap();
+                boolean autenticado = false;
+                Integer id;
+                Post post = new Post();
+                User usuario = new User();
+                String user = request.params("user");
+                usuario = usuarioDao.searchByUsername(user);
+                User log = usuarioDao.searchByUsername(request.cookie("username"));
+                String s = request.queryParams("amigos[]");
 
-            post.setEtiquetas(null);
-            postDao.add(post);
-            response.redirect("/profile/"+user);
+                Tag t = new Tag();
+                User u = usuarioDao.searchByUsername(s);
+                    t.setUsers(u);
+                Notification n = new Notification();
+                n.setSeen(false);
+                if(log.getUsername() == usuario.getUsername())
+                n.setNotificacion(log.getUsername()+" Te ha mencionado en una entrada suya");
+                else n.setNotificacion(log.getUsername()+" Te ha mencionado en una entrada de "+usuario.getUsername());
+                n.setUser(u);
+                notificationDao.add(n);
 
+                post.setFecha(LocalDate.now());
+                post.setLikes(0);
+                post.setTexto(IOUtils.toString(text.getInputStream()));
+                post.setUser(log);
+                post.setWall(usuario.getWall());
+                post.setEtiqueta(t);
+
+                tagDao.add(t);
+                postDao.add(post);
+
+
+                response.redirect("/profile/" + user);
+
+
+            }
             return "Ok";
         });
-        get("/post/editar/:id", (request, response) -> {
 
-            Integer idpost = Integer.parseInt(request.params("id"));
-            boolean autenticado = Boolean.parseBoolean(request.queryParams("autenticado"));
-            boolean admin=false;
-
-            if(request.cookie("username")!=null)
-            {autenticado=true;
-                User user = usuarioDao.searchByUsername(request.cookie("username"));
-
-                admin = user.isAdministrator();
-
-            }
-            else if(request.session().attribute("username") != null && request.cookie("username")==null){
-
-                autenticado = true;
-                User user = usuarioDao.searchByUsername(request.session().attribute("username"));
-
-                admin = user.isAdministrator();
-            }
-
-            Post post = postDao.findOne(idpost);
-            String etiquetastemp="";
-            for(Tag et : post.getEtiquetas()){
-                etiquetastemp+=et.getToUser().getUsername()+',';
-            }
-            String etiquetasfini="";
-            for(int i=0;i<etiquetastemp.length()-1;i++){
-                etiquetasfini+=etiquetastemp.charAt(i);
-            }
-
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("idpost", post.getId());
-            attributes.put("autenticado", autenticado);
-            attributes.put("admin", admin);
-            attributes.put("posts", post);
-            attributes.put("etiquetas",etiquetasfini);
-
-            return new ModelAndView(attributes, "modificarPost.ftl");
-        }, freeMarkerEngine);
-        post("/post/editar/:id", (request, response) -> {
-
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-            Integer idpost = Integer.parseInt(request.params("id"));
-            String texto = request.queryParams("texto");
-            LocalDate fecha = LocalDate.parse(request.queryParams("fecha"));
-            int likes = postDao.findOne(idpost).getLikes();
-            String etiquetas = request.queryParams("etiqueta");
-
-            List<Tag> etiq = new ArrayList<Tag>();
-
-            String[] ets = etiquetas.split(",");
-
-            Set<Tag> etiqs = new HashSet<>();
-
-            for(String etiquet : etiquetas.split(",")){
-
-                Tag etiqueta = new Tag();
-                etiqueta = tagDao.searchByTag(etiquet);
-                etiqs.add(new Tag(usuarioDao.searchByUsername(etiquet)));
-            }
-
-
-            Post post = new Post(idpost, texto, fecha, likes, null, null, postDao.findOne(idpost).getUser(),
-                    wallDao.findWallByUser(postDao.findOne(idpost).getUser()), null, null);
-
-            post.setEtiquetas(etiqs);
-            post.setValoraciones(postDao.findOne(idpost).getValoraciones());
-
-            Set<Comment>comentariostemp= postDao.findOne(idpost).getComments();
-            post.setComments(comentariostemp);
-
-            postDao.update(post);
-
-            response.redirect("/home");
-
-            return null;
-        });
         get("/post/borrar/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
 
             Integer idpost = Integer.parseInt(request.params("id"));
 
             Post post = postDao.findOne(idpost);
+            String s = post.getWall().getUser().getUsername();
 
             if (post != null){
                 postDao.deleteById(post);
             }
 
-            response.redirect("/home");
+            response.redirect("/profile/"+s);
+
+            return null;
+
+        },freeMarkerEngine);
+
+
+
+        get("/comentario/borrar/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+
+            Integer idpost = Integer.parseInt(request.params("id"));
+
+            Comment post = commentDao.findOne(idpost);
+            String s = post.getPost().getWall().getUser().getUsername();
+
+            if (post != null){
+                commentDao.deleteById(post);
+            }
+
+            response.redirect("/profile/"+s);
+
+            return null;
+
+        },freeMarkerEngine);
+
+        get("/eliminarAlbum/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+
+            Integer idpost = Integer.parseInt(request.params("id"));
+
+            Album post = albumDao.findOne(idpost);
+            String s = post.getUser().getUsername();
+
+            if (post != null){
+                albumDao.deleteById(post);
+            }
+
+            response.redirect("/profile/"+s);
+
+            return null;
+
+        },freeMarkerEngine);
+
+        get("/eliminarFoto/:id", (request, response) -> {
+            if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");
+
+            Integer idpost = Integer.parseInt(request.params("id"));
+
+            Photo post = photoDao.findOne(idpost);
+            String s = post.getAlbums().getUser().getUsername();
+
+            if (post != null){
+                photoDao.deleteById(post);
+            }
+
+            response.redirect("/profile/"+s);
 
             return null;
 
