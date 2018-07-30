@@ -233,22 +233,31 @@ public class RutasWeb {
             List<User> personlist = new ArrayList<>();
 
 
+            List<Integer> pr = new ArrayList<>();
+            pr=friendshipDao.getFriendRequests(user);
+            List<Integer> pr2 = new ArrayList<>();
+            pr2=friendshipDao.getPendingRequests(user);
+
                 for(Profile user2: profileDao.getAll()){
-                    boolean friends = friendshipDao.checkIfFriend2(user,user2.getUser().getId());
-                    if((user2.getUser().getUsername() != user.getUsername()) && friends==false) {
-                        if (user.getProfile().getLugarestudio().equals(user2.getLugarestudio())) {
+                    if((user2.getUser().getUsername() != user.getUsername())) {
+                        if (user.getProfile().getLugarestudio().contains(user2.getLugarestudio())) {
                             profilesList.add(user2);
-                        } else if ((user.getProfile().getCiudadactual().equals(user2.getCiudadactual()))) {
+                        } else if ((user.getProfile().getCiudadactual().contains(user2.getCiudadactual()))) {
                             profilesList.add(user2);
-                        } else if ((user.getProfile().getLugartrabajo().equals(user2.getLugarnacimiento()))) {
+                        } else if ((user.getProfile().getLugartrabajo().contains(user2.getLugarnacimiento()))) {
                             profilesList.add(user2);
-                        } else if ((user.getProfile().getLugarnacimiento().equals(user2.getLugarnacimiento()))) {
+                        } else if ((user.getProfile().getLugarnacimiento().contains(user2.getLugarnacimiento()))) {
                             profilesList.add(user2);
                         }
 
                     }
 
+                    if(pr.contains(user2.getUser().getId()) || pr2.contains(user2.getUser().getId()) || friendshipDao.checkIfFriend(user, user2.getUser().getId())){
+                        profilesList.remove(user2);
+                    }
                 }
+
+
 
             attributes.put("perfiles", profilesList);
 

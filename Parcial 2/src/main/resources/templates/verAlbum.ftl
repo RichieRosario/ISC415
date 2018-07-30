@@ -32,9 +32,13 @@
                         </#list>
         <p> Descripción: ${album.getNombredescripcion()}</p>
         <p> Personas en este albúm:
-                                            <#if album.getEtiqueta()??>
+                                            <#if (album.getEtiqueta())??>
+                                                <#if (album.getEtiqueta().getUsers())??>
                                                 <a href="/profile/${album.getEtiqueta().getUsers().getUsername()}">${album.getEtiqueta().getUsers().getProfile().getNombre()} ${album.getEtiqueta().getUsers().getProfile().getApellido()}</a>
-                                            <#else>
+                                                <#else>
+                                                Nadie.
+                                                </#if>
+                                                <#else>
                                             Nadie.
                                             </#if></p>
 <#if owner == true>

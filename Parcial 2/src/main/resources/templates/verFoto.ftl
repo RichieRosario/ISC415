@@ -15,8 +15,12 @@
                                    </#if>
 
                                     <p> Personas en esta foto:
-                                            <#if foto.getEtiqueta()??>
+                                            <#if (foto.getEtiqueta())??>
+                                            <#if (foto.getEtiqueta().getUsers())??>
                                                 <a href="/profile/${foto.getEtiqueta().getUsers().getUsername()}">${foto.getEtiqueta().getUsers().getProfile().getNombre()} ${foto.getEtiqueta().getUsers().getProfile().getApellido()}</a>
+                                            <#else>
+                                                Nadie.
+                                            </#if>
                                             <#else>
                                             Nadie.
                                             </#if></p>
