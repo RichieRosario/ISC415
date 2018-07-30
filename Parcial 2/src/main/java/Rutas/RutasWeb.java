@@ -70,6 +70,71 @@ public class RutasWeb {
         uploadDir.mkdir(); //
 
 
+        before("/usuarios", (request, response) ->{
+
+            User user = new User();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(request.cookie("username"));
+            }
+            else if(request.cookie("username")==null){
+                response.redirect("/");
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tienes permisos para acceder.");
+                }}
+
+        } );
+
+        before("/usuarios/editar/:id", (request, response) ->{
+
+            User user = new User();
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(request.cookie("username"));
+            }
+            else if(request.cookie("username")==null){
+                response.redirect("/");
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+        before("/usuarios/borrar/:id", (request, response) ->{
+
+            User user = new User();
+
+            if(request.cookie("username")!=null)
+            {
+                user = usuarioDao.searchByUsername(request.cookie("username"));
+            }
+            else if(request.cookie("username")==null){
+                response.redirect("/");
+            }
+
+            if(user==null){
+                halt(403,"Forbidden Access.");
+            }
+            else{
+                if(!user.isAdministrator()){
+                    halt(401,"No tiene permisos para hacer esta acción.");
+                }}
+
+        } );
+
+
         //Rutas Inicio
         get("/home", (request, response) -> {
             if(usuarioDao.searchByUsername(request.cookie("username"))==null)response.redirect("/");

@@ -110,8 +110,12 @@
                                     </div>
                                         <div class="card-body">
                                            <p> Personas en esta entrada:
-                                            <#if entradas.getEtiqueta()??>
+                                            <#if (entradas.getEtiqueta())??>
+                                                <#if (entradas.getEtiqueta().getUsers())??>
                                                 <a href="/profile/${entradas.getEtiqueta().getUsers().getUsername()}">${entradas.getEtiqueta().getUsers().getProfile().getNombre()} ${entradas.getEtiqueta().getUsers().getProfile().getApellido()}</a>
+                                                <#else>
+                                                Nadie.
+                                                </#if>
                                             <#else>
                                             Nadie.
                                             </#if></p>
